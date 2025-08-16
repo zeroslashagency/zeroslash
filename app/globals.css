@@ -1,0 +1,352 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Luxury light mode: soft off‑white background, muted gold accents, ink foreground */
+  --background: oklch(0.985 0.004 95); /* near off-white */
+  --foreground: oklch(0.22 0.03 50);  /* deep ink gray */
+  --card: oklch(0.99 0.004 95);
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.82 0.08 85);        /* muted gold */
+  --primary-foreground: oklch(0.22 0.03 50);
+  --secondary: oklch(0.96 0.01 95);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.96 0.01 95);
+  --muted-foreground: oklch(0.52 0.02 60);
+  --accent: var(--primary);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.63 0.21 25);
+  --destructive-foreground: oklch(0.22 0.03 50);
+  --border: oklch(0.92 0.01 95);
+  --input: var(--border);
+  --ring: oklch(0.8 0.07 85);
+  --chart-1: oklch(0.74 0.12 85);
+  --chart-2: oklch(0.62 0.08 35);
+  --chart-3: oklch(0.58 0.1 55);
+  --chart-4: oklch(0.86 0.05 95);
+  --chart-5: oklch(0.7 0.1 100);
+  --radius: 0.625rem;
+  --sidebar: var(--card);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--foreground);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--foreground);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+/* Animated connector line (wavy dash motion) */
+.connector-wave {
+  /* do not set stroke color here to allow gradient via SVG attribute */
+  stroke-linecap: round;
+  stroke-dasharray: 6 8;
+  animation: dash-move 4s linear infinite;
+}
+@keyframes dash-move {
+  to { stroke-dashoffset: -28; }
+}
+
+.dark {
+  /* Luxury dark mode: slightly lifted surfaces for better borders */
+  --background: oklch(0.09 0 0);      /* lifted from 0.06 → 0.09 */
+  --foreground: oklch(0.95 0.01 95);  /* soft champagne white */
+  --card: oklch(0.11 0 0);            /* lifted card for contrast */
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.83 0.08 85);     /* champagne gold */
+  --primary-foreground: oklch(0.12 0.02 50);
+  --secondary: oklch(0.16 0 0);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.14 0 0);
+  --muted-foreground: oklch(0.8 0.02 85);
+  --accent: var(--primary);
+  --accent-foreground: var(--background);
+  --destructive: oklch(0.45 0.15 25);
+  --destructive-foreground: var(--foreground);
+  --border: oklch(0.26 0 0);          /* brighter border to be visible */
+  --input: var(--border);
+  --ring: oklch(0.78 0.08 85);
+  --chart-1: oklch(0.78 0.08 85);
+  --chart-2: oklch(0.65 0.05 35);
+  --chart-3: oklch(0.62 0.07 55);
+  --chart-4: oklch(0.28 0 0);
+  --chart-5: oklch(0.42 0 0);
+  --sidebar: oklch(0.12 0 0);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--background);
+  --sidebar-accent: var(--accent);
+  --sidebar-accent-foreground: var(--background);
+  --sidebar-border: var(--border);
+  --sidebar-ring: var(--ring);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans), ui-sans-serif, system-ui;
+  }
+}
+
+/* Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 20s linear infinite;
+  will-change: transform;
+}
+
+/* Micro animation utilities for cards */
+@keyframes zsa-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.anim-float {
+  animation: zsa-float 6s ease-in-out infinite;
+}
+
+.anim-tilt {
+  transition: transform 300ms ease, box-shadow 300ms ease;
+}
+.anim-tilt:hover {
+  transform: translateY(-4px) rotate(0.5deg);
+}
+
+/* Soft ambient glow that respects currentColor */
+.glow-ambient {
+  position: relative;
+}
+.glow-ambient::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 120%;
+  height: 120%;
+  border-radius: 9999px;
+  background: currentColor;
+  filter: blur(24px);
+  opacity: 0.10; /* subtle by default */
+  pointer-events: none;
+}
+.glow-ambient:hover::after {
+  opacity: 0.18; /* a bit stronger on hover */
+}
+
+/* Neon lime text glow (dark mode only) */
+/* Replace neon lime with subtle champagne glow for dark mode */
+.neon-text {
+  color: inherit;
+  text-shadow: none;
+}
+.dark .neon-text {
+  color: oklch(0.9 0.07 85);
+  text-shadow: 0 0 6px color-mix(in oklab, oklch(0.9 0.07 85) 50%, transparent),
+               0 0 18px color-mix(in oklab, oklch(0.9 0.07 85) 35%, transparent);
+}
+
+/* Neon ring effect for circular icons (dark mode only) */
+.neon-ring { /* neutral in light */
+  box-shadow: none;
+}
+.dark .neon-ring {
+  box-shadow: 0 0 0 2px rgba(158, 255, 0, 0.25), 0 0 24px rgba(158, 255, 0, 0.35), inset 0 0 12px rgba(158, 255, 0, 0.2);
+}
+
+/* Radial neon background for hero (dark mode only) */
+.radial-hero-bg { display: none; }
+.dark .radial-hero-bg {
+  display: block;
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(1600px circle at 50% 30%, color-mix(in oklab, oklch(0.9 0.07 85) 22%, transparent), rgba(0,0,0,0) 55%);
+  filter: blur(22px);
+  pointer-events: none;
+}
+
+/* Thin neon arrow line (dark mode only) */
+.arrow-neon {
+  stroke: rgba(0,0,0,0.2); /* subtle in light */
+  stroke-width: 2;
+  stroke-linecap: round;
+  filter: none;
+}
+.dark .arrow-neon {
+  stroke: oklch(0.9 0.07 85);
+  filter: drop-shadow(0 0 6px color-mix(in oklab, oklch(0.9 0.07 85) 45%, transparent));
+}
+
+/* Soft top fade to mix adjacent sections */
+.fade-top {
+  position: relative;
+}
+.fade-top::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -28px; /* slightly overlap previous section */
+  height: 56px;
+  background: linear-gradient(to bottom, var(--background) 0%, rgba(0,0,0,0) 100%);
+  pointer-events: none;
+}
+
+/* Stronger fade in dark mode to blend neon hero into next section */
+.dark .fade-top::before {
+  top: -80px;
+  height: 160px;
+  /* deepen the fade to mask any neon/green glow from the previous section */
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.85) 30%,
+    rgba(0,0,0,0.6) 55%,
+    rgba(0,0,0,0.3) 75%,
+    rgba(0,0,0,0) 100%
+  );
+}
+
+/* Dark-only bottom fade to blend a section into the next */
+.fade-bottom { position: relative; }
+.dark .fade-bottom::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -80px;
+  height: 160px;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,1) 0%,
+    rgba(0,0,0,0.85) 30%,
+    rgba(0,0,0,0.5) 60%,
+    rgba(0,0,0,0) 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+/* Respect user reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .anim-float { animation: none !important; }
+  .anim-tilt { transition: none !important; }
+  .anim-tilt:hover { transform: none !important; }
+  .glow-ambient::after { opacity: 0.10 !important; }
+}
+
+/* --- Box + sheen effects for cards --- */
+.box-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem; /* 16px */
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+}
+.box-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.10);
+  border-color: color-mix(in oklab, hsl(var(--border)), hsl(var(--foreground)) 18%);
+}
+
+.hover-sheen {
+  position: relative;
+  overflow: hidden;
+}
+.hover-sheen::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -30%;
+  width: 60%;
+  height: 140%;
+  transform: rotate(14deg) translateX(-120%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+  transition: transform 600ms ease;
+  pointer-events: none;
+}
+.hover-sheen:hover::after {
+  transform: rotate(14deg) translateX(260%);
+}
+
+/* Dark mode overrides for legacy light-only classes found across the page.
+   These ensure dark theme applies even where utility classes are hard-coded. */
+@layer utilities {
+  .dark .bg-white { background-color: hsl(var(--card)) !important; }
+  .dark .text-black { color: hsl(var(--foreground)) !important; }
+  .dark .border-gray-100 { border-color: hsl(var(--border)) !important; }
+  .dark .border-gray-200 { border-color: hsl(var(--border)) !important; }
+  .dark .hover\:bg-gray-50:hover { background-color: color-mix(in oklab, hsl(var(--foreground)) 8%, transparent) !important; }
+  .dark .text-gray-600 { color: color-mix(in oklab, hsl(var(--foreground)) 70%, transparent) !important; }
+  .dark .text-gray-500 { color: color-mix(in oklab, hsl(var(--foreground)) 60%, transparent) !important; }
+  .dark .text-gray-400 { color: color-mix(in oklab, hsl(var(--foreground)) 45%, transparent) !important; }
+  .dark .text-gray-800 { color: color-mix(in oklab, hsl(var(--foreground)) 85%, transparent) !important; }
+  .dark .bg-gray-50 { background-color: hsl(var(--card)) !important; }
+  .dark .bg-gray-100 { background-color: color-mix(in oklab, hsl(var(--card)) 92%, hsl(var(--background)) 8%) !important; }
+  .dark .bg-gray-50\/50 { background-color: color-mix(in oklab, hsl(var(--card)) 50%, transparent) !important; }
+  .dark .border-gray-100\/50 { border-color: color-mix(in oklab, hsl(var(--border)) 50%, transparent) !important; }
+  .dark .border-white { border-color: hsl(var(--border)) !important; }
+  .dark .text-white { color: hsl(var(--foreground)) !important; }
+}
+
+/* Exceptions: Keep contact panel colors identical in light and dark
+   We scope by [data-contact-panel] to avoid impacting the rest of the app. */
+@layer utilities {
+  .dark [data-contact-panel] .text-black { color: #000 !important; }
+  .dark [data-contact-panel] .text-white { color: #fff !important; }
+  .dark [data-contact-button] .text-black { color: #000 !important; }
+  .dark [data-contact-button] .text-white { color: #fff !important; }
+}

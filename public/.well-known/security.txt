@@ -1,0 +1,5 @@
+Contact: mailto:zeroslashx1@gmail.com
+Policy: https://zeroslash.example.com/security
+Preferred-Languages: en
+Canonical: https://yourdomain.com/.well-known/security.txt
+Expires: 2026-01-01T00:00:00.000Z
