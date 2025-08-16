@@ -29,6 +29,7 @@ export async function POST(req: Request) {
 
     const url =
       process.env.GS_ADDONS_WEB_APP_URL ||
+      "https://script.google.com/macros/s/AKfycbylqj1l9BVVTJC_4g2SIhq1ZfCeQj8yc3wI_lxv7jV1kA-hpdWp2mANJnb3EekeMpBiZg/exec";
       process.env.NEXT_PUBLIC_GS_ADDONS_WEB_APP_URL ||
       // Fallback to user's provided exec URL
       "https://script.google.com/macros/s/AKfycbylqj1l9BVVTJC_4g2SIhq1ZfCeQj8yc3wI_lxv7jV1kA-hpdWp2mANJnb3EekeMpBiZg/exec";
