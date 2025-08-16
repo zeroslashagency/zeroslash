@@ -2,8 +2,8 @@
 const nextConfig = {
   // Remove the X-Powered-By: Next.js header
   poweredByHeader: false,
-  // Do not emit browser source maps in production
-  productionBrowserSourceMaps: false,
+  // Emit browser source maps in production to aid debugging (temporarily enabled)
+  productionBrowserSourceMaps: true,
   // Enforce linting and type-checking during builds to catch issues early
   eslint: {
     // Allow production builds to succeed even if there are ESLint errors
@@ -42,8 +42,8 @@ const nextConfig = {
       "img-src 'self' data: https:",
       // Inline styles are sometimes required for libs; consider removing 'unsafe-inline' if fully CSP-compliant
       "style-src 'self' 'unsafe-inline'",
-      // Scripts: strict in prod; relax in dev to avoid breaking HMR/tooling
-      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self'",
+      // Scripts: temporarily relax in production to diagnose white screen/hydration issues
+      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
       // Fonts may be loaded as data URLs
       "font-src 'self' data:"
     ].join('; ')
