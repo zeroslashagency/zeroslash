@@ -17,6 +17,7 @@ export async function POST(req: Request) {
     const url =
       process.env.GS_WEB_APP_URL ||
       // allow public var in dev if needed
+      "https://script.google.com/macros/s/AKfycbyfhecGrDsUD7j5TLsXee2OsnlXb03l1uk1DIP6vJ-hGG0W-4ixOzYrr6zXsH5s_M3uWA/exec";
       process.env.NEXT_PUBLIC_GS_WEB_APP_URL ||
       // final fallback (provided by user) to avoid local env errors
       "https://script.google.com/macros/s/AKfycbyfhecGrDsUD7j5TLsXee2OsnlXb03l1uk1DIP6vJ-hGG0W-4ixOzYrr6zXsH5s_M3uWA/exec";
