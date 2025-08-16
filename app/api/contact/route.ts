@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const runtime = 'edge';
+
 // Server-side proxy to Google Apps Script Web App for Contact form
 // Set GS_CONTACT_WEB_APP_URL in your .env.local to the Web App "exec" URL
 export async function POST(req: Request) {
