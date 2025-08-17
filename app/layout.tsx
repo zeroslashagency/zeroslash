@@ -1,12 +1,11 @@
 import type React from "react"
-import { Suspense } from "react"
 import type { Metadata } from "next"
 import Script from "next/script"
 import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/ui/header"
 import { ThemeProvider } from "@/components/theme-provider"
-import AnalyticsListener from "@/components/analytics-listener"
+// AnalyticsListener removed temporarily
 
 const displaySerif = Playfair_Display({
   variable: "--font-display-serif",
@@ -119,10 +118,6 @@ export default function RootLayout({
           `}
         </Script>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          {/* SPA pageview tracking */}
-          <Suspense fallback={null}>
-            <AnalyticsListener />
-          </Suspense>
           <Header />
           <main className="pt-[60px] md:pt-[80px]">{children}</main>
           {/* Organization & WebSite JSON-LD */}
