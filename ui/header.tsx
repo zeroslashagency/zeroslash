@@ -7,6 +7,7 @@ import ProjectWizard from "@/components/ProjectWizard";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/ui/sheet";
 import { useState, useEffect } from "react";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
+import { track } from "@/lib/gtag";
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -92,10 +93,10 @@ export function Header() {
           <Link href="/waitlist" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">Components</Link>
           <Link href="/waitlist" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">Careers</Link>
 
-          <Link href="/contact" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">
+          <Link href="/contact" onClick={() => track("contact_nav_click", { location: "header_desktop" })} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">
             Contact
           </Link>
-          <Button onClick={() => setWizardOpen(true)} className="px-6 py-2 rounded-full font-medium bg-foreground text-background hover:bg-foreground/90 focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-all duration-200">
+          <Button onClick={() => { track("get_started_click", { location: "header_desktop" }); setWizardOpen(true); }} className="px-6 py-2 rounded-full font-medium bg-foreground text-background hover:bg-foreground/90 focus-visible:ring-ring/50 focus-visible:ring-[3px] transition-all duration-200">
             Get Started
           </Button>
           {/* Theme toggle in header (desktop) */}
@@ -154,14 +155,14 @@ export function Header() {
                   <span>Careers</span>
                   <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </Link>
-                <Link href="/contact" className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
+                <Link href="/contact" onClick={() => track("contact_nav_click", { location: "header_mobile" })} className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
                   <span>Contact</span>
                   <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </Link>
               </nav>
               <div className="mt-8 sticky bottom-4">
                 <Button
-                  onClick={() => setWizardOpen(true)}
+                  onClick={() => { track("get_started_click", { location: "header_mobile" }); setWizardOpen(true) }}
                   className="w-full rounded-full font-semibold bg-foreground text-background hover:bg-foreground/90 shadow-lg shadow-foreground/20"
                 >
                   Get Started

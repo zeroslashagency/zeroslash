@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { motion } from "motion/react"
 import Link from "next/link"
+import { track } from "@/lib/gtag"
 
 function GlowDivider({ className = "" }: { className?: string }) {
   return (
@@ -51,6 +52,7 @@ function CopyButton({ value }: { value: string }) {
         try {
           await navigator.clipboard.writeText(value)
           setCopied(true)
+          track("email_copy_click", { value_masked: !!value })
           setTimeout(() => setCopied(false), 1200)
         } catch {}
       }}
@@ -137,6 +139,7 @@ export default function ContactShowcase() {
               <Link
                 href="https://www.linkedin.com/in/mubarak-a-xyz/"
                 target="_blank"
+                onClick={() => track("linkedin_click", { location: "contact_showcase_card" })}
                 className="inline-flex items-center gap-1 h-10 px-4 rounded-full ring-1 ring-border/70 bg-background hover:bg-foreground/5 text-sm font-medium transition"
               >
                 Open
@@ -160,6 +163,7 @@ export default function ContactShowcase() {
               </div>
               <a
                 href="tel:+919500255291"
+                onClick={() => track("phone_click", { location: "contact_showcase_card" })}
                 className="inline-flex items-center gap-1 h-10 px-4 rounded-full ring-1 ring-border/70 bg-background hover:bg-foreground/5 text-sm font-medium transition"
               >
                 Call
@@ -209,6 +213,7 @@ export default function ContactShowcase() {
               key={s.label}
               href={s.href}
               target="_blank"
+              onClick={() => track("social_click", { network: s.label.toLowerCase(), location: "contact_showcase_social" })}
               className="group relative inline-flex items-center gap-3 rounded-full h-14 px-7 md:h-14 md:px-8 text-lg ring-1 ring-border/70 bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 hover:ring-foreground/30"
             >
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-foreground/10 text-foreground/80">
@@ -242,6 +247,7 @@ export default function ContactShowcase() {
             </div>
             <a
               href="mailto:zeroslashx1@gmail.com?subject=Project%20Brief"
+              onClick={() => track("email_brief_click", { location: "contact_showcase_bottom_cta" })}
               className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-foreground text-background font-semibold shadow hover:opacity-90"
             >
               Email your brief

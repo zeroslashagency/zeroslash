@@ -1,9 +1,11 @@
 import type React from "react"
 import type { Metadata } from "next"
+import Script from "next/script"
 import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/ui/header"
 import { ThemeProvider } from "@/components/theme-provider"
+import AnalyticsListener from "@/components/analytics-listener"
 
 const displaySerif = Playfair_Display({
   variable: "--font-display-serif",
@@ -102,7 +104,22 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${displaySerif.variable} ${sans.variable} ${mono.variable} antialiased`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        {/* Google Analytics 4 */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-5WHBQG0GVE"}`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);} 
+            gtag('js', new Date());
+            gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-5WHBQG0GVE"}');
+          `}
+        </Script>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+          {/* SPA pageview tracking */}
+          <AnalyticsListener />
           <Header />
           <main className="pt-[60px] md:pt-[80px]">{children}</main>
           {/* Organization & WebSite JSON-LD */}

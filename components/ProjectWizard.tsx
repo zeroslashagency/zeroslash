@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/ui/dialog";
 import Stepper, { Step } from "@/src/blocks/Components/Stepper/Stepper";
 import { Confetti, type ConfettiRef } from "@/src/components/magicui/confetti";
+import { track } from "@/lib/gtag";
 
 // Simple pill button
 function Pill({ active, children, onClick }: { active?: boolean; children: React.ReactNode; onClick?: () => void }) {
@@ -56,11 +57,40 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
 
   const steps = 6; // Name/Email + 4 selection steps + Add-ons
 
+  const stepName = (n: number) =>
+    (
+      {
+        1: "intro_contact",
+        2: "category",
+        3: "website_type",
+        4: "pages",
+        5: "style",
+        6: "addons_review",
+      } as const
+    )[n as 1 | 2 | 3 | 4 | 5 | 6] || `step_${n}`;
+
+  // Track when wizard opens
+  useEffect(() => {
+    if (open) {
+      track("project_wizard_open", { step: 1, step_name: stepName(1) });
+    }
+  }, [open]);
+
   const done = async () => {
     setSubmitting(true);
     submitStartRef.current = Date.now();
     setError(null);
     let success = false;
+    // Track submit attempt (do not include raw PII)
+    track("project_wizard_submit_attempt", {
+      category: data.category || "",
+      website_type: data.type || "",
+      pages: String(data.pages ?? ""),
+      style: data.style || "",
+      addons_count: (data.addons || []).length,
+      email_domain: email.includes("@") ? email.split("@").pop() : "",
+      phone_provided: Boolean(phone?.trim()),
+    });
     try {
       const res = await fetch("/api/project", {
         method: "POST",
@@ -81,8 +111,20 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
         throw new Error(json?.error || "Submission failed");
       }
       success = true;
+      track("project_wizard_submit_success", {
+        duration_ms: Date.now() - submitStartRef.current,
+        category: data.category || "",
+        website_type: data.type || "",
+        pages: String(data.pages ?? ""),
+        style: data.style || "",
+        addons_count: (data.addons || []).length,
+      });
     } catch (e: any) {
       setError(e?.message || "Something went wrong");
+      track("project_wizard_submit_error", {
+        duration_ms: Date.now() - submitStartRef.current,
+        error_message: String(e?.message || "unknown_error"),
+      });
     } finally {
       const elapsed = Date.now() - submitStartRef.current;
       const minDuration = 2000; // ms, ensure effect is visible
@@ -215,7 +257,13 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
         <Stepper
           className="w-full max-w-5xl mx-auto"
           initialStep={step}
-          onStepChange={(n) => setStep(n)}
+          onStepChange={(n) => {
+            setStep(n);
+            track("project_wizard_step_view", {
+              step: n,
+              step_name: stepName(n),
+            });
+          }}
           onFinalStepCompleted={done}
           nextButtonText={"Next"}
           contentClassName="pt-2"

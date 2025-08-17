@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react"
 import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import ProjectWizard from "@/components/ProjectWizard"
+import { track } from "@/lib/gtag"
 
 const ACCENT_LIME = "#b7ff63"
 const ACCENT_PINK = "#ff7ab6"
@@ -197,7 +198,11 @@ function MinimalOurServicesSection() {
 
               {it.key !== 'web' && (
                 <div className="absolute left-6 md:left-8 bottom-6 flex items-end gap-4">
-                  <Link href="/waitlist" className="group/link inline-flex items-center gap-2 text-sm font-medium text-gray-800 dark:text-gray-200">
+                  <Link
+                    href="/waitlist"
+                    onClick={() => track("services_read_more_click", { item_key: it.key, item_title: it.title, location: "services_our_services" })}
+                    className="group/link inline-flex items-center gap-2 text-sm font-medium text-gray-800 dark:text-gray-200"
+                  >
                     <span className="underline decoration-transparent group-hover/link:decoration-current transition-colors">Read More</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="transition-transform group-hover/link:translate-x-0.5">
                       <path d="M5 12h14M13 5l7 7-7 7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
@@ -407,7 +412,7 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
             <div className="shrink-0">
               <motion.button
                 type="button"
-                onClick={() => { setModalOpen(true); setStatus({ type: null, message: '' }) }}
+                onClick={() => { setModalOpen(true); setStatus({ type: null, message: '' }); track("services_addon_add_to_proposal_click", { addon: addons[active].t }) }}
                 className="inline-flex items-center gap-2 rounded-full px-4 py-2 border border-gray-300 dark:border-gray-700 text-sm font-semibold text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-white/5"
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
@@ -556,7 +561,7 @@ function CTABanner({ onOpenWizard }: { onOpenWizard?: () => void }) {
           >
             <motion.button
               type="button"
-              onClick={() => onOpenWizard?.()}
+              onClick={() => { track("cta_click", { id: "work_with_us", location: "services_cta_banner" }); onOpenWizard?.() }}
               className="group relative px-12 py-4 text-lg font-bold text-black rounded-full overflow-hidden transition-all duration-300"
               style={{ backgroundColor: ACCENT_LIME }}
               whileHover={{ 
@@ -614,7 +619,7 @@ function ContactBar({ onOpenWizard }: { onOpenWizard?: () => void }) {
             </div>
             <button
               type="button"
-              onClick={() => onOpenWizard?.()}
+              onClick={() => { track("cta_click", { id: "discuss_with_team", location: "services_contact_bar" }); onOpenWizard?.() }}
               className="shrink-0 inline-flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-full border-2 border-black/80 bg-transparent text-black hover:translate-x-1 hover:-translate-y-1 transition-transform"
               aria-label="Discuss your project"
             >
