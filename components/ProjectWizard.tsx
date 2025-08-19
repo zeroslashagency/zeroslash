@@ -234,7 +234,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl bg-transparent border-0 shadow-none rounded-none p-0 relative overflow-hidden">
+      <DialogContent className="sm:max-w-5xl bg-transparent border-0 shadow-none rounded-none p-0 relative">
         {/* Accessible title for screen readers (required by Radix) */}
         <DialogTitle className="sr-only">Project Wizard</DialogTitle>
         {submitting && (

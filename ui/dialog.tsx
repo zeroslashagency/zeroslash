@@ -60,8 +60,9 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 outline-none",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed inset-0 z-50 overflow-y-auto overscroll-contain touch-pan-y p-4 sm:p-6 outline-none h-[100svh] sm:h-[100vh] flex items-start",
         )}
+        style={{ WebkitOverflowScrolling: "touch" }}
         onOpenAutoFocus={(e) => {
           // Prevent the browser from scrolling to a focused field inside the dialog
           // which can make it appear anchored to the bottom on open.
@@ -71,7 +72,7 @@ function DialogContent({
       >
         <div
           className={cn(
-            "relative w-full max-w-lg bg-background border rounded-lg shadow-lg max-h-[calc(100vh-4rem)] overflow-auto",
+            "relative mx-auto my-6 w-full max-w-lg bg-background border rounded-lg shadow-lg pb-[max(env(safe-area-inset-bottom),0.75rem)]",
             className
           )}
         >

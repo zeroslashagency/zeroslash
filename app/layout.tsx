@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import Script from "next/script"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/ui/header"
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
       "We design, build, and grow high‑performance websites, marketing, and automation that deliver measurable business results.",
     images: [
       {
-        url: "/placeholder-logo.png",
+        url: "/images/zero-agency-logo.png",
         width: 1200,
         height: 630,
         alt: `${SITE_NAME} Open Graph Image`,
@@ -78,15 +79,18 @@ export const metadata: Metadata = {
       "We design, build, and grow high‑performance websites, marketing, and automation that deliver measurable business results.",
     images: [
       {
-        url: "/placeholder-logo.png",
+        url: "/images/zero-agency-logo.png",
         alt: `${SITE_NAME} Open Graph Image`,
       },
     ],
   },
   icons: {
-    icon: "/favicon.ico",
-    apple: "/apple-touch-icon.png",
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/images/zero-agency-logo.png", type: "image/png", sizes: "32x32" },
+      { url: "/images/zero-agency-logo.png", type: "image/png", sizes: "192x192" },
+    ],
+    apple: "/images/zero-agency-logo.png",
+    shortcut: "/images/zero-agency-logo.png",
   },
   verification: {
     google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
@@ -130,7 +134,7 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: SITE_NAME,
                 url: SITE_URL,
-                logo: new URL("/placeholder-logo.png", SITE_URL).toString(),
+                logo: new URL("/images/zero-agency-logo.png", SITE_URL).toString(),
                 sameAs: [
                   "https://www.linkedin.com/in/mubarak-a-xyz/",
                   "https://instagram.com/zeroslashx1",
@@ -157,6 +161,8 @@ export default function RootLayout({
             }}
           />
         </ThemeProvider>
+        {/* Vercel Speed Insights */}
+        <SpeedInsights />
       </body>
     </html>
   )

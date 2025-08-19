@@ -11,6 +11,7 @@
     "deploy": "npx wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
+    "@vercel/speed-insights": "^1.0.12",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
