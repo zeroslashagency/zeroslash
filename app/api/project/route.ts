@@ -23,9 +23,9 @@ export async function POST(req: Request) {
 
     const url =
       process.env.GS_PROJECT_WEB_APP_URL ||
-       "https://script.google.com/macros/s/AKfycbysNvKTuGVBKw9OkAWf82S3DCKaE1oENOkR3HGD1g9CNXovsp9papXRSxZYVvC4Mri5/exec";
+       "https://script.google.com/macros/s/AKfycby9EOSUZhXCxXfEzB66BCcBe-dAb4ktjzUK8gLFCD5TfhIPL39mQlyO1BBjPblHmUgR/exec";
       process.env.NEXT_PUBLIC_GS_PROJECT_WEB_APP_URL ||
-      "https://script.google.com/macros/s/AKfycbysNvKTuGVBKw9OkAWf82S3DCKaE1oENOkR3HGD1g9CNXovsp9papXRSxZYVvC4Mri5/exec";
+      "https://script.google.com/macros/s/AKfycby9EOSUZhXCxXfEzB66BCcBe-dAb4ktjzUK8gLFCD5TfhIPL39mQlyO1BBjPblHmUgR/exec";
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);

@@ -37,10 +37,10 @@ export async function POST(req: Request) {
 
     const url =
       process.env.GS_CONTACT_WEB_APP_URL ||
-      "https://script.google.com/macros/s/AKfycbzn_tE0lJtPWUAaa7aSo2NF_4UdFcvUP0KoYvum7sKbtAcvJLZhYYqbxRCkW3k5rREUXg/exec";
+      "https://script.google.com/macros/s/AKfycbyLGTKzQBMmuIOSwTjRcP73_eCsmKpQW2da5ILkoqFH7V-EFCle9SQBgB6YzuzeXVCYBA/exec";
       process.env.NEXT_PUBLIC_GS_CONTACT_WEB_APP_URL ||
       // Fallback to the user's provided /exec URL to avoid local env errors
-      "https://script.google.com/macros/s/AKfycbzn_tE0lJtPWUAaa7aSo2NF_4UdFcvUP0KoYvum7sKbtAcvJLZhYYqbxRCkW3k5rREUXg/exec";
+      "https://script.google.com/macros/s/AKfycbyLGTKzQBMmuIOSwTjRcP73_eCsmKpQW2da5ILkoqFH7V-EFCle9SQBgB6YzuzeXVCYBA/exec";
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
