@@ -247,7 +247,7 @@ export default function AboutPage() {
             </p>
             <div className="mt-4">
               <a
-                href="/careers"
+                href="/waitlist"
                 className="inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm md:text-base font-semibold border border-emerald-500/60 text-emerald-600 hover:text-black dark:hover:text-black bg-transparent hover:bg-emerald-400/80 transition-colors"
               >
                 View Open Roles
@@ -288,7 +288,7 @@ export default function AboutPage() {
                 </svg>
               </div>
               <div className="font-black tracking-tight text-5xl md:text-7xl lg:text-8xl">
-                <FlipLinkClient href="/portfolio">PORTFOLIO</FlipLinkClient>
+                <FlipLinkClient href="https://portfoliox1-sooty.vercel.app/">PORTFOLIO</FlipLinkClient>
               </div>
             </div>
 
@@ -307,7 +307,7 @@ export default function AboutPage() {
                 </svg>
               </div>
               <div className="font-black tracking-tight text-5xl md:text-7xl lg:text-8xl">
-                <FlipLinkClient href="https://instagram.com">INSTAGRAM</FlipLinkClient>
+                <FlipLinkClient href="https://instagram.com/zeroslashx1">INSTAGRAM</FlipLinkClient>
               </div>
             </div>
 
@@ -325,7 +325,7 @@ export default function AboutPage() {
                 </svg>
               </div>
               <div className="font-black tracking-tight text-5xl md:text-7xl lg:text-8xl">
-                <FlipLinkClient href="https://linkedin.com">LINKEDIN</FlipLinkClient>
+                <FlipLinkClient href="https://www.linkedin.com/in/mubarak-a-xyz/">LINKEDIN</FlipLinkClient>
               </div>
             </div>
 

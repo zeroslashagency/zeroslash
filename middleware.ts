@@ -11,6 +11,14 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(url, 308)
     }
   }
+
+  // Redirect /careers -> /waitlist
+  const { pathname } = req.nextUrl
+  if (pathname === '/careers') {
+    const url = req.nextUrl.clone()
+    url.pathname = '/waitlist'
+    return NextResponse.redirect(url, 308)
+  }
   return NextResponse.next()
 }
 
