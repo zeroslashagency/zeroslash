@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = 'force-static'
+
 import Link from "next/link"
 import Image from "next/image"
 import ShinyText from "../components/ShinyText"
@@ -8,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/ui/scroll-reveal"
 import { ScrollFloat } from "@/ui/scroll-float"
 import { ArrowRight, Sparkles, Box, Layers, Sparkle, Search, Cog, Rocket, Star, Diamond, Check } from "lucide-react"
-import dynamic from "next/dynamic"
+import nextDynamic from "next/dynamic"
 import CountUpOnView from "../components/CountUpOnView"
 import SectionPill from "@/components/SectionPill"
 import ShineBorder from "@/components/magicui/shine-border"
@@ -18,10 +20,10 @@ import ProjectWizard from "@/components/ProjectWizard"
 import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/ui/lazy-on-view"
 import { useState } from "react"
-const ServicesSection = dynamic(() => import("@/components/sections/Services"), { ssr: false, loading: () => null })
-const TestimonialsSection = dynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
+const ServicesSection = nextDynamic(() => import("@/components/sections/Services"), { ssr: false, loading: () => null })
+const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
-const CurvedLoop = dynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
+const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
 // (removed unused DynamicFlowConnector)
 
 export default function Home() {
@@ -30,17 +32,18 @@ export default function Home() {
     <div className="w-full bg-background">
       {/* Full-screen Hero Section (contain background, no crop) */}
       <section id="hero" className="relative w-[100vw] h-[100svh] overflow-hidden bg-background">
-        {/* Background underlay using contain; overscan to avoid side gaps */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[102vw] h-[100svh] -z-10"
-          style={{
-            backgroundImage: "url('/images/about wall.png')",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center center",
-            backgroundSize: "100% auto",
-            backgroundColor: "hsl(var(--background))",
-          }}
-          aria-hidden
-        />
+        {/* Background underlay switched to next/image for better LCP */}
+        <div className="absolute inset-0 -z-10">
+          <Image
+            src="/images/about wall.png"
+            alt=""
+            fill
+            priority
+            fetchPriority="high"
+            sizes="100vw"
+            className="object-contain"
+          />
+        </div>
 
         {/* Masthead meta */}
         <div className="absolute top-6 left-4 md:left-6 z-10">
