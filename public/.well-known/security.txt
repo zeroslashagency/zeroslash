@@ -1,4 +1,4 @@
-Contact: mailto:zeroslashx1@gmail.com
+Contact: mailto:hello@zeroslash.in
 Policy: https://zeroslash.example.com/security
 Preferred-Languages: en
 Canonical: https://yourdomain.com/.well-known/security.txt

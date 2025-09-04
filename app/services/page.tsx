@@ -631,7 +631,7 @@ function ContactBar({ onOpenWizard }: { onOpenWizard?: () => void }) {
           </div>
         </div>
       </div>
-      <div className="mt-3 text-[13px] text-foreground/60">Website: https://zeroslash.in/ · Email: zeroslashx1@gmail.com · WhatsApp: +91 9500255291</div>
+      <div className="mt-3 text-[13px] text-foreground/60">Website: https://zeroslash.in/ · Email: hello@zeroslash.in · WhatsApp: +91 9500255291</div>
     </section>
   )
 }

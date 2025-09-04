@@ -259,7 +259,7 @@ export default function ReviewsPage() {
                 <h3 className="font-bold text-foreground mb-6">Contact</h3>
                 <div className="space-y-3">
                   <p className="text-foreground/70">+91 9500255291</p>
-                  <p className="text-foreground/70">zeroslashx1@gmail.com</p>
+                  <p className="text-foreground/70">hello@zeroslash.in</p>
                   <p className="text-foreground/70">Remote-first team</p>
                 </div>
               </div>

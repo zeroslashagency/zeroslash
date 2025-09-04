@@ -271,7 +271,7 @@ export default function ReviewsPage() {
               <h3 className="text-xl font-bold mb-6">SAY HELLO</h3>
               <div className="space-y-4 mb-6">
                 <p className="text-gray-300">+91 9500255291</p>
-                <p className="text-gray-300">zeroslashx1@gmail.com</p>
+                <p className="text-gray-300">hello@zeroslash.in</p>
               </div>
               <div className="flex space-x-4">
                 <a

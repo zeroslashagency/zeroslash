@@ -360,7 +360,7 @@ export default function AboutPage() {
                 </svg>
               </div>
               <div className="font-black tracking-tight text-5xl md:text-7xl lg:text-8xl">
-                <FlipLinkClient href="mailto:zeroslashx1@gmail.com">EMAIL</FlipLinkClient>
+                <FlipLinkClient href="mailto:hello@zeroslash.in">EMAIL</FlipLinkClient>
               </div>
             </div>
           </div>
@@ -422,8 +422,8 @@ export default function AboutPage() {
                   <a href="https://instagram.com/zeroslashx1" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm md:text-base underline underline-offset-4 hover:opacity-90">
                     📷 Instagram — @zeroslashx1
                   </a>
-                  <a href="mailto:zeroslashx1@gmail.com" className="inline-flex items-center gap-2 text-sm md:text-base underline underline-offset-4 hover:opacity-90">
-                    💌 Email — zeroslashx1@gmail.com
+                  <a href="mailto:hello@zeroslash.in" className="inline-flex items-center gap-2 text-sm md:text-base underline underline-offset-4 hover:opacity-90">
+                    💌 Email — hello@zeroslash.in
                   </a>
                 </div>
                 <a href="https://portfoliox1-sooty.vercel.app/" target="_blank" rel="noreferrer" className="inline-block shrink-0">

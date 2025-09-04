@@ -1058,7 +1058,7 @@ export default function Home() {
             {/* Left: contact */}
             <div className="space-y-2 text-black/90">
               <div className="font-semibold">Contact</div>
-              <a href="mailto:zeroslashx1@gmail.com" className="font-bold underline decoration-transparent hover:decoration-black">zeroslashx1@gmail.com</a>
+              <a href="mailto:hello@zeroslash.in" className="font-bold underline decoration-transparent hover:decoration-black">hello@zeroslash.in</a>
               <div className="font-bold">+91 95002 55291</div>
             </div>
 

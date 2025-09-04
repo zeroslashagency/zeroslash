@@ -137,9 +137,9 @@ export default function ContactShowcase() {
                 </span>
                 Email
               </div>
-              <CopyButton value="zeroslashx1@gmail.com" />
+              <CopyButton value="hello@zeroslash.in" />
             </div>
-            <div className="mt-4 text-lg font-semibold tracking-tight">zeroslashx1@gmail.com</div>
+            <div className="mt-4 text-lg font-semibold tracking-tight">hello@zeroslash.in</div>
             <p className="text-sm text-foreground/70 mt-1">Preferred for briefs, proposals, and attachments.</p>
           </div>
         </Card>
@@ -264,7 +264,7 @@ export default function ContactShowcase() {
               <p className="text-sm text-foreground/70">Send a short overview and I’ll reply within 24 hours.</p>
             </div>
             <a
-              href="mailto:zeroslashx1@gmail.com?subject=Project%20Brief"
+              href="mailto:hello@zeroslash.in?subject=Project%20Brief"
               onClick={() => track("email_brief_click", { location: "contact_showcase_bottom_cta" })}
               className="inline-flex items-center gap-2 h-11 px-6 rounded-full bg-foreground text-background font-semibold shadow hover:opacity-90"
             >

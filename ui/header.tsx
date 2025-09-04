@@ -71,9 +71,9 @@ export function Header() {
       }`}>
         <Link href="/" className="flex items-center space-x-3 group hover:scale-105 transition-transform duration-200 ease-out">
           {/* Light mode logo */}
-          <Image src="/images/zero-agency-logo.png" alt="ZeroSlash Agency Logo" width={150} height={32} className="h-8 w-auto block dark:hidden" />
+          <Image src="/images/logo.svg" alt="ZeroSlash Agency Logo" width={150} height={32} className="h-8 w-auto block dark:hidden" />
           {/* Dark mode logo (force solid black) */}
-          <Image src="/images/zero-agency-logo.png" alt="ZeroSlash Agency Logo" width={150} height={32} className="h-8 w-auto hidden dark:block invert brightness-0" />
+          <Image src="/images/logo.svg" alt="ZeroSlash Agency Logo" width={150} height={32} className="h-8 w-auto hidden dark:block invert brightness-0" />
           <span className="text-lg font-semibold text-foreground">Zero / Agency</span>
         </Link>
         

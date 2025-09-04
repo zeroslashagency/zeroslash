@@ -168,7 +168,7 @@ export default function WaitlistPage() {
 
             {/* Email */}
             <a
-              href="mailto:zeroslashx1@gmail.com"
+              href="mailto:hello@zeroslash.in"
               aria-label="Email"
               className="h-12 w-12 rounded-full ring-1 ring-border/60 bg-foreground/5 hover:bg-foreground/10 transition-colors flex items-center justify-center"
             >

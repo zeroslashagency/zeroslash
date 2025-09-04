@@ -74,7 +74,7 @@ export default function ContactPanel({ open, onClose }: ContactPanelProps) {
               </div>
               <div>
                 <div className="font-bold mb-1">SEND US AN EMAIL</div>
-                <a href="mailto:zeroslashx1@gmail.com" className="text-black underline hover:no-underline">zeroslashx1@gmail.com</a>
+                <a href="mailto:hello@zeroslash.in" className="text-black underline hover:no-underline">hello@zeroslash.in</a>
               </div>
               <div>
                 <div className="font-bold mb-1">JOIN US</div>

@@ -134,7 +134,7 @@ export default function RootLayout({
                 "@type": "Organization",
                 name: SITE_NAME,
                 url: SITE_URL,
-                logo: new URL("/images/zero-agency-logo.png", SITE_URL).toString(),
+                logo: new URL("/images/logo.svg", SITE_URL).toString(),
                 sameAs: [
                   "https://www.linkedin.com/in/mubarak-a-xyz/",
                   "https://instagram.com/zeroslashx1",

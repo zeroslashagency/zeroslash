@@ -43,7 +43,7 @@ export default function StartProjectModal({ children }: { children: React.ReactN
             Go to Contact Page
           </a>
           <a
-            href="mailto:zeroslashx1@gmail.com?subject=Project%20Inquiry%20from%20About%20Page&body=Hi%20ZeroSlash%20Team%2C%0A%0AMy%20Name%3A%20%5BYour%20Name%5D%0ACompany%3A%20%5BCompany%20Name%5D%0APhone%3A%20%5BYour%20Phone%5D%0APreferred%20Start%20Date%3A%20%5BDate%5D%0AProject%20Details%3A%20%5BBrief%20Summary%5D%0A%0AThanks!"
+            href="mailto:hello@zeroslash.in?subject=Project%20Inquiry%20from%20About%20Page&body=Hi%20ZeroSlash%20Team%2C%0A%0AMy%20Name%3A%20%5BYour%20Name%5D%0ACompany%3A%20%5BCompany%20Name%5D%0APhone%3A%20%5BYour%20Phone%5D%0APreferred%20Start%20Date%3A%20%5BDate%5D%0AProject%20Details%3A%20%5BBrief%20Summary%5D%0A%0AThanks!"
             className="inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold border border-white/15 text-white hover:bg-white/10 transition-colors"
           >
             Email Us Directly
