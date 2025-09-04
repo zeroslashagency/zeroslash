@@ -50,11 +50,29 @@ function CopyButton({ value }: { value: string }) {
       type="button"
       onClick={async () => {
         try {
-          await navigator.clipboard.writeText(value)
+          // Prefer modern Clipboard API if available in a secure context
+          if (typeof window !== "undefined" && navigator?.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(value)
+          } else {
+            // Fallback for older browsers or non-secure contexts
+            const textarea = document.createElement("textarea")
+            textarea.value = value
+            textarea.setAttribute("readonly", "")
+            textarea.style.position = "fixed"
+            textarea.style.opacity = "0"
+            document.body.appendChild(textarea)
+            textarea.focus()
+            textarea.select()
+            const successful = document.execCommand("copy")
+            document.body.removeChild(textarea)
+            if (!successful) throw new Error("Fallback copy command failed")
+          }
           setCopied(true)
           track("email_copy_click", { value_masked: !!value })
           setTimeout(() => setCopied(false), 1200)
-        } catch {}
+        } catch (err) {
+          console.warn("Copy to clipboard failed:", err)
+        }
       }}
       className="inline-flex items-center gap-2 h-10 px-4 rounded-full bg-foreground text-background text-sm font-medium shadow-sm hover:opacity-90 active:opacity-80 transition"
     >

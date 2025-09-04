@@ -11,7 +11,6 @@
     "deploy": "npx wrangler pages deploy .vercel/output/static"
   },
   "dependencies": {
-    "@vercel/speed-insights": "^1.0.12",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
@@ -42,6 +41,7 @@
     "@radix-ui/react-tooltip": "latest",
     "@types/canvas-confetti": "^1.9.0",
     "@types/three": "^0.179.0",
+    "@vercel/speed-insights": "^1.0.12",
     "autoprefixer": "^10.4.20",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
@@ -75,7 +75,7 @@
     "@cloudflare/next-on-pages": "^1.13.13",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
-    "@types/react": "^19.1.9",
+    "@types/react": "^19.1.10",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
