@@ -14,13 +14,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Invalid email" }, { status: 400 });
     }
 
-    const url =
-      process.env.GS_WEB_APP_URL ||
-      // allow public var in dev if needed
-      "https://script.google.com/macros/s/AKfycbywj4XiflD7Zs0QGyjUeCUsIG3oTX20VY6gpL3xFjzOCBFo9BuZ1eHdWFqBplPE051T/exec";
-      process.env.NEXT_PUBLIC_GS_WEB_APP_URL ||
-      // final fallback (provided by user) to avoid local env errors
-      "https://script.google.com/macros/s/AKfycbywj4XiflD7Zs0QGyjUeCUsIG3oTX20VY6gpL3xFjzOCBFo9BuZ1eHdWFqBplPE051T/exec";
+    const url = process.env.GS_WAITLIST_WEB_APP_URL;
+
+    if (!url) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Server configuration error: GS_WAITLIST_WEB_APP_URL not set. Please configure environment variables in Vercel.",
+        },
+        { status: 500 }
+      );
+    }
 
     // Helper to wrap fetch with timeout
     const withTimeout = async (input: RequestInfo | URL, init: RequestInit = {}, ms = 15000) => {

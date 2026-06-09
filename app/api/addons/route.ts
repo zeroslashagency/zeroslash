@@ -27,12 +27,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const url =
-      process.env.GS_ADDONS_WEB_APP_URL ||
-      "https://script.google.com/macros/s/AKfycbx_EDJds3agTzNiNq-AxQHaV1JXlDx5KJrMMGZ9ZdRH-26_FAaRZBkWHKZmYyRHCsbM6w/exec";
-      process.env.NEXT_PUBLIC_GS_ADDONS_WEB_APP_URL ||
-      // Fallback to user's provided exec URL
-      "https://script.google.com/macros/s/AKfycbx_EDJds3agTzNiNq-AxQHaV1JXlDx5KJrMMGZ9ZdRH-26_FAaRZBkWHKZmYyRHCsbM6w/exec";
+    const url = process.env.GS_ADDONS_WEB_APP_URL;
+
+    if (!url) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Server configuration error: GS_ADDONS_WEB_APP_URL not set. Please configure environment variables in Vercel.",
+        },
+        { status: 500 }
+      );
+    }
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);

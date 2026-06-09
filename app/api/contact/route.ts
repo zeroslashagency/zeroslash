@@ -35,12 +35,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const url =
-      process.env.GS_CONTACT_WEB_APP_URL ||
-      "https://script.google.com/macros/s/AKfycbyLGTKzQBMmuIOSwTjRcP73_eCsmKpQW2da5ILkoqFH7V-EFCle9SQBgB6YzuzeXVCYBA/exec";
-      process.env.NEXT_PUBLIC_GS_CONTACT_WEB_APP_URL ||
-      // Fallback to the user's provided /exec URL to avoid local env errors
-      "https://script.google.com/macros/s/AKfycbyLGTKzQBMmuIOSwTjRcP73_eCsmKpQW2da5ILkoqFH7V-EFCle9SQBgB6YzuzeXVCYBA/exec";
+    const url = process.env.GS_CONTACT_WEB_APP_URL;
+
+    if (!url) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Server configuration error: GS_CONTACT_WEB_APP_URL not set. Please configure environment variables in Vercel.",
+        },
+        { status: 500 }
+      );
+    }
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);

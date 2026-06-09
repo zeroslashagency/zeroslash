@@ -21,11 +21,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: "Invalid email" }, { status: 400 });
     }
 
-    const url =
-      process.env.GS_PROJECT_WEB_APP_URL ||
-       "https://script.google.com/macros/s/AKfycby9EOSUZhXCxXfEzB66BCcBe-dAb4ktjzUK8gLFCD5TfhIPL39mQlyO1BBjPblHmUgR/exec";
-      process.env.NEXT_PUBLIC_GS_PROJECT_WEB_APP_URL ||
-      "https://script.google.com/macros/s/AKfycby9EOSUZhXCxXfEzB66BCcBe-dAb4ktjzUK8gLFCD5TfhIPL39mQlyO1BBjPblHmUgR/exec";
+    const url = process.env.GS_PROJECT_WEB_APP_URL;
+
+    if (!url) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "Server configuration error: GS_PROJECT_WEB_APP_URL not set. Please configure environment variables in Vercel.",
+        },
+        { status: 500 }
+      );
+    }
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
