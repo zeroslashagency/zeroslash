@@ -119,7 +119,7 @@ export const metadata: Metadata = {
     shortcut: "/images/zero-agency-logo.png",
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || undefined,
+    google: "913dXJVGzJHNm__G_CPsML1r98xkLM9oLG-wjJIo5hM",
     other: {
       "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || "",
     },
