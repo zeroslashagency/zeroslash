@@ -6,6 +6,7 @@ import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/ui/header"
 import { ThemeProvider } from "@/components/theme-provider"
+import { faqSchema } from "./faq-schema"
 // AnalyticsListener removed temporarily
 
 const displaySerif = Playfair_Display({
@@ -44,14 +45,39 @@ export const metadata: Metadata = {
     "marketing",
     "automation",
     "India",
+    "international web design",
+    "global digital agency",
+    "SEO services",
+    "e-commerce development",
+    "shopify experts",
+    "custom web development",
+    "UI/UX design",
+    "digital marketing agency",
   ],
   applicationName: SITE_NAME,
   generator: "Next.js",
   authors: [{ name: "ZeroSlash Agency" }],
   creator: "ZeroSlash Agency",
   publisher: "ZeroSlash Agency",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
   alternates: {
     canonical: SITE_URL,
+    languages: {
+      "en-US": SITE_URL,
+      "en-GB": SITE_URL,
+      "en-IN": SITE_URL,
+      "x-default": SITE_URL,
+    },
   },
   openGraph: {
     type: "website",
@@ -98,6 +124,7 @@ export const metadata: Metadata = {
       "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION || "",
     },
   },
+  category: "technology",
 }
 
 export default function RootLayout({
@@ -107,6 +134,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
+      </head>
       <body className={`${displaySerif.variable} ${sans.variable} ${mono.variable} antialiased`}>
         {/* Google Analytics 4 */}
         <Script
@@ -160,10 +193,34 @@ export default function RootLayout({
                 name: SITE_NAME,
                 url: SITE_URL,
                 logo: new URL("/images/logo.svg", SITE_URL).toString(),
+                description: "We design, build, and grow high‑performance websites, marketing, and automation that deliver measurable business results.",
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "Chennai",
+                  addressRegion: "Tamil Nadu",
+                  addressCountry: "IN",
+                },
+                contactPoint: {
+                  "@type": "ContactPoint",
+                  telephone: "+91-95002-55291",
+                  contactType: "customer service",
+                  email: "hello@zeroslash.in",
+                  availableLanguage: ["English"],
+                },
                 sameAs: [
                   "https://www.linkedin.com/in/mubarak-a-xyz/",
                   "https://instagram.com/zeroslashx1",
                   "https://github.com/zeroslashx1",
+                ],
+                areaServed: ["IN", "US", "GB", "AU", "CA", "AE"],
+                knowsAbout: [
+                  "Web Design",
+                  "Web Development",
+                  "Digital Marketing",
+                  "SEO",
+                  "E-commerce",
+                  "Branding",
+                  "UI/UX Design",
                 ],
               }),
             }}
@@ -183,6 +240,87 @@ export default function RootLayout({
                   "query-input": "required name=search_term_string",
                 },
               }),
+            }}
+          />
+          <script
+            type="application/ld+json"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "ProfessionalService",
+                name: SITE_NAME,
+                image: new URL("/images/zero-agency-logo.png", SITE_URL).toString(),
+                "@id": SITE_URL,
+                url: SITE_URL,
+                telephone: "+91-95002-55291",
+                address: {
+                  "@type": "PostalAddress",
+                  addressLocality: "Chennai",
+                  addressRegion: "Tamil Nadu",
+                  addressCountry: "IN",
+                },
+                geo: {
+                  "@type": "GeoCoordinates",
+                  latitude: 13.0827,
+                  longitude: 80.2707,
+                },
+                priceRange: "$$",
+                aggregateRating: {
+                  "@type": "AggregateRating",
+                  ratingValue: "5.0",
+                  reviewCount: "76",
+                },
+              }),
+            }}
+          />
+          <script
+            type="application/ld+json"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  {
+                    "@type": "ListItem",
+                    position: 1,
+                    name: "Home",
+                    item: SITE_URL,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 2,
+                    name: "Services",
+                    item: `${SITE_URL}/services`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: "Work",
+                    item: `${SITE_URL}/work`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 4,
+                    name: "About",
+                    item: `${SITE_URL}/about`,
+                  },
+                  {
+                    "@type": "ListItem",
+                    position: 5,
+                    name: "Contact",
+                    item: `${SITE_URL}/contact`,
+                  },
+                ],
+              }),
+            }}
+          />
+          <script
+            type="application/ld+json"
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify(faqSchema),
             }}
           />
         </ThemeProvider>

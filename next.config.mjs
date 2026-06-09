@@ -37,13 +37,13 @@ const nextConfig = {
       "frame-ancestors 'none'",
       "object-src 'none'",
       // Next.js dev (HMR) may use websockets; keep ws: in connect-src to avoid breaking dev
-      "connect-src 'self' https: ws:",
+      "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.com https://*.facebook.net ws:",
       // Allow images from self, data URLs, and HTTPS (including your configured remotePatterns)
-      "img-src 'self' data: https:",
+      "img-src 'self' data: https: https://*.facebook.com",
       // Inline styles are sometimes required for libs; consider removing 'unsafe-inline' if fully CSP-compliant
       "style-src 'self' 'unsafe-inline'",
-      // Scripts: temporarily relax in production to diagnose white screen/hydration issues
-      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:",
+      // Scripts: allow Google Analytics, Meta Pixel, and necessary inline scripts
+      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://connect.facebook.net blob:",
       // Fonts may be loaded as data URLs
       "font-src 'self' data:"
     ].join('; ')

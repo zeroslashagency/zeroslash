@@ -11,12 +11,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/careers",
     "/contact",
     "/reviews",
+    "/work",
+    "/waitlist",
   ]
 
   return pages.map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
-    changeFrequency: "weekly",
-    priority: path === "" ? 1 : 0.7,
+    changeFrequency: path === "" || path === "/work" ? "daily" : "weekly",
+    priority: path === "" ? 1 : path === "/work" || path === "/services" ? 0.9 : 0.7,
   }))
 }

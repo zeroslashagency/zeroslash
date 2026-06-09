@@ -32,18 +32,9 @@ export default function Home() {
     <div className="w-full bg-background">
       {/* Full-screen Hero Section (contain background, no crop) */}
       <section id="hero" className="relative w-[100vw] h-[100svh] overflow-hidden bg-background">
-        {/* Background underlay switched to next/image for better LCP */}
-        <div className="absolute inset-0 -z-10">
-          <Image
-            src="/images/about wall.png"
-            alt=""
-            fill
-            priority
-            fetchPriority="high"
-            sizes="100vw"
-            className="object-contain"
-          />
-        </div>
+        {/* Background underlay optimized for LCP - CSS gradient instead of heavy image */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-muted/30" />
+        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
 
         {/* Masthead meta */}
         <div className="absolute top-6 left-4 md:left-6 z-10">
@@ -533,6 +524,8 @@ export default function Home() {
                     src="/images/decs-cafe.png"
                     alt="Dec's Cafe - Premium Coffee Experience"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    loading="lazy"
                     className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -570,6 +563,8 @@ export default function Home() {
                     src="/images/fresh-bread.png"
                     alt="The Perfect Fresh Bread - Artisanal Bakery"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    loading="lazy"
                     className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -607,6 +602,8 @@ export default function Home() {
                     src="/images/yoga-studio.jpeg"
                     alt="Flow Yoga Studio - Wellness & Classes"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    loading="lazy"
                     className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -643,6 +640,8 @@ export default function Home() {
                     src="/images/mobile.jpg"
                     alt="ZenFix Mobile Repair - Same-day device repairs"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+                    loading="lazy"
                     className="object-cover"
                   />
                   <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -970,6 +969,8 @@ export default function Home() {
                       alt="Professional team member discussing digital strategy"
                       width={800}
                       height={600}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                      loading="lazy"
                       className="w-full h-auto object-contain"
                     />
                   </div>
