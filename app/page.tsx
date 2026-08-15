@@ -30,63 +30,63 @@ export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
   return (
     <div className="w-full bg-background">
-      {/* Floral Editorial Hero — FULLSCREEN 46/54 — edge-to-edge like below sections */}
-      <section id="hero" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] overflow-hidden">
-        <div className="w-full bg-[rgb(251,250,248)] relative">
-            {/* Grid 46 / 54 */}
-            <div className="grid grid-cols-1 lg:grid-cols-[46%_54%] relative">
+      {/* Floral Editorial Hero — COVER HOME SCREEN — big type + big bouquet */}
+      <section id="hero" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] min-h-[100svh] flex flex-col overflow-hidden">
+        <div className="w-full bg-[rgb(251,250,248)] relative flex-1 flex flex-col">
+            {/* Grid 46 / 54 — full viewport */}
+            <div className="grid grid-cols-1 lg:grid-cols-[46%_54%] relative flex-1 min-h-[calc(100svh-80px)] items-stretch">
               {/* Vertical label desktop */}
               <div className="hidden lg:flex absolute -left-2 top-[42%] -rotate-90 origin-left z-10">
                 <span className="text-[10px] tracking-[0.2em] uppercase text-black/30 font-medium">Work <span className="mx-1">→</span> Studio</span>
               </div>
               {/* LEFT 46% — Zeroslash */}
-              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-6 md:py-8 lg:py-10 flex flex-col justify-center bg-[rgb(251,250,248)]">
-                <div className="flex items-center gap-2 mb-4 md:mb-6">
-                  <span className="w-3 h-3 rounded-full border border-black grid place-items-center"><span className="w-1 h-1 rounded-full bg-black" /></span>
-                  <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
+              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center bg-[rgb(251,250,248)]">
+                <div className="flex items-center gap-2 mb-5 md:mb-7">
+                  <span className="w-3.5 h-3.5 rounded-full border border-black grid place-items-center"><span className="w-1.5 h-1.5 rounded-full bg-black" /></span>
+                  <span className="text-[12px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
                 </div>
-                <h1 className="font-bold leading-[0.98] tracking-[-0.02em] text-black" style={{ fontFamily: "var(--font-display-serif)" }}>
-                  <span className="block text-[28px] md:text-[32px] lg:text-[36px]">Bespoke digital</span>
-                  <span className="block text-[28px] md:text-[32px] lg:text-[36px]">experiences</span>
-                  <span className="block text-[28px] md:text-[32px] lg:text-[36px] mt-1">ZeroSlash <span className="font-light text-[#C8C8C8]">Agency</span></span>
+                <h1 className="font-bold leading-[0.88] tracking-[-0.03em] text-black" style={{ fontFamily: "var(--font-display-serif)" }}>
+                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px]">Bespoke digital</span>
+                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px]">experiences</span>
+                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px] mt-1">ZeroSlash <span className="font-light text-[#C8C8C8]">Agency</span></span>
                 </h1>
-                <div className="flex flex-wrap items-center gap-4 mt-5 md:mt-7 text-[11px]">
-                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2 group">
-                    <span className="w-5 h-5 rounded-full border border-black/10 grid place-items-center group-hover:bg-black group-hover:text-white transition-colors"><ArrowRight className="w-3 h-3" /></span>
-                    <span className="font-semibold tracking-wide text-black">Start a project</span>
+                <div className="flex flex-wrap items-center gap-5 mt-6 md:mt-8 text-[13px]">
+                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2.5 group">
+                    <span className="w-7 h-7 rounded-full border border-black/10 grid place-items-center group-hover:bg-black group-hover:text-white transition-colors"><ArrowRight className="w-3.5 h-3.5" /></span>
+                    <span className="font-semibold tracking-wide text-black text-[14px]">Start a project</span>
                   </button>
-                  <span className="flex items-center gap-1.5 text-black/40"><Calendar className="w-3 h-3" />3+ Years</span>
-                  <span className="flex items-center gap-1.5 text-black/40"><Eye className="w-3 h-3" />30+ Projects</span>
+                  <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Calendar className="w-3.5 h-3.5" />3+ Years</span>
+                  <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Eye className="w-3.5 h-3.5" />30+ Projects</span>
                 </div>
-                <div className="mt-10 md:mt-14 lg:mt-16">
+                <div className="mt-10 md:mt-12 lg:mt-14">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="w-3 h-3 rounded-sm bg-black grid place-items-center"><Calendar className="w-2 h-2 text-white" /></span>
-                    <span className="text-[11px] font-semibold tracking-wide text-black">Todays drops</span>
+                    <span className="w-3.5 h-3.5 rounded-sm bg-black grid place-items-center"><Calendar className="w-2.5 h-2.5 text-white" /></span>
+                    <span className="text-[13px] font-semibold tracking-wide text-black">Todays drops</span>
                   </div>
-                  <div className="grid grid-cols-3 gap-3 md:gap-4">
+                  <div className="grid grid-cols-3 gap-4 md:gap-5">
                     {[
                       { img: "/images/decs-cafe.png", title: "Dec's Cafe — Premium coffee experience" },
                       { img: "/images/fresh-bread.png", title: "The Perfect Bread — Artisanal bakery" },
                       { img: "/images/yoga-studio.jpeg", title: "Flow Yoga — Wellness & bookings" },
                     ].map((item, i) => (
                       <div key={i} className="group cursor-pointer">
-                        <div className="flex gap-2 items-start">
-                          <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg overflow-hidden bg-[#F3F3F0] shrink-0 border border-black/5">
+                        <div className="flex gap-3 items-start">
+                          <div className="w-12 h-12 md:w-[52px] md:h-[52px] rounded-xl overflow-hidden bg-[#F3F3F0] shrink-0 border border-black/5">
                             <img src={item.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                           </div>
-                          <p className="text-[10px] md:text-[11px] leading-[1.35] font-medium text-black/70 line-clamp-3">{item.title}</p>
+                          <p className="text-[13px] leading-[1.35] font-medium text-black/70 line-clamp-3">{item.title}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
               </div>
-              {/* RIGHT 54% — Bouquet locked — fullscreen bleed */}
-              <div className="relative h-[420px] md:h-[520px] lg:h-auto lg:min-h-[640px] lg:aspect-auto bg-[rgb(251,250,248)] overflow-visible lg:self-stretch">
-                <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-top lg:object-[center_top] scale-[1.06] lg:scale-[1.12] lg:translate-x-6 lg:-translate-y-2 bg-[rgb(251,250,248)]" sizes="(max-width: 1024px) 100vw, 54vw" />
+              {/* RIGHT 54% — Bouquet — COVER */}
+              <div className="relative h-[520px] md:h-[640px] lg:h-auto lg:min-h-[calc(100svh-80px)] bg-[rgb(251,250,248)] overflow-visible lg:self-stretch">
+                <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-center lg:object-[center_center] scale-[1.18] md:scale-[1.22] lg:scale-[1.32] xl:scale-[1.38] lg:translate-x-4 xl:translate-x-6 bg-[rgb(251,250,248)]" sizes="(max-width: 1024px) 100vw, 54vw" />
                 <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
-                  <button aria-label="Up" className="w-7 h-7 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowUp className="w-3 h-3" /></button>
-                  <button aria-label="Down" className="w-7 h-7 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowDown className="w-3 h-3" /></button>
+                  <button aria-label="Up" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowUp className="w-4 h-4" /></button>
+                  <button aria-label="Down" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowDown className="w-4 h-4" /></button>
                 </div>
               </div>
             </div>
