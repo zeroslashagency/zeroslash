@@ -90,6 +90,13 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            {/* SOCIAL BAR — left bottom corner exact like ref: LINKEDIN / INSTAGRAM EN */}
+            <div className="absolute left-5 md:left-8 lg:left-16 bottom-5 md:bottom-6 flex items-center gap-3 z-10">
+              <a href="https://linkedin.com" target="_blank" rel="noopener" className="text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">LINKEDIN</a>
+              <span className="text-[13px] md:text-[14px] font-black text-black mx-0.5">/</span>
+              <a href="https://instagram.com" target="_blank" rel="noopener" className="text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">INSTAGRAM</a>
+              <span className="ml-3 md:ml-4 inline-flex items-center justify-center bg-black text-white text-[12px] md:text-[13px] font-black tracking-[0.04em] px-[10px] py-[5px] rounded-[6px] leading-none">EN</span>
+            </div>
             {/* Pagination dots left bottom */}
             <div className="hidden lg:flex absolute left-5 bottom-8 flex-col gap-1.5">
               <span className="w-1 h-1 rounded-full bg-black" />
@@ -242,6 +249,15 @@ export default function Home() {
           </div>
         </section>
       </ScrollReveal>
+
+      {/* GAP B — 3.avif Breather between OUR COMMITMENT and How We Work */}
+      <section className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] overflow-hidden" aria-hidden>
+        <div className="relative w-full h-[42vh] md:h-[56vh] lg:h-[68vh]">
+          <Image src="/images/gap/3.avif" alt="" fill className="object-cover object-center" sizes="100vw" priority />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 md:h-20 bg-gradient-to-b from-background to-transparent" />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 md:h-20 bg-gradient-to-t from-background to-transparent" />
+        </div>
+      </section>
 
       {/* Premium About Us Section - <span className="animate-shine">How We Work</span> */}
       <ScrollReveal>
