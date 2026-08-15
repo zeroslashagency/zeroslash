@@ -250,12 +250,20 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
-      {/* GAP B — 3.avif Breather between OUR COMMITMENT and How We Work */}
-      <section className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] overflow-hidden" aria-hidden>
-        <div className="relative w-full h-[42vh] md:h-[56vh] lg:h-[68vh]">
-          <Image src="/images/gap/3.avif" alt="" fill className="object-cover object-center" sizes="100vw" priority />
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-16 md:h-20 bg-gradient-to-b from-background to-transparent" />
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 md:h-20 bg-gradient-to-t from-background to-transparent" />
+      {/* GAP B — Text Slider + Flower Overlay — like ref 2 (SCHERP TIJD) */}
+      <section className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[#F5F0E8] overflow-hidden" aria-hidden>
+        <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center overflow-hidden">
+          {/* Marquee text — extra-bold inset shadow like your section[3] */}
+          <svg width="0" height="0" className="absolute"><filter id="gap-inset-shadow"><feOffset dx="0" dy="0" /><feGaussianBlur stdDeviation="4" result="offset-blur" /><feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" /><feFlood floodColor="#7C5CFF" floodOpacity="1" result="color" /><feComposite operator="in" in="color" in2="inverse" result="shadow" /><feComposite operator="over" in="shadow" in2="SourceGraphic" /></filter></svg>
+          <div className="flex w-full whitespace-nowrap will-change-transform" style={{ transform: "translate3d(-12%,0,0)" }}>
+            <span className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF]" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>
+              &nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;
+            </span>
+          </div>
+          {/* Center flower — sits ON TOP of text, like ref */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[132px] md:size-[200px] lg:size-[280px] xl:size-[340px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
+            <Image src="/images/gap/3.avif" alt="" fill className="object-contain" sizes="340px" />
+          </div>
         </div>
       </section>
 
