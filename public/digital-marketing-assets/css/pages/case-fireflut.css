@@ -1,0 +1,1630 @@
+/* CASE — Fireflut (extracted) */
+#fireflut-view { --cs-serif:'DM Serif Display', Georgia, serif;
+                     --cs-sans:'Space Grotesk', sans-serif;
+                     --cs-cream:#fff9f1; --cs-black:#000; --cs-ink:#0b0b0b;
+                     --cs-coral:#4A9EFF;
+                     --cs-max:1320px; --cs-pad:60px; --cs-rail:355px;
+                     --cs-navpad:112px; }   /* panel top clearance = 80px nav + 32px gap */
+
+    /* tile → hero shared-element zoom (same mechanism as Hatcha) */
+    body.vt-hero a.project-tile[href="/work/fireflut"] { view-transition-name: fireflut-hero; }
+    body.vt-hero #fireflut-view .cs-hero .cs-hero-mock { view-transition-name: fireflut-hero; }
+    ::view-transition-old(fireflut-hero),
+    ::view-transition-new(fireflut-hero) { width:100%; height:100%; object-fit:cover; }
+    ::view-transition-group(fireflut-hero) {
+      animation-duration: 0.6s;
+      animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(fireflut-hero),
+      ::view-transition-old(fireflut-hero),
+      ::view-transition-new(fireflut-hero) { animation: none; }
+    }
+
+    /* comparison table (the "what needed to shift" table) — Fireflut uses it once,
+       on a cream band, so scope cream chrome here (night flips it back to dark). */
+    #fireflut-view .cs-cmp { border-color:rgba(0,0,0,0.16); }
+    #fireflut-view .cs-cmp .before { color:rgba(11,11,11,0.6); }
+    #fireflut-view .cs-cmp .after { background:#0b0b0b; color:#fdf1e1; }
+    #fireflut-view .cs-cmp-arrow { color:var(--cs-coral); border-left-color:rgba(0,0,0,0.16); border-right-color:rgba(0,0,0,0.16); }
+    #fireflut-view .cs-cmp-row:not(:last-child) .before,
+    #fireflut-view .cs-cmp-row:not(:last-child) .cs-cmp-arrow { border-bottom:1px solid rgba(0,0,0,0.16); }
+    #fireflut-view .cs-cmp-row:not(:last-child) .after { border-bottom:1px solid rgba(255,255,255,0.18); }
+    #fireflut-view .cs-cmp-head .before { background:rgba(0,0,0,0.04); color:rgba(11,11,11,0.55); }
+    #fireflut-view .cs-cmp-head .cs-cmp-arrow { background:rgba(0,0,0,0.04); }
+    #fireflut-view .cs-cmp-head .after { background:#0b0b0b; color:#fdf1e1; }
+
+    /* role tag (dark-band default; cream override below) */
+    #fireflut-view .cs-ff-role { display:inline-flex; align-items:center; gap:9px; margin-bottom:26px;
+      font-family:var(--cs-sans); font-size:12px; font-weight:400; letter-spacing:0.08em; text-transform:uppercase;
+      color:rgba(255,249,233,0.7); border:1px solid rgba(255,249,233,0.18); border-radius:100px; padding:7px 15px; }
+    #fireflut-view .cs-band.cream .cs-ff-role { color:#8f8a80; border-color:rgba(0,0,0,0.14); }
+    #fireflut-view .cs-ff-role .dot { width:6px; height:6px; border-radius:50%; background:var(--cs-coral); }
+
+    /* section-internal eyebrow (rail-escaped so it aligns with escaped visuals) */
+    #fireflut-view .cs-ff-eye { font-family:var(--cs-sans); font-size:13px; font-weight:400; letter-spacing:0.06em;
+      text-transform:uppercase; color:#8f8a80; margin:64px 0 20px; }
+
+    /* rail-escaped image grids (placeholders swap for assets) */
+    #fireflut-view .cs-ff-duo,
+    #fireflut-view .cs-ff-full { display:grid; gap:14px; margin-top:64px; margin-left:calc(-1 * var(--cs-rail)); }
+    #fireflut-view .cs-ff-duo  { grid-template-columns:3fr 2fr; }
+    #fireflut-view .cs-ff-duo.rev { grid-template-columns:2fr 3fr; }
+    #fireflut-view .cs-ff-full { grid-template-columns:1fr; }
+    #fireflut-view .cs-ff-duo .cs-ph  { height:440px; border-radius:8px; }
+    /* chat-details row: a single horizontal-scroll row (not a grid that wraps
+       to 2-then-1 columns) — cards keep the same 720:626 aspect-ratio as the
+       section 03 trio (gauge/location/recs) so proportions match across the
+       page, with height always derived from width instead of a fixed px.
+       Lives outside .cs-wrap as a full-bleed sibling (same as .cs-ff-trio),
+       with matching viewport-edge padding — nesting it inside the
+       rail-constrained wrap would cap it at the wrap's 1320px max-width on
+       large screens, where .cs-ff-trio keeps extending to the viewport edge.
+       Auto-scrolling marquee — same translateX(-50%) loop as the clients
+       logo marquee (.logo-marquee-wrap/-inner): the card set is duplicated
+       once in the markup so the seamless wrap point is exactly halfway,
+       the wrap clips it, and the track just keeps sliding. Hover pauses it
+       so a card can actually be looked at. */
+    #fireflut-view .cs-ff-quad-wrap { position:relative; overflow:hidden; margin-top:0;
+      padding:0; }
+    #fireflut-view .cs-ff-quad-wrap::before,
+    #fireflut-view .cs-ff-quad-wrap::after { content:''; position:absolute; top:0; bottom:0;
+      width:min(120px, 8vw); z-index:2; pointer-events:none; }
+    #fireflut-view .cs-ff-quad-wrap::before { left:0;  background:linear-gradient(to right, var(--cs-black), transparent); }
+    #fireflut-view .cs-ff-quad-wrap::after  { right:0; background:linear-gradient(to left,  var(--cs-black), transparent); }
+    #fireflut-view .cs-ff-quad { display:flex; gap:14px; width:max-content;
+      padding-left:var(--cs-pad);
+      animation:cs-ff-quad-scroll 42s linear infinite; }
+    /* match the trio's card width (same aspect-ratio → same height) so sections
+       03 and 04 read as twins */
+    #fireflut-view .cs-ff-quad .cs-ph { flex:0 0 calc((100vw - 2 * var(--cs-pad) - 28px) / 3);
+      width:calc((100vw - 2 * var(--cs-pad) - 28px) / 3);
+      aspect-ratio:720/626; height:auto; border-radius:8px; }
+    @keyframes cs-ff-quad-scroll { to { transform:translateX(calc(-50% - 7px)); } }
+    /* full-bleed trio: lives outside .cs-wrap entirely now, so it gets the same
+       viewport-edge padding as .cs-ff-shots (not the rail-escape margin trick).
+       A real grid whose card height derives from column width via aspect-ratio
+       — matching the 718:622 gauge/location footage and the 720:626 recs stage
+       almost exactly — so content stays proportionate at any viewport size
+       instead of the old fixed 500px height distorting at the extremes. */
+    #fireflut-view .cs-ff-trio { display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+      padding-left:var(--cs-pad); padding-right:var(--cs-pad); }
+    #fireflut-view .cs-ff-trio .cs-ph { aspect-ratio:720/626; height:auto; border-radius:8px; }
+    /* mobile landscape and narrower: 3 columns squeeze each card too thin.
+       Wrap to 2 (third card drops to its own row) across the whole landscape-
+       phone width range (~560–900px) — deterministic breakpoints rather than
+       auto-fit/minmax, whose fit-or-drop math falls right on the edge at
+       common device widths (e.g. 667px landscape came up 3px short of fitting
+       2×300px columns and silently collapsed to one oversized card). Below
+       true portrait-phone widths it drops to 1 column, same as before. */
+    @media (max-width:900px){
+      #fireflut-view .cs-ff-trio { grid-template-columns:repeat(2,1fr); }
+    }
+    @media (max-width:500px){
+      #fireflut-view .cs-ff-trio { grid-template-columns:1fr; }
+    }
+    #fireflut-view .cs-ff-full .cs-ph { height:560px; border-radius:8px; }
+    /* closing hero shot: the final-app montage, full viewport width (edge-to-
+       edge minus the standard --cs-pad gutter) and full viewport tall — a
+       cinematic beat before the outro, not just another grid card. */
+    #fireflut-view .cs-ff-out { min-height:100vh; display:flex; flex-direction:column;
+      justify-content:center; gap:56px; padding:118px 0; box-sizing:border-box; }
+    #fireflut-view .cs-ff-final { margin-top:64px; }
+    #fireflut-view .cs-ff-final .cs-ph { height:100vh; border-radius:0;
+      padding:0; overflow:hidden; border:0; background:#000; }
+    /* the final-app montage rebuilt from native-res stills instead of the old
+       960×720 Jitter render, so nothing is upscaled at any viewport. Same
+       choreography and 5s loop as the recording (geometry and timings measured
+       off its frames): hold on the app row → the collage rotates 90° while
+       pulling back → the splash card slides down from the cell above and wipes
+       over the home phone → slow push into the splash → hard cut back. The
+       camera never pans; one rotate+scale on the stage plus the splash's own
+       slide carries the whole piece. Authored at the
+       video's 960×720 design size and cover-fitted to the card via container
+       units so it composes identically at every viewport. */
+    #fireflut-view .cs-ff-final .cs-ph { container-type:size; }
+    #fireflut-view .ff-final-fit { position:absolute; left:50%; top:50%; width:960px; height:720px;
+      transform:translate(-50%,-50%) scale(calc(max(100cqw / 960px, 100cqh / 720px))); }
+    #fireflut-view .ff-final-cam { position:absolute; inset:0; will-change:transform;
+      animation:ffFinalCam 5.03s linear infinite; }
+    #fireflut-view .ffp { position:absolute; left:50%; top:50%; width:190px; border-radius:16px;
+      transform:translate(-50%,-50%) translate(var(--x), var(--y)); display:block; }
+    /* the home phone counter-spins against the group (own −180° on top of the
+       camera's +90° = net −90°, top pointing left — matching the recording,
+       where the centre phone visibly rotates opposite to the collage) */
+    #fireflut-view .ffp-home { animation:ffFinalHome 5.03s ease-in-out infinite; }
+    #fireflut-view .ff-final-splash { position:absolute; left:50%; top:50%; width:520px; height:322px;
+      transform:translate(-50%,-50%) rotate(-90deg); border-radius:24px; overflow:hidden; background:#000;
+      animation:ffFinalSplash 5.03s linear infinite; }
+    #fireflut-view .ff-final-splash img { width:100%; height:100%; object-fit:cover; display:block; }
+    /* per-keyframe timing so each phase eases on its own instead of the whole
+       loop sharing one curve (which forced velocity to zero at every keyframe
+       — the source of the jagged zoom). Base is linear; each segment sets the
+       curve that carries it TO the next keyframe. */
+    @keyframes ffFinalCam {
+      0%   { transform:rotate(0deg) scale(1.45); animation-timing-function:linear; }                 /* hold */
+      6%   { transform:rotate(0deg) scale(1.45); animation-timing-function:cubic-bezier(.5,0,.2,1); } /* rotate + pull back */
+      30%  { transform:rotate(90deg) scale(1);   animation-timing-function:linear; }                 /* settle, wipe happens here */
+      48%  { transform:rotate(90deg) scale(1);   animation-timing-function:cubic-bezier(.4,0,.25,1);} /* one smooth push in, begins as card lands */
+      97%,100% { transform:rotate(90deg) scale(1.5); }
+    }
+    @keyframes ffFinalHome   {
+      0%, 5%    { transform:translate(-50%,-50%) translate(var(--x), var(--y)) rotate(0deg); }
+      28%, 100% { transform:translate(-50%,-50%) translate(var(--x), var(--y)) rotate(-180deg); }
+    }
+    /* splash wipe: the card slides down from the cell above (screen-down =
+       local +y once its −90° pre-rotation meets the camera's +90°) and covers
+       the home phone in place — a wipe, not a crossfade, per the recording.
+       −560px keeps it fully outside the frame at every earlier camera state;
+       home never fades, it just gets overdrawn (splash is opaque and larger
+       than home's sideways footprint). */
+    @keyframes ffFinalSplash {
+      /* wider window (30%→48%, ~0.9s vs the old 0.5s) with an ease-out landing
+         so the card decelerates into place instead of snapping. Settled before
+         the camera begins its push at 46%. */
+      0%, 30%   { transform:translate(-50%,-50%) rotate(-90deg) translateY(-560px);
+                  animation-timing-function:cubic-bezier(.36,0,.2,1); }
+      48%, 100% { transform:translate(-50%,-50%) rotate(-90deg) translateY(0); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #fireflut-view .ff-final-cam { animation:none; transform:rotate(90deg) scale(1.43); }
+      #fireflut-view .ffp-home { animation:none; opacity:0; }
+      #fireflut-view .ff-final-splash { animation:none; opacity:1; }
+      #fireflut-view .cs-ff-quad { animation:none; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    }
+    /* quote 1's section padding was asymmetric (36px top / 190px bottom,
+       inherited from the shared .cs-quote rule) — even it out without
+       touching the shared class, so Hatcha's quotes are unaffected. Same
+       total height (226px), just split evenly instead of front-loaded. */
+    #fireflut-view .cs-quote { padding:113px 0; }
+    /* before/after table — shared .cs-cmp-cell's fixed 30px line-height plus
+       16px padding runs tall; tighten just for this view (Hatcha's table is
+       untouched) so the row height matches the rest of the case study. */
+    #fireflut-view .cs-cmp-cell { padding:12px 16px; line-height:1.5; }
+
+    /* cs-ff-cap is normally a rail-escaped caption inside .cs-wrap; the
+       chat-details one now sits outside the wrap (full-bleed, next to
+       .cs-ff-quad) so it needs the section's own edge padding instead. */
+    #fireflut-view .cs-ff-cap { margin:18px 0 0; margin-left:calc(-1 * var(--cs-rail));
+      font-size:14px; color:rgba(11,11,11,0.55); }
+    #fireflut-view section > .cs-ff-cap { margin-left:0; padding-left:var(--cs-pad); }
+    #fireflut-view .cs-band.dark .cs-ff-cap { color:rgba(255,249,233,0.5); }
+
+    /* full-bleed before / after shots — each half the viewport minus its side
+       padding, 16px gap, one full viewport tall. The shot is centred inside the
+       card at a capped, reduced size (full shot visible, nothing cropped) with
+       the card background framing it. Tune the max-height clamp to taste. */
+    #fireflut-view .cs-ff-shots { display:flex; gap:16px; align-items:flex-start;
+      padding-left:var(--cs-pad); padding-right:var(--cs-pad); }
+    #fireflut-view .cs-ff-shot { flex:1 1 0; min-width:0; border-radius:8px; overflow:hidden; height:100vh;
+      display:flex; align-items:center; justify-content:center; }
+    #fireflut-view .cs-ff-shot.before  { background:#f4f4f4; }
+    #fireflut-view .cs-ff-shot.after   { background:#010412; }
+    #fireflut-view .cs-ff-shot.moodvis { background:#010412; }
+    #fireflut-view .cs-ff-shot.moodcol { background:#181818; }
+    /* variants mockup cycles through 4 brand themes like a looping gif — a hard
+       cut (no dissolve): each frame swaps in instantly and the card background
+       switches to that frame's brand colour at the same beat, so the colour
+       reads full-width. The phone is an identical dead-centre box in every
+       frame, so only the colour changes — the mockup never shifts. */
+    #fireflut-view .cs-ff-shot.variants { background:#3456C8; }
+    #fireflut-view .cs-ff-shot.variants .ff-vstack { position:relative; width:100%; height:100%; }
+    #fireflut-view .ff-vframe { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:auto; height:auto; max-width:100%; max-height:min(94vh, 940px); object-fit:contain;
+      opacity:0; }
+    #fireflut-view .ff-vframe.is-active { opacity:1; }
+    /* text cell dropped beside the variants mockup in the same grid row —
+       reuses the shot's 100vh/centred box so it lines up with the phone. */
+    #fireflut-view .cs-ff-shot.copy { background:transparent; justify-content:flex-start; }
+    #fireflut-view .ff-vcopy { max-width:400px; padding:0 0 0 64px; text-align:left; }
+    #fireflut-view .ff-vcopy h3 { font-family:var(--cs-serif); font-weight:400; font-size:32px;
+      letter-spacing:-0.02em; line-height:1.13; color:#fff9ea; margin:0 0 16px; }
+    #fireflut-view .ff-vcopy h3 i { font-style:italic; }
+    #fireflut-view .ff-vcopy p { font-family:var(--cs-sans); font-size:16px; line-height:1.65;
+      color:rgba(255,249,233,0.6); margin:0; }
+    /* moodboard grid: two half-width columns with 16px gaps — the variants
+       mockup drops onto the second row at the same size as the assets above */
+    #fireflut-view .cs-ff-shots.grid { display:grid; grid-template-columns:1fr 1fr; align-items:stretch;
+      padding-bottom:120px; }
+    #fireflut-view .cs-ff-shot img { display:block; width:auto; height:auto;
+      max-width:100%; max-height:min(94vh, 940px); object-fit:contain; }
+
+    /* moodboard colours — rebuilt as full-bleed colour blocks that span the whole
+       card (per the Figma layout) instead of the contained image, so the colours
+       reach every edge. Proportions mirror the 720×1024 source. */
+    #fireflut-view .cs-ff-colors { width:100%; height:100%; display:flex; flex-direction:column;
+      gap:8px; padding:8px; background:#181818; font-family:var(--cs-sans); }
+    #fireflut-view .cs-ff-colors .cc-cell { position:relative; padding:16px 18px; overflow:hidden; }
+    #fireflut-view .cs-ff-colors .cc-name { display:block; font-size:12.5px; line-height:1.2; letter-spacing:0.01em; color:#fff; }
+    #fireflut-view .cs-ff-colors .cc-hex { display:block; margin-top:5px; font-size:11px; letter-spacing:0.03em; color:rgba(255,255,255,0.7); }
+    #fireflut-view .cs-ff-colors .cc-cell.light .cc-name { color:#0b0b0b; }
+    #fireflut-view .cs-ff-colors .cc-cell.light .cc-hex { color:rgba(11,11,11,0.62); }
+    #fireflut-view .cc-bg { flex:1 1 50%; background:#020202; }
+    #fireflut-view .cc-lower { flex:1 1 50%; display:flex; gap:8px; min-height:0; }
+    #fireflut-view .cc-glow { flex:1 1 50%; background:radial-gradient(130% 100% at 26% 18%, #3456C8 0%, #131a3f 42%, #000000 80%); }
+    #fireflut-view .cc-right { flex:1 1 50%; display:flex; flex-direction:column; gap:8px; min-width:0; }
+    #fireflut-view .cc-primary { flex:1 1 50%; background:#3456C8; }
+    #fireflut-view .cc-swatches { flex:1 1 50%; display:flex; gap:8px; min-height:0; }
+    #fireflut-view .cc-swatches .cc-cell { flex:1 1 0; min-width:0; padding:14px 12px; }
+    #fireflut-view .cc-swatches .cc-name { font-size:11px; }
+    #fireflut-view .cc-swatches .cc-hex { font-size:10px; }
+    #fireflut-view .cc-text { background:#FFFFFF; }
+    #fireflut-view .cc-secondary { background:#4B9BFF; }
+    #fireflut-view .cc-accent { background:#3700A4; }
+
+    /* — Motion cards: looping screen recordings, cropped to fill the card with no
+         letterbox (/assets/case-fireflut/gauge.*, location.*). — */
+    #fireflut-view .cs-ff-gauge,
+    #fireflut-view .cs-ff-location,
+    #fireflut-view .cs-ff-voice { padding:0; overflow:hidden; border:0; background:#000; }
+    /* voice card background = Figma node 507:2527 — a navy glow from the
+       top-left fading to transparent over black (exact angle/stops from the
+       design). Same in light and dark mode (it's a functional media card,
+       already excluded from the night placeholder-stripe rule). The floated
+       recording sits centred on top, so this glow frames it on all sides. */
+    #fireflut-view .cs-ff-voice {
+      background:
+        linear-gradient(118.879deg, rgb(10,21,55) 4%, rgba(0,0,0,0) 52%),
+        #000; }
+    #fireflut-view .gg-video { position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; display:block; }
+    /* the location recording is bottom-anchored (its phone content runs to the
+       very bottom edge, all the empty headroom is at the top) — crop from the
+       top so cover-fit never eats into the phone or its copy */
+    #fireflut-view .cs-ff-location .gg-video { object-position:center bottom; }
+    /* voice recording: the chat card floats in the footage with its focus
+       glow rendered on all four sides, so show the full 472/320 stage —
+       no cropping — centred and sized to ~80% of the cell height so it sits
+       in proportion with the phone stage beside it. The footage was captured
+       on a solid black background; mix-blend-mode:screen drops that black
+       (black adds nothing under screen) so only the lit card + glow rings
+       show, melting into the card's navy gradient instead of sitting in a
+       visible black rectangle. */
+    #fireflut-view .cs-ff-voice { container-type:size; }
+    #fireflut-view .cs-ff-voice .gg-video { inset:auto; left:50%; top:50%;
+      width:min(86cqw, calc(80cqh * 472 / 320)); height:auto; aspect-ratio:472/320;
+      transform:translate(-50%,-50%); object-fit:cover; mix-blend-mode:screen; }
+    /* gauge card: the card carries the recording's own bg gradient (sampled off
+       the footage: blue top-left → black bottom-right) so the backdrop covers
+       any container size, while the video sits centred at 88% of the card,
+       sized to its true 718×622 aspect via container units so the edge-feather
+       mask always hugs the video's real edges and melts them into the card bg */
+    #fireflut-view .cs-ff-gauge { container-type:size; background:
+      linear-gradient(124.17deg, #213078 0%, #10193f 35%, #04060f 70%, #000 100%); }
+    #fireflut-view .cs-ff-gauge .gg-video { inset:auto; left:50%; top:50%;
+      width:min(88cqw, calc(88cqh * 718 / 622)); height:auto; aspect-ratio:718/622;
+      transform:translate(-50%,-50%); object-fit:cover;
+      -webkit-mask:radial-gradient(75% 75% at 50% 50%, #000 55%, rgba(0,0,0,0) 95%);
+      mask:radial-gradient(75% 75% at 50% 50%, #000 55%, rgba(0,0,0,0) 95%); }
+
+    /* — Recommendations card (node 475:3504): a Gemini suggestions list whose
+         rows cascade in one by one, on loop, while on-screen. Built as a fixed
+         720×626 design stage (matches the Figma frame 1:1) scaled to fit the
+         trio cell, same technique as the gauge card, so type/icon proportions
+         never drift from the design. */
+    #fireflut-view .cs-ff-recs { padding:0; overflow:hidden; border:0; text-align:left;
+      background:
+        linear-gradient(115.81deg, rgba(0,0,0,0) 10.3%, #3456C8 136.58%),
+        #000; }
+    #fireflut-view .rc-inner { position:absolute; inset:0; }
+    #fireflut-view .rc-stage { position:absolute; left:50%; top:50%; width:720px; height:626px;
+      transform:translate(-50%,-50%) scale(var(--rc-scale,0.62)); transform-origin:center center;
+      font-family:'Figtree', var(--cs-sans); color:#fff; }
+    #fireflut-view .rc-head { position:absolute; left:148.35px; top:132.54px; width:423.3px; min-height:27px;
+      display:flex; align-items:center; justify-content:space-between; }
+    #fireflut-view .rc-head-title { font-size:22px; font-weight:400; line-height:30px; }
+    #fireflut-view .rc-gemini { width:66.59px; height:24.46px; background:#fff;
+      -webkit-mask:url("../../assets/case-fireflut/rec-gemini-mark.svg') center/contain no-repeat;
+      mask:url("../../assets/case-fireflut/rec-gemini-mark.svg') center/contain no-repeat; }
+    #fireflut-view .rc-list { position:absolute; left:148.35px; top:186.01px; width:423.3px; }
+    #fireflut-view .rc-item { display:flex; align-items:flex-start; gap:8.91px;
+      padding:13.37px 0; border-bottom:1.114px solid rgba(255,255,255,0.1); }
+    #fireflut-view .rc-ico { flex:none; width:26.735px; height:26.735px; }
+    #fireflut-view .rc-content { flex:1 1 0; min-width:0; display:flex; flex-direction:column; gap:4.46px; }
+    #fireflut-view .rc-title { font-size:22px; font-weight:400; line-height:30px; color:#fff; }
+    #fireflut-view .rc-desc { font-size:18px; font-weight:400; line-height:26px; color:rgba(255,255,255,0.66); }
+    #fireflut-view .rc-chev { flex:none; width:26.735px; height:26.735px; }
+    /* items loop one by one while the card is on-screen — each row fades up,
+       holds, fades out, then cycles again; staggered per row via animation-delay
+       so the cascade reads continuously rather than as a single one-shot reveal */
+    #fireflut-view .rc-item { opacity:0; transform:translateY(16px);
+      animation:ffRcItem 5s cubic-bezier(0.16,1,0.3,1) infinite;
+      animation-play-state:paused; }
+    #fireflut-view .rc-item:nth-child(1) { animation-delay:0s; }
+    #fireflut-view .rc-item:nth-child(2) { animation-delay:0.4s; }
+    #fireflut-view .rc-item:nth-child(3) { animation-delay:0.8s; }
+    #fireflut-view .cs-ff-recs.rc-play .rc-item { animation-play-state:running; }
+    @keyframes ffRcItem {
+      0%   { opacity:0; transform:translateY(16px); }
+      10%  { opacity:1; transform:translateY(0); }
+      75%  { opacity:1; transform:translateY(0); }
+      88%  { opacity:0; transform:translateY(-10px); }
+      100% { opacity:0; transform:translateY(16px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #fireflut-view .rc-item { opacity:1; transform:none; animation:none; }
+    }
+
+    /* — Pre-prompts card (node 507:2529, "prompts in chat"): a real screen
+         recording of the AI start screen's five suggested prompts cascading
+         in — same cropped-recording technique as the gauge/location cards
+         (/assets/case-fireflut/pre-prompts.*), looped via the shared [data-gg-video]
+         play/pause-on-scroll handler. */
+    /* card background: a blue glow behind the phone. A centred top radial (not
+       the top-left linear the sibling cards use) so it spreads evenly to both
+       sides and frames the recording symmetrically instead of pooling in one
+       corner. Fades to black before the card edges. */
+    #fireflut-view .cs-ff-preprompts { padding:0; overflow:hidden; border:0;
+      background:
+        radial-gradient(115% 85% at 50% 6%, #1f2c58 0%, rgba(31,44,88,0.27) 32%, rgba(0,0,0,0) 66%),
+        #000; }
+    /* the recording is portrait (584:622) inside a landscape card, so contain-fit
+       is height-bound with big empty side margins — scale it up a little around
+       its own centre; the card's overflow:hidden crops the small top/bottom
+       overshoot, which is a much smaller loss than the side letterbox it closes */
+    #fireflut-view .cs-ff-preprompts .gg-video { object-fit:contain; transform:scale(1.12);
+      mix-blend-mode:screen; }
+
+    /* — Loading reply card (node 507:2551 "loading reply" — a 585×626
+         canvas — wrapping the 507:2552 "Processing" phone at its exact
+         Figma offset: left 87.92, top 174.13, width 409.162, out of a
+         903.73-tall device). The canvas is CONTAIN-fit into the quad cell
+         (not scaled to the cell's width), so the phone's size relative to
+         the surrounding black is exactly what Figma drew — a small phone
+         with generous headroom above it, cropped at the canvas's bottom
+         edge (only the top ~half of the device shows, no bottom bezel).
+         All child offsets below are the raw, unscaled Figma px. */
+    /* card background = Figma node 507:2551 — a navy glow from the top-left
+       fading to transparent over black (same treatment as the voice card).
+       The phone stage floats centred on top; this frames it with the glow. */
+    #fireflut-view .cs-ff-loading { padding:0; overflow:hidden; border:0; position:relative;
+      background:
+        linear-gradient(120.55deg, #101d46 -17.43%, rgba(0,0,0,0) 92.06%),
+        #000; }
+    #fireflut-view .lr-stage { position:absolute; left:50%; top:50%; width:585px; height:626px;
+      transform:translate(-50%,-50%) scale(var(--lr-scale,0.4)); transform-origin:center center;
+      overflow:hidden; font-family:'Figtree', var(--cs-sans); letter-spacing:normal; text-align:left; }
+    #fireflut-view .lr-phone { position:absolute; left:87.92px; top:174.13px; width:409.162px; height:700px;
+      border:10.029px solid #2d2d2d; border-bottom:0; border-radius:70.202px 70.202px 0 0;
+      overflow:hidden; background:#020202; }
+    #fireflut-view .lr-glow { position:absolute; inset:0;
+      background:radial-gradient(120% 60% at 32% 14%, #223360 0%, #1b294e 22%, #131f3f 40%, #0a1128 60%, #04060c 82%, #020202 100%); }
+    #fireflut-view .lr-status { position:absolute; left:0; right:0; top:0; height:65px;
+      display:flex; align-items:flex-end; justify-content:space-between; padding:0 30px 12.5px;
+      font-size:17.5px; color:#fff; opacity:0.35; }
+    #fireflut-view .lr-status .cutout { position:absolute; left:50%; top:22.5px; width:30px; height:30px;
+      transform:translateX(-50%); border-radius:50%; background:#000; }
+    #fireflut-view .lr-icons { display:flex; gap:8px; align-items:center; }
+    #fireflut-view .lr-icons span { display:block; width:17px; height:12px; border:1px solid #fff; border-radius:2px; }
+    #fireflut-view .lr-back { position:absolute; top:66px; left:16px; font-size:28px; line-height:1; color:#fff; opacity:0.9; }
+    #fireflut-view .lr-bubble-row { position:absolute; left:0; top:128.32px; width:409.162px; height:103.61px;
+      display:flex; align-items:center; justify-content:flex-end; padding:15.89px; box-sizing:border-box; }
+    #fireflut-view .lr-bubble { max-width:377.38px; background:rgba(52,86,200,0.25); border:0.993px solid #3456c8;
+      border-radius:23.835px 23.835px 3.972px 23.835px; padding:11.917px 19.862px;
+      font-size:15.78px; line-height:23.671px; color:#fff; text-align:left; }
+    #fireflut-view .lr-reply { position:absolute; left:0; top:231.93px; width:409.162px;
+      display:flex; flex-direction:column; gap:7.945px;
+      padding:7.945px 15.89px 7.945px 23.835px; box-sizing:border-box; }
+    #fireflut-view .lr-spark { width:23.835px; height:23.835px; opacity:0.6; }
+    #fireflut-view .lr-spark svg { width:100%; height:100%; display:block; }
+    #fireflut-view .lr-bars { display:flex; flex-direction:column; gap:11.917px; width:100%; }
+    #fireflut-view .lr-bar { position:relative; height:15.89px; border-radius:23.835px; overflow:hidden;
+      background:linear-gradient(90deg, #38049f 0%, #4b9bff 98%); }
+    #fireflut-view .lr-bar:nth-child(1) { width:92%; opacity:0.75; }
+    #fireflut-view .lr-bar:nth-child(2) { width:100%; opacity:0.5; }
+    #fireflut-view .lr-bar:nth-child(3) { width:92%; opacity:0.25; }
+    /* shimmer sweep — a soft highlight band travels across each bar,
+       staggered per row, paused off-screen (battery, matches recs pattern) */
+    #fireflut-view .lr-bar::after { content:''; position:absolute; inset:0;
+      background:linear-gradient(100deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+      transform:translateX(-120%); animation:ffLrShimmer 1.8s ease-in-out infinite; animation-play-state:paused; }
+    #fireflut-view .lr-bar:nth-child(1)::after { animation-delay:0s; }
+    #fireflut-view .lr-bar:nth-child(2)::after { animation-delay:0.2s; }
+    #fireflut-view .lr-bar:nth-child(3)::after { animation-delay:0.4s; }
+    #fireflut-view .cs-ff-loading.load-play .lr-bar::after { animation-play-state:running; }
+    @keyframes ffLrShimmer { 0% { transform:translateX(-120%); } 100% { transform:translateX(120%); } }
+    /* sparkle "thinking" pulse */
+    #fireflut-view .lr-spark { animation:ffLrSpark 1.6s ease-in-out infinite; animation-play-state:paused; }
+    #fireflut-view .cs-ff-loading.load-play .lr-spark { animation-play-state:running; }
+    @keyframes ffLrSpark { 0%,100% { opacity:0.5; transform:scale(0.9); } 50% { opacity:1; transform:scale(1.08); } }
+    @media (prefers-reduced-motion: reduce) {
+      #fireflut-view .lr-bar::after { animation:none; opacity:0; }
+      #fireflut-view .lr-spark { animation:none; opacity:0.85; transform:none; }
+    }
+
+    /* Yes/No quick-reply card: static composite (/assets/case-fireflut/yes-no-prompt.webp).
+       The source carries its own dark→navy gradient background, so it fills the
+       card edge-to-edge (cover) — the baked-in bg reaches the card edges with no
+       black letterbox seam. It's portrait in a landscape card, so cover crops a
+       little empty gradient off top/bottom; the bubble + buttons stay centred. */
+    #fireflut-view .cs-ff-yesno { padding:0; overflow:hidden; border:0; background:#000; }
+    #fireflut-view .cs-ff-yesno img { position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center; display:block; }
+    /* section 4 recordings + yes/no still carry a baked-in blue background that
+       reads too bright next to the toned-down card gradients — knock back its
+       saturation/brightness so the whole marquee sits at one calmer blue. */
+    #fireflut-view .cs-ff-voice .gg-video,
+    #fireflut-view .cs-ff-preprompts .gg-video,
+    #fireflut-view .cs-ff-yesno img { filter:saturate(0.8) brightness(0.86); }
+
+    /* three principle cards (dark band). Dividers are borders drawn on each
+       card, not a 1px grid-gap with background peeking through — at odd
+       container widths repeat(3,1fr) rounds column widths to whole pixels
+       and can round one gap down to 0, making that seam vanish. A border
+       lives on the element itself so it's always there regardless. */
+    #fireflut-view .cs-ff-prin { display:grid; grid-template-columns:repeat(3,1fr); margin-top:52px;
+      margin-left:calc(-1 * var(--cs-rail));
+      border:1px solid rgba(255,249,233,0.12); border-radius:14px; overflow:hidden; }
+    #fireflut-view .cs-ff-prin-card { background:#0b0b0b; padding:30px 28px 34px; box-sizing:border-box;
+      border-right:1px solid rgba(255,249,233,0.12); }
+    #fireflut-view .cs-ff-prin-card:last-child { border-right:0; }
+    #fireflut-view .cs-ff-prin-ico { width:26px; height:26px; margin-bottom:20px; }
+    #fireflut-view .cs-ff-prin-ico svg { width:24px; height:24px; stroke:var(--cs-coral); fill:none;
+      stroke-width:1.4; stroke-linecap:round; stroke-linejoin:round; }
+    #fireflut-view .cs-ff-prin-h { font-family:var(--cs-serif); font-weight:400; font-size:24px;
+      letter-spacing:0.02em; color:#fff9ea; margin-bottom:10px; }
+    #fireflut-view .cs-ff-prin-p { font-size:14.5px; line-height:1.55; color:rgba(255,249,233,0.6); }
+
+    /* four-brand swatch row (dark band) */
+    #fireflut-view .cs-ff-swatch { display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+      margin-top:40px; margin-left:calc(-1 * var(--cs-rail)); }
+    #fireflut-view .cs-ff-swatch .sw { height:64px; border-radius:8px; }
+    #fireflut-view .cs-ff-swatch .lbl { margin-top:9px; font-size:11px; letter-spacing:0.08em;
+      text-transform:uppercase; color:rgba(255,249,233,0.5); }
+
+    /* micro-interaction list (dark-band default; cream override below) */
+    #fireflut-view .cs-ff-micro { margin-top:20px; border:1px solid rgba(255,249,233,0.14);
+      border-radius:14px; overflow:hidden; }
+    #fireflut-view .cs-band.cream .cs-ff-micro { border-color:rgba(0,0,0,0.12); }
+    #fireflut-view .cs-ff-mrow { display:grid; grid-template-columns:200px minmax(0,1fr); }
+    #fireflut-view .cs-ff-mrow + .cs-ff-mrow { border-top:1px solid rgba(255,249,233,0.14); }
+    #fireflut-view .cs-band.cream .cs-ff-mrow + .cs-ff-mrow { border-top-color:rgba(0,0,0,0.12); }
+    #fireflut-view .cs-ff-mtag { display:flex; align-items:center; gap:10px; padding:22px 24px;
+      border-right:1px solid rgba(255,249,233,0.14);
+      font-family:var(--cs-serif); font-weight:400; font-size:19px; letter-spacing:0.02em; color:#fff9ea; }
+    #fireflut-view .cs-band.cream .cs-ff-mtag { color:var(--cs-ink); border-right-color:rgba(0,0,0,0.12); }
+    #fireflut-view .cs-ff-mtag .dot { width:7px; height:7px; border-radius:50%; background:var(--cs-coral); flex-shrink:0; }
+    #fireflut-view .cs-ff-mdesc { padding:22px 26px; font-size:15px; line-height:1.6; color:rgba(255,249,233,0.62); }
+    #fireflut-view .cs-band.cream .cs-ff-mdesc { color:rgba(11,11,11,0.7); }
+
+    /* outcome stats — Fireflut has three */
+    #fireflut-view .cs-stats { grid-template-columns:repeat(3,1fr); }
+
+    /* asset reveal (clip-mask unveil) — mirror of the Hatcha rule, scoped */
+    #fireflut-view .cs-clip {
+      clip-path: inset(0px 0px 100% 0px round var(--clip-round, 0px));
+      transform: translateY(-44px);
+      transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: var(--reveal-delay, 0s); }
+    #fireflut-view .cs-clip.is-visible { clip-path: inset(0px 0px 0% 0px round var(--clip-round, 0px)); transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      #fireflut-view .cs-clip { clip-path: none; transform: none; transition: none; } }
+
+    /* ── Section cover-slide (pinned choreography) ──────────────────────────
+       The case study becomes a scroll-driven stage: all sections stack inside a
+       sticky, viewport-sized stage, and a tall scroller drives everything by
+       transform. Per section you scroll through its own content (read time),
+       then it PINS (holds its last frame) while the next section sweeps in
+       full-height from the right over it. When the last section is read the
+       stage releases so the shared footer shows. Built by the JS enhancer below;
+       skipped under reduced motion (DOM left untouched → normal scrolling). */
+    #fireflut-view .cs-slide-scroller { position: relative; }
+    #fireflut-view .cs-slide-stage { position: sticky; top: 0; height: 100vh; overflow: hidden;
+                                     isolation: isolate; }   /* contain section z-index below the nav */
+    #fireflut-view .cs-slide-sec { position: absolute; inset: 0; overflow: hidden; }
+    #fireflut-view .cs-slide-sec.cv { box-shadow: -26px 0 60px rgba(0,0,0,0.16); }
+    #fireflut-view .cs-slide-inner { }
+    /* the sections were display-flow bands; as absolute stage layers they still
+       need to fill the frame so their band colour covers the full height */
+    #fireflut-view .cs-slide-sec.cs-band { min-height: 0; }
+    /* hero reads as two full-screen beats: the title/meta chunk, then the device
+       mockup. Read-scroll travel is inner.scrollHeight − 100vh, which ignores the
+       SECTION's own padding — so with .cs-hero's 138px nav clearance on the section
+       the mockup could only ever rise to 138px and stayed clipped. Move that
+       clearance onto the text chunk instead: the text lands exactly where it did,
+       and the mockup's rest state is a full 100vh × 100vw frame. */
+    #fireflut-view .cs-slide-sec.cs-hero { padding-top: 0; }
+    #fireflut-view .cs-slide-sec.cs-hero .cs-hero-grid { padding-top: 138px; }
+    /* a .cs-panel is a single 100vh chunk — centre its content vertically in the
+       frame so it reads as a full-screen slide with no internal scroll. Each
+       chunk keeps its own horizontal layout (constrained wrap / full-bleed shots). */
+    #fireflut-view .cs-slide-sec.cs-panel .cs-slide-inner {
+      min-height: 100vh; box-sizing: border-box;
+      /* top clears the fixed nav (80px) + 32px; sides/bottom keep the --cs-pad gutter */
+      padding-top: var(--cs-navpad); padding-bottom: var(--cs-pad);
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    /* the old scroll layout gave the shot grids a 120px bottom breather; inside a
+       fixed 100vh panel that just overflows, so drop it. */
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-shots.grid { padding-bottom: 0; }
+    /* full-height media was sized to the whole viewport; inset it by the same
+       --cs-pad top/bottom so every panel has a uniform gutter on all four sides. */
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-shot { height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); }
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-shot img,
+    #fireflut-view .cs-slide-sec.cs-panel .ff-vframe { max-height: 100%; }
+    /* Outcome split: .cs-ff-out and .cs-ff-final each carry their own 100vh
+       sizing for the old scroll layout; inside a .cs-panel the panel already
+       provides the 100vh frame + centring + gutter, so strip the built-in
+       min-height/padding/margin to avoid doubling up, and inset the montage. */
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-out { min-height: 0; padding: 0; }
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-final { margin-top: 0; }
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-final .cs-ph { height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); }
+    /* the final montage is a cinematic full-bleed beat — drop the panel gutter
+       entirely so it covers the whole screen, edge to edge. */
+    #fireflut-view .cs-slide-sec.cs-panel.cs-final .cs-slide-inner { padding: 0; }
+    #fireflut-view .cs-slide-sec.cs-panel.cs-final .cs-ff-final .cs-ph { height: 100vh; }
+    /* home-screen mockup (after the outcome) — a photographic product shot framed
+       exactly like every other asset panel (navpad top, --cs-pad bottom + L/R via
+       .cs-ff-shots). Unlike the contained UI shots, this photo fills the framed box
+       edge to edge (cover) so the fabric reaches every corner of the card. */
+    #fireflut-view .cs-ff-shot.mockup { background:#080808; }
+    #fireflut-view .cs-ff-shot.mockup img { width:100%; height:100%;
+      max-width:none; max-height:none; object-fit:cover;
+      /* ambient Ken-Burns breathe: a slow centred scale loop (never below 1, so
+         the cover fill never exposes an edge). Only transform animates; the deck
+         drives the section/inner transforms, so the img's own transform is free. */
+      transform-origin:center; will-change:transform;
+      animation:cs-ff-mockup-zoom 20s ease-in-out infinite; }
+    @keyframes cs-ff-mockup-zoom {
+      0%   { transform:scale(1); }
+      50%  { transform:scale(1.05); }
+      100% { transform:scale(1); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #fireflut-view .cs-ff-shot.mockup img { animation:none; }
+    }
+    /* the quote carries a 113px band padding for the old scroll layout; inside a
+       centred panel that just pushes it below the vertical centre — drop it so
+       the panel's own centring lands the quote dead-centre. */
+    #fireflut-view .cs-slide-sec.cs-panel.cs-quote { padding-top: 0; padding-bottom: 0; }
+    /* closing + read-next carry large band paddings for the old scroll layout;
+       inside a centred panel they shove the content off-centre — drop them so
+       the panel's own centring lands the content in the middle. */
+    #fireflut-view .cs-slide-sec.cs-panel.cs-closing { padding-top: 0; padding-bottom: 0; }
+    /* two-up tiles (moodboard / colour scheme) get a 16px label above each; the
+       tile flexes to fill the height left under its label so the panel still
+       lands at exactly 100vh. */
+    #fireflut-view .cs-ff-title { margin:0 0 16px; font-family:var(--cs-sans);
+      font-size:16px; font-weight:500; letter-spacing:.08em; text-transform:uppercase;
+      color:rgba(255,249,233,.55); }
+    body.night #fireflut-view .cs-ff-title { color:rgba(11,11,11,.55); }
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-titled { display:flex; flex-direction:column;
+      min-width:0; height:calc(100vh - var(--cs-navpad) - var(--cs-pad)); }
+    #fireflut-view .cs-slide-sec.cs-panel .cs-ff-titled .cs-ff-shot { height:auto; flex:1 1 0; min-height:0; }
+
+    /* ── Hatcha · section cover-slide (Phase 1: scroll interaction only) ──────
+       Same pinned stage as Fireflut, but Hatcha keeps its classic band layouts:
+       sections are NOT .cs-panel, so each READ-SCROLLS through its own natural
+       height (content taller than 100vh translates up during read time) before
+       it pins and the next sweeps in from the right over it. Editorial-ledger /
+       100vh-panel reframing is Phase 2. Built by the JS enhancer below; skipped
+       under reduced motion (DOM untouched → normal scrolling). */
+    #hatcha-view .cs-slide-scroller { position: relative; }
+    #hatcha-view .cs-slide-stage { position: sticky; top: 0; height: 100vh; overflow: hidden;
+                                   isolation: isolate; }   /* contain section z-index below the nav */
+    #hatcha-view .cs-slide-sec { position: absolute; inset: 0; overflow: hidden; }
+    #hatcha-view .cs-slide-sec.cv { box-shadow: -26px 0 60px rgba(0,0,0,0.16); }
+    #hatcha-view .cs-slide-inner { }
+    #hatcha-view .cs-slide-sec.cs-band { min-height: 0; }
+    /* hero reads as two full-screen beats: the title/meta chunk, then the device
+       mockup. Read-scroll travel is inner.scrollHeight − 100vh, which ignores the
+       SECTION's own padding — so with .cs-hero's 138px nav clearance on the section
+       the mockup could only ever rise to 138px and stayed clipped under a band of
+       cream. Move that clearance onto the text chunk instead: the text lands exactly
+       where it did, and the mockup's rest state is a full 100vh × 100vw frame.
+       (Same fix as #fireflut-view / #existence-view / #jumpable-view.) */
+    #hatcha-view .cs-slide-sec.cs-hero { padding-top: 0; }
+    #hatcha-view .cs-slide-sec.cs-hero .cs-hero-grid { padding-top: 138px; }
+
+    /* ══ Phase 2 · Hatcha 100vh cover-slide PANELS (editorial-ledger model) ══
+       Mirrors Fireflut §10–11, scoped to #hatcha-view. A .cs-panel is one 100vh
+       chunk: content centred, top gutter clears the fixed 80px nav (--cs-navpad).
+       Sections taller than one screen are SPLIT into sibling panels. */
+    #hatcha-view .cs-slide-sec.cs-panel .cs-slide-inner {
+      min-height: 100vh; box-sizing: border-box;
+      padding-top: var(--cs-navpad); padding-bottom: var(--cs-pad);
+      display: flex; flex-direction: column; justify-content: center; }
+
+    /* neutralise OLD band vertical paddings inside a panel (they double-count the
+       100vh frame + centring and shove content off-centre). §10 "#1 regression" */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-quote,
+    #hatcha-view .cs-slide-sec.cs-panel.cs-showcase,
+    #hatcha-view .cs-slide-sec.cs-panel.cs-closing { padding-top: 0; padding-bottom: 0; }
+    #hatcha-view .cs-slide-sec.cs-panel .cs-wrap { padding-top: 0; padding-bottom: 0; }
+
+    /* full-bleed cinematic panel (splash animation, phone bleed): no gutter */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-final .cs-slide-inner { padding: 0; min-height: 100vh; width: 100%; }
+    /* the logo-band flex-centres its inner, which would otherwise shrink to the
+       stage's fixed 1440px width — force full width so fitAnimStage measures the
+       real viewport and the splash fills edge-to-edge. */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-final.cs-logoband .cs-slide-inner { flex: 1 0 100%; }
+    /* the cinematic rigs carry cs-final on the section itself (inset:0 already
+       forces 100vh); reset their old fixed height / aspect so nothing conflicts */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-final.cs-logoband,
+    #hatcha-view .cs-slide-sec.cs-panel.cs-final.cs-phone-bleed { height: 100vh; margin: 0; aspect-ratio: auto; }
+
+    /* full-height media inside a padded panel keeps the same top budget so it
+       never slides back under the nav (§10) */
+    #hatcha-view .cs-slide-sec.cs-panel .cs-panel-media {
+      height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); }
+
+    /* ── Editorial ledger (§11) — narrow serif-number rail + content column.
+       Fonts stay design-system; palette maps onto scoped --lg-* so night flips. */
+    #hatcha-view .cs-prob, #hatcha-view .cs-home, #hatcha-view .cs-out, #hatcha-view .cs-fw, #hatcha-view .cs-show {
+      --lg-num:#c9bea9; --lg-ink:#17150f;
+      --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2);
+      --lg-accent:var(--cs-coral); }
+    #hatcha-view .cs-dir, #hatcha-view .cs-chat, #hatcha-view .cs-mind,
+    #hatcha-view .cs-theme-p, #hatcha-view .cs-theme-b {
+      --lg-num:#3c3c3c; --lg-ink:#fff9ea;
+      --lg-mut:rgba(255,249,233,.62); --lg-faint:rgba(255,249,233,.45); --lg-meta:rgba(255,249,233,.5);
+      --lg-line:rgba(255,255,255,.14); --lg-line2:rgba(255,255,255,.22);
+      --lg-accent:var(--cs-coral); }
+    body.night #hatcha-view .cs-prob, body.night #hatcha-view .cs-home, body.night #hatcha-view .cs-out, body.night #hatcha-view .cs-fw, body.night #hatcha-view .cs-show {
+      --lg-num:#3a3a44; --lg-ink:#fff9e9;
+      --lg-mut:rgba(255,249,233,.6); --lg-faint:rgba(255,249,233,.5); --lg-meta:rgba(255,249,233,.55);
+      --lg-line:rgba(255,255,255,.12); --lg-line2:rgba(255,255,255,.22);
+      --lg-accent:var(--cs-coral); }
+    body.night #hatcha-view .cs-dir, body.night #hatcha-view .cs-chat, body.night #hatcha-view .cs-mind,
+    body.night #hatcha-view .cs-theme-p, body.night #hatcha-view .cs-theme-b {
+      --lg-num:#c9bea9; --lg-ink:#17150f;
+      --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2);
+      --lg-accent:var(--cs-coral); }
+
+    /* 02b · criteria media panel — 3-up widget shots centred (drop the rail escape) */
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel { width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut)); margin:0 auto;
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      box-sizing:border-box; }
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit-eye { margin:0 0 34px; }
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit-note { margin:0 0 44px; max-width:900px; }
+    /* proportionate assets — fixed cells that WRAP the count (3→2→1) as width
+       shrinks, instead of stretching any one asset to full width. Desktop: up
+       to native 362px (crisp). Tablet/phone: capped smaller (see media below). */
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit {
+      grid-template-columns:repeat(auto-fit, minmax(300px, 362px));
+      justify-content:start; gap:30px 28px; margin-left:0; }
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit > div { max-width:362px; }
+    #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-card-img { height:auto; max-width:100%; max-height:none; object-fit:contain; object-position:top; }
+    @media (max-width: 900px) {
+      #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit {
+        grid-template-columns:repeat(auto-fit, minmax(200px, 280px)); }
+      #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit > div { max-width:280px; }
+    }
+    /* wide screens (≥1400px): let the three assets fill the row for presence on
+       large displays (~420px each — slightly past native 362, mild upscaling). */
+    @media (min-width: 1400px) {
+      #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit {
+        grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit > div { max-width:none; }
+    }
+    @media (min-width: 1441px) {
+      #hatcha-view .cs-slide-sec.cs-panel .cs-crit-panel .cs-crit-note { margin:0 0 88px; }
+    }
+
+    /* 03a is the densest ledger (4 rows + note) — tighten to hold 100vh */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-home .cs-ledger-label { margin-top:34px; padding-bottom:24px; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-home .cs-ledger-row { padding:14px 0; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-home .cs-ledger-note { margin-top:28px; }
+
+    /* 04b · design-system gallery — the existing auto-scroll marquee, hosted
+       full-bleed in a 100vh panel (its clone/rAF loop script is untouched) */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-gal .cs-slide-inner { padding-left:0; padding-right:0; }
+    #hatcha-view .cs-gal-marq { position:relative; width:100%; overflow:hidden; }
+    #hatcha-view .cs-gal-marq::before, #hatcha-view .cs-gal-marq::after {
+      content:''; position:absolute; top:0; bottom:0; width:90px; z-index:2; pointer-events:none; }
+    #hatcha-view .cs-gal-marq::before { left:0;  background:linear-gradient(to right, var(--cs-black), transparent); }
+    #hatcha-view .cs-gal-marq::after  { right:0; background:linear-gradient(to left,  var(--cs-black), transparent); }
+    body.night #hatcha-view .cs-gal-marq::before { background:linear-gradient(to right, var(--cs-cream), transparent); }
+    body.night #hatcha-view .cs-gal-marq::after  { background:linear-gradient(to left,  var(--cs-cream), transparent); }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-gal .cs-gallery { padding-top:0; padding-bottom:0; margin:0; width:100%; }
+
+    /* 05b/c · theme panels — centre the existing 2-col grids, cap the big media to 100vh */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-theme-grid,
+    /* no --cs-gut here: .cs-theme-lower is a .cs-wrap, which already pads to --cs-pad */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-theme-lower { margin:0 auto; width:100%; max-width:var(--cs-max); }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-theme-grid {
+      max-width:none;   /* full-width: L/R gutter (--cs-pad) matches the bottom padding */
+      grid-template-columns:minmax(0,1fr) auto;   /* text flexes on the left, video is auto (native width) pinned to the right gutter */
+      height:calc(100vh - var(--cs-navpad) - var(--cs-pad)); align-items:center; }
+    /* keep the text ↔ video gap at exactly the 60px grid gap — the text block hugs the video's left edge (floats right, empty space collects on the far left) */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-theme-grid > div:first-child {
+      justify-self:end; width:100%; max-width:340px; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-mini { margin-top:52px; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-palette {
+      aspect-ratio:var(--cs-palette-ar);   /* keep native ratio so the baked title/swatches never crop */
+      width:auto; height:100%; min-width:0; max-width:100%; max-height:none;
+      align-self:center; justify-self:end;  /* full height, sat against the right gutter */
+      margin-right:0; border-radius:8px; }
+    /* guardrails — mirror of the palette panel: full-width, symmetric 60px gutters, ASSET on the left / content on the right */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-theme-lower {
+      max-width:none;   /* full-width: L/R gutter (--cs-pad) matches the bottom padding */
+      grid-template-columns:auto minmax(0,1fr);   /* asset is auto (native width) pinned to the left gutter, text flexes on the right */
+      grid-template-rows:minmax(0,1fr);   /* definite single row so the bare <img loading="lazy" decoding="async"> can't inflate it past 100vh */
+      gap:60px;
+      height:calc(100vh - var(--cs-navpad) - var(--cs-pad)); align-items:center; }
+    /* keep the asset ↔ text gap at exactly the 60px grid gap — the text hugs the asset's right edge (floats left, empty space collects on the far right) */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-guardrail-txt {
+      justify-self:start; width:100%; max-width:360px; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-guardrail-img {
+      aspect-ratio:var(--cs-guardrail-ar);   /* keep native ratio so the asset never crops */
+      width:auto; height:100%; min-width:0; min-height:0; max-width:100%; max-height:none;
+      align-self:stretch; justify-self:start;  /* full height, sat against the left gutter */
+      margin-left:0; border-radius:8px; }
+
+    /* narrow viewports — a full-height aspect-locked asset (~square, but tall) gets
+       too WIDE and starves the text column. Below this point, revert both theme
+       panels to a stacked single column with the asset at full-width natural size. */
+    @media (max-width:1200px) {
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-theme-grid,
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-theme-lower {
+        grid-template-columns:1fr; grid-template-rows:auto; gap:32px;
+        height:auto; align-items:stretch; }
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-theme-grid > div:first-child,
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-guardrail-txt {
+        justify-self:stretch; max-width:none; }
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-p .cs-palette {
+        width:100%; height:auto; aspect-ratio:var(--cs-palette-ar);
+        justify-self:start; align-self:auto; max-width:600px; max-height:none; margin:0; }
+      #hatcha-view .cs-slide-sec.cs-panel.cs-theme-b .cs-guardrail-img {
+        width:100%; height:auto; aspect-ratio:var(--cs-guardrail-ar);
+        justify-self:start; align-self:auto; max-width:600px; max-height:none; margin:0; }
+    }
+
+    /* 03b · fixed/flexible — two composed phone surfaces in one panel */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-fw-inner { width:100%; max-width:920px; margin:0 auto; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-fw-note { margin:0 0 30px; max-width:none; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-fw-cap { font-family:var(--cs-sans); font-size:12px;
+      font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--lg-faint); margin:0 0 26px; }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-phones { margin-top:0; margin-left:0;
+      --fw-figw:min(250px, calc((100vh - 336px) * 0.45)); }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-phone-fig { flex:0 0 var(--fw-figw); max-width:var(--fw-figw); }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-fw .cs-annot { flex:0 0 150px; }
+
+    /* ── narrow-window gutter (--cs-gut) ──────────────────────────────────
+       A deck panel's side gutter is a side-effect of centring: --cs-max is
+       1320px, so a 1440px window leaves 60px of air either side. Under
+       ~1320px there is nothing left to centre and the column runs flush to
+       the glass. Widening the cap by exactly the padding keeps every window
+       ≥1352px pixel-identical and puts a 16px floor under everything below.
+       Applied to each centred column rather than to .cs-slide-inner so the
+       genuinely full-bleed panels (hero, mockups, video beats) stay bleeding.
+       The gutter is --cs-pad, the same token .cs-wrap uses for the hero and
+       quote bands — a slide with its own smaller value reads as if one side
+       is missing when it sits next to a band that pads properly.
+       Static mobile is unaffected — its html.cs-static rules set --cs-pad. */
+    #hatcha-view, #fireflut-view, #existence-view, #jumpable-view { --cs-gut:var(--cs-pad); }
+
+    #hatcha-view .cs-ledger { display:grid; grid-template-columns:220px minmax(0,1fr); gap:64px;
+      width:100%; max-width:calc(var(--cs-max) + 2 * var(--cs-gut)); margin:0 auto; align-self:center;
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut); }
+    #hatcha-view .cs-ledger.header-only { margin-bottom:40px; }
+    #hatcha-view .cs-ledger-rail { }
+    #hatcha-view .cs-ledger-num { font-family:var(--cs-serif); font-weight:400;
+      font-size:96px; line-height:.9; letter-spacing:.02em; color:var(--lg-num); }
+    #hatcha-view .cs-ledger-eye { margin-top:18px; font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--lg-faint); }
+    #hatcha-view .cs-ledger-h { margin:0; font-family:var(--cs-serif); font-weight:400;
+      font-size:52px; line-height:1.07; letter-spacing:0; color:var(--lg-ink); text-wrap:balance; }
+    #hatcha-view .cs-ledger-h i, #hatcha-view .cs-ledger-h em { font-style:italic; }
+    #hatcha-view .cs-ledger-p { margin:30px 0 0; max-width:780px; font-family:var(--cs-sans);
+      font-size:19px; line-height:1.6; color:var(--lg-ink); opacity:.86; }
+    #hatcha-view .cs-ledger-p + .cs-ledger-p { margin-top:18px; }
+    #hatcha-view .cs-ledger-label { margin-top:48px; padding-bottom:32px; display:flex; align-items:center; gap:16px; }
+    #hatcha-view .cs-ledger-label > span:first-child { font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--lg-faint); }
+    #hatcha-view .cs-ledger-rule { flex:1; height:1px; background:var(--lg-line); }
+    #hatcha-view .cs-ledger-rows { margin-top:10px; }
+    #hatcha-view .cs-ledger-row { display:grid; grid-template-columns:1fr 44px 1fr;
+      align-items:center; padding:18px 0; border-bottom:1px solid var(--lg-line); }
+    #hatcha-view .cs-ledger-row:last-child { border-bottom:0; }
+    #hatcha-view .cs-ledger-hrow { align-items:end; padding:0 0 14px; border-bottom:1px solid var(--lg-line2); }
+    #hatcha-view .cs-ledger-before { padding-right:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-mut); }
+    #hatcha-view .cs-ledger-after { padding-left:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-ink); font-weight:500; }
+    #hatcha-view .cs-ledger-arrow { display:flex; justify-content:center;
+      font-family:var(--cs-sans); font-size:20px; color:var(--lg-accent); }
+    #hatcha-view .cs-ledger-hrow .cs-ledger-before,
+    #hatcha-view .cs-ledger-hrow .cs-ledger-after { font-size:11px; font-weight:600;
+      letter-spacing:.14em; text-transform:uppercase; }
+    #hatcha-view .cs-ledger-hrow .cs-ledger-before { color:var(--lg-faint); }
+    #hatcha-view .cs-ledger-hrow .cs-ledger-after { color:var(--lg-accent); }
+    /* term → definition rows (02 mindset, on the dark band) */
+    #hatcha-view .cs-dir .cs-ledger-row,
+    #hatcha-view .cs-chat .cs-ledger-row,
+    #hatcha-view .cs-show .cs-ledger-row { grid-template-columns:300px minmax(0,1fr); align-items:baseline; }
+    #hatcha-view .cs-ledger-key { padding-right:32px; font-family:var(--cs-sans);
+      font-size:19px; font-weight:600; line-height:1.35; color:var(--lg-ink); }
+    #hatcha-view .cs-ledger-sub { display:block; margin-top:5px; font-family:var(--cs-sans);
+      font-size:13px; font-weight:400; letter-spacing:.02em; color:var(--lg-faint); }
+    #hatcha-view .cs-ledger-desc { font-family:var(--cs-sans); font-size:16px;
+      line-height:1.55; color:var(--lg-mut); }
+    /* stat → caption rows (06 outcome) */
+    #hatcha-view .cs-out .cs-ledger-row { grid-template-columns:210px minmax(0,1fr); align-items:baseline; }
+    #hatcha-view .cs-ledger-stat { padding-right:32px; font-family:var(--cs-serif);
+      font-weight:400; font-size:30px; letter-spacing:.02em; line-height:1.1; color:var(--lg-ink); }
+    /* flush "What I did" note — replaces the old grey card inside ledger panels */
+    #hatcha-view .cs-ledger-note { margin-top:34px; max-width:820px; padding-left:20px;
+      border-left:2px solid var(--lg-accent); }
+    #hatcha-view .cs-ledger-note .lbl { font-family:var(--cs-sans); font-size:12px; font-weight:500;
+      letter-spacing:.16em; text-transform:uppercase; color:var(--lg-accent); margin-bottom:10px; }
+    #hatcha-view .cs-ledger-note .bd { font-family:var(--cs-sans); font-size:15.5px;
+      line-height:1.62; color:var(--lg-mut); }
+    /* 05 · space the "What I did" note off the step table (label removed) — height-responsive so it still fits 100vh, with the rows tightened to reclaim room */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-chat .cs-ledger-rows { margin-top:min(44px, calc((100vh - 700px) * 0.4)); }
+    #hatcha-view .cs-slide-sec.cs-panel.cs-chat .cs-ledger-row { padding:12px 0; }
+    /* 06 · more breathing room between the intro copy and the note */
+    #hatcha-view .cs-slide-sec.cs-panel.cs-dir .cs-ledger-note { margin-top:60px; }
+
+    /* ── 01 · Problem — editorial "ledger" card (reframed from reference 1A).
+       Design-system fonts kept (DM Serif Display / Space Grotesk); the
+       reference's warm-grey palette is mapped onto scoped --lg-* tokens so the
+       card inverts under night mode. A cream card floats on a slightly deeper
+       cream mat: a meta rail (number / eyebrow / divider / meta) beside the
+       headline, intro, and a before → after ledger with a Before/After head. */
+    #fireflut-view .cs-prob, #fireflut-view .cs-home, #fireflut-view .cs-out {
+      --lg-num:#c9bea9; --lg-ink:#17150f;
+      --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2);
+      --lg-accent:var(--cs-coral);
+    }
+    /* 05 · Outcome stats as editorial rows: a serif display key (keeps the
+       stat's prominence) beside its description, hairline-separated like 01/02. */
+    #fireflut-view .cs-out .cs-ledger-row { grid-template-columns:210px minmax(0,1fr); align-items:baseline; }
+    #fireflut-view .cs-ledger-stat { padding-right:32px; font-family:var(--cs-serif);
+      font-weight:400; font-size:30px; letter-spacing:.02em; line-height:1.1; color:var(--lg-ink); }
+    /* a ledger used as a section header only (with full-bleed media below it)
+       drops its bottom breathing room so the media sits close under the intro */
+    #fireflut-view .cs-ledger.header-only { margin-bottom:40px; }
+    /* 03 (home) and 04 (chat) are twins — same editorial header + a media row of
+       equal-height cards — so both use the default centred panel (no special
+       anchor) and land identically. */
+    /* laid flush on the cream band — no floating card, one continuous surface */
+    #fireflut-view .cs-ledger {
+      align-self:center; width:100%; max-width:calc(var(--cs-max) + 2 * var(--cs-gut));
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      display:grid; grid-template-columns:220px minmax(0,1fr);
+      gap:64px; box-sizing:border-box;
+    }
+    #fireflut-view .cs-ledger-num { font-family:var(--cs-serif); font-weight:400;
+      font-size:96px; line-height:.9; letter-spacing:.02em; color:var(--lg-num); }
+    #fireflut-view .cs-ledger-eye { margin-top:18px; font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.18em; text-transform:uppercase;
+      color:var(--lg-faint); }
+    #fireflut-view .cs-ledger-div { margin-top:26px; height:1px; background:var(--lg-line); }
+    #fireflut-view .cs-ledger-meta { margin-top:22px; font-family:var(--cs-sans);
+      font-size:13px; line-height:1.6; color:var(--lg-meta); }
+    #fireflut-view .cs-ledger-h { margin:0; font-family:var(--cs-serif); font-weight:400;
+      font-size:52px; line-height:1.07; letter-spacing:0; color:var(--lg-ink); text-wrap:balance; }
+    #fireflut-view .cs-ledger-h i, #fireflut-view .cs-ledger-h em { font-style:italic; }
+    #fireflut-view .cs-ledger-p { margin:30px 0 0; max-width:780px; font-family:var(--cs-sans);
+      font-size:19px; line-height:1.6; color:var(--lg-ink); opacity:.86; }
+    #fireflut-view .cs-ledger-label { margin-top:48px; padding-bottom:32px; display:flex; align-items:center; gap:16px; }
+    #fireflut-view .cs-ledger-label > span:first-child { font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--lg-faint); }
+    #fireflut-view .cs-ledger-rule { flex:1; height:1px; background:var(--lg-line); }
+    #fireflut-view .cs-ledger-rows { margin-top:10px; }
+    #fireflut-view .cs-ledger-row { display:grid; grid-template-columns:1fr 44px 1fr;
+      align-items:center; padding:18px 0; border-bottom:1px solid var(--lg-line); }
+    #fireflut-view .cs-ledger-row:last-child { border-bottom:0; }
+    #fireflut-view .cs-ledger-hrow { align-items:end; padding:0 0 14px; border-bottom:1px solid var(--lg-line2); }
+    #fireflut-view .cs-ledger-before { padding-right:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-mut); }
+    #fireflut-view .cs-ledger-after { padding-left:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-ink); font-weight:500; }
+    #fireflut-view .cs-ledger-arrow { display:flex; justify-content:center;
+      font-family:var(--cs-sans); font-size:20px; color:var(--lg-accent); }
+    #fireflut-view .cs-ledger-hrow .cs-ledger-before,
+    #fireflut-view .cs-ledger-hrow .cs-ledger-after { font-size:11px; font-weight:600;
+      letter-spacing:.14em; text-transform:uppercase; line-height:1.4; }
+    #fireflut-view .cs-ledger-hrow .cs-ledger-before { color:var(--lg-faint); }
+    #fireflut-view .cs-ledger-hrow .cs-ledger-after { color:var(--lg-accent); }
+
+    /* 02 · Direction — same editorial ledger, on the DARK band. Its --lg-*
+       tokens are the light-on-dark set for day; night flips the band to cream,
+       so the night override restores the warm-cream set (matching 01). The
+       "ledger" here is the three guiding principles as a term → definition list. */
+    #fireflut-view .cs-dir, #fireflut-view .cs-chat {
+      --lg-num:#3c3c3c; --lg-ink:#fff9ea;
+      --lg-mut:rgba(255,249,233,.62); --lg-faint:rgba(255,249,233,.45); --lg-meta:rgba(255,249,233,.5);
+      --lg-line:rgba(255,255,255,.14); --lg-line2:rgba(255,255,255,.22);
+      --lg-accent:var(--cs-coral);
+    }
+    #fireflut-view .cs-dir .cs-ledger-row { grid-template-columns:300px minmax(0,1fr); align-items:baseline; }
+    #fireflut-view .cs-ledger-key { padding-right:32px; font-family:var(--cs-sans);
+      font-size:19px; font-weight:600; line-height:1.35; color:var(--lg-ink); }
+    #fireflut-view .cs-ledger-desc { font-family:var(--cs-sans); font-size:16px;
+      line-height:1.55; color:var(--lg-mut); }
+
+    /* ── NIGHT THEME (cream bands go night-dark, dark bands invert to day-cream) ── */
+    body.night #fireflut-view { --cs-cream:var(--c-night); --cs-ink:var(--c-cream-2); }
+    /* 01 · Problem ledger — invert the mat/card and warm-grey text at night */
+    body.night #fireflut-view .cs-prob, body.night #fireflut-view .cs-home, body.night #fireflut-view .cs-out {
+      --lg-num:#3a3a44; --lg-ink:#fff9e9;
+      --lg-mut:rgba(255,249,233,.6); --lg-faint:rgba(255,249,233,.5); --lg-meta:rgba(255,249,233,.55);
+      --lg-line:rgba(255,255,255,.12); --lg-line2:rgba(255,255,255,.22);
+    }
+    /* 03 uses the same cream editorial tokens as 01 (shared selector above) */
+    /* 02 ledger — night flips the dark band to cream, so use the warm-cream set */
+    body.night #fireflut-view .cs-dir, body.night #fireflut-view .cs-chat {
+      --lg-num:#c9bea9; --lg-ink:#17150f;
+      --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2);
+    }
+    body.night #fireflut-view .cs-band.cream .cs-p { color:rgba(255,249,233,0.85); }
+    body.night #fireflut-view .cs-hero-intro { color:rgba(255,249,233,0.88); }
+    #fireflut-view .cs-hero-tagline { margin:16px 0 0; font-family:var(--cs-serif);
+      font-style:normal; font-weight:400; font-size:34px; line-height:1.2;
+      letter-spacing:0.01em; color:rgba(11,11,11,0.6); }
+    body.night #fireflut-view .cs-hero-tagline { color:rgba(255,249,233,0.7); }
+    body.night #fireflut-view .cs-num { color:#43434b; }
+    /* night stripe is for EMPTY placeholders only — the functional media/
+       content cards (gauge, location, recs, voice, pre-prompts, loading,
+       yes/no) carry their own real backgrounds and must keep them at night,
+       identical to day (e.g. the gauge's gradient shows through its feathered
+       video mask, so a striped fill would leak in around the edges). */
+    body.night #fireflut-view .cs-ph:not(.dark):not(.cs-ff-gauge):not(.cs-ff-location):not(.cs-ff-recs):not(.cs-ff-voice):not(.cs-ff-preprompts):not(.cs-ff-loading):not(.cs-ff-yesno) {
+      background:repeating-linear-gradient(45deg,#14141a,#14141a 14px,#1b1b22 14px,#1b1b22 28px); color:#6b6b6b; }
+    body.night #fireflut-view .cs-ff-cap { color:rgba(255,249,233,0.5); }
+    body.night #fireflut-view .cs-stat { border-color:rgba(255,249,233,0.22); }
+    body.night #fireflut-view .cs-stat-p { color:rgba(255,249,233,0.7); }
+    body.night #fireflut-view .cs-closing-p { color:rgba(255,249,233,0.78); }
+    /* comparison table on the now-dark cream band → dark chrome */
+    body.night #fireflut-view .cs-cmp { border-color:rgba(255,255,255,0.22); }
+    body.night #fireflut-view .cs-cmp .before { color:#fdf1e1; }
+    body.night #fireflut-view .cs-cmp .after { background:#fff9f1; color:#141414; }
+    body.night #fireflut-view .cs-cmp-arrow { color:#fdf1e1; border-left-color:rgba(255,255,255,0.22); border-right-color:rgba(255,255,255,0.22); }
+    body.night #fireflut-view .cs-cmp-row:not(:last-child) .before,
+    body.night #fireflut-view .cs-cmp-row:not(:last-child) .cs-cmp-arrow { border-bottom-color:rgba(255,255,255,0.22); }
+    body.night #fireflut-view .cs-cmp-row:not(:last-child) .after { border-bottom-color:rgba(0,0,0,0.22); }
+    body.night #fireflut-view .cs-cmp-head .before { background:rgba(255,255,255,0.08); color:#fdf1e1; }
+    body.night #fireflut-view .cs-cmp-head .cs-cmp-arrow { background:rgba(255,255,255,0.08); }
+    body.night #fireflut-view .cs-cmp-head .after { background:#fdf1e1; color:#141414; }
+
+    /* night: dark bands INVERT to day-cream with ink text */
+    body.night #fireflut-view .cs-band.dark { background:#fff9f1; color:#0b0b0b; }
+    body.night #fireflut-view .cs-band.dark .cs-num { color:#c9c4ba; }
+    body.night #fireflut-view .cs-band.dark .cs-p { color:rgba(11,11,11,0.9); }
+    body.night #fireflut-view .cs-band.dark .cs-quote-line { border-top-color:rgba(0,0,0,0.1); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-role { color:#8f8a80; border-color:rgba(0,0,0,0.14); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-prin { border-color:rgba(0,0,0,0.1); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-prin-card { background:#fff9f1; border-right-color:rgba(0,0,0,0.1); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-prin-h { color:#0b0b0b; }
+    body.night #fireflut-view .cs-band.dark .cs-ff-prin-p { color:rgba(11,11,11,0.62); }
+    body.night #fireflut-view .cs-band.dark .ff-vcopy h3 { color:#0b0b0b; }
+    body.night #fireflut-view .cs-band.dark .ff-vcopy p { color:rgba(11,11,11,0.62); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-swatch .lbl { color:rgba(11,11,11,0.5); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-micro { border-color:rgba(0,0,0,0.12); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-mrow + .cs-ff-mrow { border-top-color:rgba(0,0,0,0.12); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-mtag { color:#0b0b0b; border-right-color:rgba(0,0,0,0.12); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-mdesc { color:rgba(11,11,11,0.7); }
+    body.night #fireflut-view .cs-band.dark .cs-ff-cap { color:rgba(11,11,11,0.55); }
+    body.night #fireflut-view .cs-band.dark .cs-ph.dark {
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px); color:#8a8474; }
+
+    /* responsive */
+    @media (max-width:1100px){
+      #fireflut-view { --cs-pad:28px; --cs-rail:180px; --cs-navpad:104px; }   /* mobile nav 72px + 32px */
+      #fireflut-view .cs-hero-h { font-size:44px; }
+      #fireflut-view .cs-hero-tagline { font-size:26px; }
+      #fireflut-view .cs-meta { margin-top:8px; }
+      #fireflut-view .cs-sec-h { font-size:34px; }
+      #fireflut-view .cs-ff-duo, #fireflut-view .cs-ff-duo.rev,
+      #fireflut-view .cs-ff-prin, #fireflut-view .cs-ff-swatch { grid-template-columns:1fr; margin-left:0; }
+      #fireflut-view .cs-ff-prin-card { border-right:0; border-bottom:1px solid rgba(255,249,233,0.12); }
+      #fireflut-view .cs-ff-prin-card:last-child { border-bottom:0; }
+      body.night #fireflut-view .cs-band.dark .cs-ff-prin-card { border-bottom-color:rgba(0,0,0,0.1); }
+      #fireflut-view .cs-ff-cap, #fireflut-view .cs-ff-full, #fireflut-view .cs-ff-eye { margin-left:0; }
+      #fireflut-view .cs-stats { grid-template-columns:1fr; }
+      #fireflut-view .cs-ff-mrow { grid-template-columns:1fr; }
+      #fireflut-view .cs-ff-mtag { border-right:0; border-bottom:1px solid rgba(255,249,233,0.14); }
+      #fireflut-view .cs-band.cream .cs-ff-mtag { border-bottom-color:rgba(0,0,0,0.12); }
+      #fireflut-view .cs-num { font-size:64px; }
+    }
+    /* phones: side-by-side halves get too small, so stack them full-width.
+       flex:0 0 auto so each card sizes to its image (a column flex-basis of 0
+       would collapse the card to 0 height and clip the shot). */
+    @media (max-width:820px){
+      /* Problem ledger stacks: meta rail above the content, tighter card */
+      #fireflut-view .cs-ledger { grid-template-columns:1fr; gap:32px; padding:40px 28px 44px; }
+      #fireflut-view .cs-ledger-num { font-size:72px; }
+      #fireflut-view .cs-ledger-h { font-size:34px; }
+      #fireflut-view .cs-ledger-p { font-size:16px; }
+      #fireflut-view .cs-ledger-before, #fireflut-view .cs-ledger-after { font-size:15px; }
+      #fireflut-view .cs-ledger-row, #fireflut-view .cs-ledger-hrow { grid-template-columns:1fr 32px 1fr; }
+    }
+    @media (max-width:760px){
+      #fireflut-view .cs-ff-shots { flex-direction:column; }
+      #fireflut-view .cs-ff-shots.grid { grid-template-columns:1fr; }
+      #fireflut-view .cs-ff-shot { flex:0 0 auto; height:auto; display:block; }
+      #fireflut-view .cs-ff-shot img { width:100%; height:auto; max-width:100%; max-height:none; object-fit:fill; }
+      #fireflut-view .cs-ff-colors { height:auto; aspect-ratio:720/1024; }
+      /* the absolutely-stacked variant frames need an explicit box on mobile,
+         since the card collapses to auto height here */
+      #fireflut-view .cs-ff-shot.variants .ff-vstack { aspect-ratio:720/1024; }
+      #fireflut-view .ff-vframe { width:100%; height:100%; max-height:none; object-fit:contain; }
+      /* the rail+content column narrows below these videos' own aspect ratio
+         here — cover would crop into real content, so contain instead, centred.
+         (Matches the .cs-ff-location .gg-video selector's specificity so this
+         wins and resets its bottom-anchored object-position back to centred.) */
+      #fireflut-view .gg-video,
+      #fireflut-view .cs-ff-location .gg-video { object-fit:contain; object-position:center; }
+    }
+    @media (max-width:1320px){
+      #fireflut-view .cs-numbered { padding-left:16px !important; padding-right:16px !important; }
+      #fireflut-view .cs-quote-inner { padding-left:16px; padding-right:16px; }
+    }
+
+    /* ═══ Fireflut · mobile static flow (html.cs-static, set once at load ≤820px) ═══
+       The cover-slide deck is skipped, sections stack and scroll natively.
+       Ledgers keep headline + data rows and drop the prose; media goes
+       full-bleed. Class-scoped (not @media) so it tracks the JS gate exactly. */
+
+    /* ledger panels: own vertical rhythm (the deck's flex-centring is gone)
+       plus the side gutter the base ledger never carries */
+    html.cs-static #fireflut-view .cs-ledger { grid-template-columns:1fr; gap:24px;
+      padding:56px var(--cs-pad) 48px; }
+    html.cs-static #fireflut-view .cs-ledger-num { font-size:64px; }
+    html.cs-static #fireflut-view .cs-ledger-eye { margin-top:10px; }
+    html.cs-static #fireflut-view .cs-ledger-h { font-size:32px; }
+    html.cs-static #fireflut-view .cs-ledger-p { display:none; }
+    html.cs-static #fireflut-view .cs-ledger-label { margin-top:24px; padding-bottom:16px; }
+    html.cs-static #fireflut-view .cs-ledger-row,
+    html.cs-static #fireflut-view .cs-ledger-hrow { grid-template-columns:1fr 28px 1fr; }
+    html.cs-static #fireflut-view .cs-ledger-row { padding:14px 0; }
+    html.cs-static #fireflut-view .cs-ledger-before,
+    html.cs-static #fireflut-view .cs-ledger-after { font-size:15px; }
+    html.cs-static #fireflut-view .cs-ledger-before { padding-right:6px; }
+    html.cs-static #fireflut-view .cs-ledger-after { padding-left:6px; }
+    /* key/desc rows (02 Direction): keep the term, drop the description */
+    html.cs-static #fireflut-view .cs-dir .cs-ledger-row { grid-template-columns:1fr; }
+    html.cs-static #fireflut-view .cs-dir .cs-ledger-desc { display:none; }
+    html.cs-static #fireflut-view .cs-ledger-key { padding-right:0; font-size:17px; }
+    /* stat rows (05 Outcome): the caption is the stat's meaning — keep it, stacked */
+    html.cs-static #fireflut-view .cs-out .cs-ledger-row { grid-template-columns:1fr; gap:4px; align-items:start; }
+    html.cs-static #fireflut-view .cs-out .cs-ledger-desc { display:block; }
+    /* the source comment calls 05 Outcome "one 100vh panel" by design — the
+       desktop deck gives it that via .cs-slide-inner; static flow needs its
+       own min-height + vertical centring to match, keeping the existing
+       56/pad/48 padding rather than replacing it. */
+    html.cs-static #fireflut-view .cs-out .cs-ledger { min-height:100svh;
+      display:flex; flex-direction:column; justify-content:center; box-sizing:border-box; }
+
+    /* pull quotes: scale down for phone measure */
+    html.cs-static #fireflut-view .cs-quote p { font-size:22px; }
+
+    /* before/after, moodboard, variants: full-bleed vertical stack */
+    html.cs-static #fireflut-view .cs-ff-shots { flex-direction:column; gap:12px;
+      padding-left:0; padding-right:0; }
+    html.cs-static #fireflut-view .cs-ff-shots.grid { grid-template-columns:1fr; padding-bottom:0; }
+    html.cs-static #fireflut-view .cs-ff-shot { flex:0 0 auto; height:auto; display:block; border-radius:0; }
+    html.cs-static #fireflut-view .cs-ff-shot img { width:100%; height:auto; max-width:100%; max-height:none; }
+    /* tiles whose content is absolutely positioned need an explicit box once
+       the card collapses to auto height (mirrors the ≤760 rules, which stop
+       at 760 while the gate runs to 820) */
+    html.cs-static #fireflut-view .cs-ff-colors { height:auto; aspect-ratio:720/1024; }
+    html.cs-static #fireflut-view .cs-ff-shot.variants .ff-vstack { aspect-ratio:720/1024; }
+    html.cs-static #fireflut-view .ff-vframe { width:100%; height:100%; max-height:none; object-fit:contain; }
+    html.cs-static #fireflut-view .cs-ff-title { padding:0 var(--cs-pad); }
+    html.cs-static #fireflut-view .cs-ff-shot.copy { padding:40px var(--cs-pad) 48px; }
+    html.cs-static #fireflut-view .ff-vcopy { max-width:none; padding:0; }
+
+    /* section 03 trio: full-bleed single column */
+    html.cs-static #fireflut-view .cs-ff-trio { grid-template-columns:1fr; gap:12px;
+      padding-left:0; padding-right:0; }
+    html.cs-static #fireflut-view .cs-ff-trio .cs-ph { border-radius:0; }
+
+    /* section 04 chat details: same treatment as the 03 trio — the marquee
+       stops and its cards stack full-bleed, one per row. The aria-hidden set
+       only ever existed to make the translateX loop wrap seamlessly. */
+    html.cs-static #fireflut-view .cs-ff-quad-wrap::before,
+    html.cs-static #fireflut-view .cs-ff-quad-wrap::after { display:none; }
+    html.cs-static #fireflut-view .cs-ff-quad { display:grid; grid-template-columns:1fr;
+      gap:12px; width:auto; padding:0; animation:none; }
+    html.cs-static #fireflut-view .cs-ff-quad .cs-ph { flex:none; width:auto;
+      aspect-ratio:720/626; height:auto; border-radius:0; }
+    html.cs-static #fireflut-view .cs-ff-quad .cs-ph[aria-hidden="true"] { display:none; }
+
+    /* home mockup: the flagship full-bleed beat — one full viewport */
+    html.cs-static #fireflut-view .cs-ff-shot.mockup { height:100svh; display:flex; }
+    html.cs-static #fireflut-view .cs-ff-shot.mockup img { width:100%; height:100%; object-fit:cover; }
+
+    /* final montage: full viewport, svh so iOS toolbars never crop it */
+    html.cs-static #fireflut-view .cs-ff-final { margin-top:0; }
+    html.cs-static #fireflut-view .cs-ff-final .cs-ph { height:100svh; }
+
+
+    /* ═══════════════ Work / Existence case study (routed via #existence) ═══════════════
+       Cover-slide 100vh panels + editorial ledger (the Fireflut/Hatcha model). Accent is
+       MONOCHROME — no chroma tint; contrast (ink on cream / cream on dark) is the accent,
+       and italic <i> carries emphasis. Scoped tokens + scoped ledger/stage CSS. */
+    #existence-view { --cs-serif:'DM Serif Display', Georgia, serif;
+                      --cs-sans:'Space Grotesk', sans-serif;
+                      --cs-cream:#fff9f1; --cs-black:#000; --cs-ink:#0b0b0b;
+                      --cs-coral:#0b0b0b;               /* monochrome: "accent" is ink/cream contrast */
+                      --cs-max:1320px; --cs-pad:60px; --cs-rail:355px;
+                      --cs-navpad:112px; }             /* panel top clearance = 80px nav + 32px */
+
+    /* tile → hero shared-element zoom (same mechanism as Hatcha/Fireflut) */
+    body.vt-hero a.project-tile[href="/work/existence"] { view-transition-name: existence-hero; }
+    body.vt-hero #existence-view .cs-hero .cs-hero-mock { view-transition-name: existence-hero; }
+    ::view-transition-old(existence-hero),
+    ::view-transition-new(existence-hero) { width:100%; height:100%; object-fit:cover; }
+    ::view-transition-group(existence-hero) {
+      animation-duration: 0.6s; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(existence-hero),
+      ::view-transition-old(existence-hero),
+      ::view-transition-new(existence-hero) { animation: none; } }
+
+    /* hero reads as two full-screen beats: the title/meta chunk, then the device mockup
+       (same fix as #fireflut-view). Read-scroll travel is inner.scrollHeight − 100vh,
+       which ignores the SECTION's own padding — so with .cs-hero's 138px nav clearance
+       on the section the mockup could only ever rise to 138px and its bottom stayed
+       clipped. Move that clearance onto the text chunk: the text lands where it did and
+       the mockup's rest state is a full 100vh × 100vw frame. */
+    #existence-view .cs-slide-sec.cs-hero { padding-top: 0; }
+    #existence-view .cs-slide-sec.cs-hero .cs-hero-grid { padding-top: 138px; }
+
+    /* hero placeholder — own class (not .cs-ph) so its clip never fights the tile→hero morph */
+    #existence-view .cs-ex-heroph { position:absolute; inset:0; width:100%; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px); color:#8a8474; }
+    #existence-view .cs-ex-heroph span { padding:8px 14px; background:rgba(0,0,0,0.5); color:#fff;
+      border-radius:100px; font-size:12px; letter-spacing:0.04em; }
+
+    /* quote stays monochrome — emphasis is the serif italic, not colour */
+    #existence-view .cs-quote { padding:113px 0; }
+    #existence-view .cs-quote .coral { color:var(--cs-ink); font-style:italic; }
+
+    /* hero tagline — a subtitle under the "Existence" display title, not equal weight:
+       smaller italic serif, muted, so the title clearly leads. */
+    #existence-view .cs-hero-tagline { margin:16px 0 0; font-family:var(--cs-serif);
+      font-style:normal; font-weight:400; font-size:34px; line-height:1.2;
+      letter-spacing:0.01em; color:rgba(11,11,11,0.6); }
+    body.night #existence-view .cs-hero-tagline { color:rgba(255,249,233,0.7); }
+    /* align the ROLE/CLIENT meta labels with the top of the intro paragraph */
+    #existence-view .cs-meta { margin-top:157px; }
+
+    /* ── cover-slide stage (scoped; identical mechanic to Fireflut/Hatcha) ── */
+    #existence-view .cs-slide-scroller { position: relative; }
+    #existence-view .cs-slide-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; perspective: 1700px; perspective-origin: 50% 50%; }
+    #existence-view .cs-slide-sec { position: absolute; inset: 0; overflow: hidden; }
+    #existence-view .cs-slide-sec.cv { box-shadow: -26px 0 60px rgba(0,0,0,0.16); }
+    #existence-view .cs-slide-inner { }
+    #existence-view .cs-slide-sec.cs-band { min-height: 0; }
+    #existence-view .cs-slide-sec.cs-panel .cs-slide-inner {
+      min-height: 100vh; box-sizing: border-box;
+      padding-top: var(--cs-navpad); padding-bottom: var(--cs-pad);
+      display: flex; flex-direction: column; justify-content: center; }
+    /* quote / closing / read-next carry old-scroll band paddings — zero them inside a centred panel */
+    #existence-view .cs-slide-sec.cs-panel.cs-quote,
+    #existence-view .cs-slide-sec.cs-panel.cs-closing { padding-top: 0; padding-bottom: 0; }
+
+    /* ── full-bleed media panels (placeholder screens; swap real exports later) ── */
+    #existence-view .cs-ex-shots { display:grid; gap:16px; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut)); margin:0 auto;
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut); }
+    #existence-view .cs-ex-shots.two   { grid-template-columns:repeat(2,1fr); }
+    #existence-view .cs-ex-shots.three { grid-template-columns:repeat(3,1fr); }
+    #existence-view .cs-slide-sec.cs-panel .cs-ex-shots .cs-ph {
+      height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); border-radius:10px; }
+
+    /* app-screen recordings — phone-shaped looping videos, sized to the panel height */
+    #existence-view .cs-ex-screens { align-self:center; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut));
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      margin:0 auto; display:flex; gap:56px; justify-content:center; align-items:flex-start; }
+    #existence-view .cs-ex-screen { margin:0; display:flex; flex-direction:column;
+      align-items:center; gap:16px; }
+    /* CSS phone frame: metal bezel + rounded screen + subtle side buttons */
+    #existence-view .cs-ex-screen-vid { position:relative; box-sizing:border-box;
+      height:calc(100vh - var(--cs-navpad) - var(--cs-pad) - 150px); max-height:640px;
+      aspect-ratio:390 / 850; padding:7px; border-radius:46px;
+      background:linear-gradient(150deg,#26262a,#0c0c0e 42%);
+      box-shadow:0 30px 60px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.09); }
+    #existence-view .cs-ex-screen-vid video { width:100%; height:100%; object-fit:cover;
+      display:block; border-radius:40px; background:#000; }
+    /* side buttons (volume left, power right) */
+    #existence-view .cs-ex-screen-vid::before, #existence-view .cs-ex-screen-vid::after {
+      content:''; position:absolute; width:2.5px; border-radius:2px; background:#1b1b1e; }
+    #existence-view .cs-ex-screen-vid::before { left:-2px; top:23%; height:118px; }
+    #existence-view .cs-ex-screen-vid::after  { right:-2px; top:31%; height:92px; }
+    #existence-view .cs-ex-screen-label { font-family:var(--cs-sans); font-size:14px; font-weight:500;
+      letter-spacing:.1em; text-transform:uppercase; color:rgba(255,249,233,0.6); }
+    body.night #existence-view .cs-ex-screen-label { color:rgba(11,11,11,0.6); }
+
+    /* CTA panel — "reach out to know more" (pre-launch) */
+    #existence-view .cs-cta-inner { max-width:820px; margin:0 auto; text-align:center; }
+    #existence-view .cs-cta-h { margin:0; font-family:var(--cs-serif); font-weight:400;
+      font-size:58px; line-height:1.1; letter-spacing:0.01em; color:var(--cs-ink); }
+    #existence-view .cs-cta-h i { font-style:italic; }
+    #existence-view .cs-cta-p { margin:24px auto 0; max-width:560px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.6; color:rgba(11,11,11,0.66); }
+    body.night #existence-view .cs-cta-p { color:rgba(255,249,233,0.72); }
+    #existence-view .cs-cta-btn { margin-top:40px; display:inline-flex; align-items:center;
+      padding:16px 32px; border:0; border-radius:100px; background:var(--cs-ink); color:var(--cs-cream);
+      font-family:var(--cs-sans); font-size:15px; font-weight:500; letter-spacing:0.02em; cursor:pointer;
+      transition:transform .3s cubic-bezier(.22,.61,.36,1), opacity .3s; }
+    #existence-view .cs-cta-btn:hover { transform:translateY(-2px); opacity:.92; }
+    #existence-view .cs-cta-btn:active { transform:translateY(0); }
+    #existence-view .cs-cta-btn:focus-visible { outline:2px solid var(--cs-ink); outline-offset:3px; }
+    @media (max-width:900px){ #existence-view .cs-cta-h { font-size:38px; } }
+
+    @media (max-width:900px){
+      #existence-view .cs-ex-screens { gap:12px; }
+      #existence-view .cs-ex-screen { flex:1 1 0; min-width:0; gap:10px; }
+      #existence-view .cs-ex-screen-vid { height:auto; width:100%; padding:6px; border-radius:26px;
+        max-height:calc(100vh - var(--cs-navpad) - var(--cs-pad) - 50px); }
+      #existence-view .cs-ex-screen-vid video { border-radius:21px; }
+      #existence-view .cs-ex-screen-vid::before { height:56px; }
+      #existence-view .cs-ex-screen-vid::after { height:44px; }
+      #existence-view .cs-ex-screen-label { font-size:11px; letter-spacing:.06em; }
+    }
+
+    /* ── Instagram intro reel panel (Rob Dyrdek) — centred portrait video ── */
+    #existence-view .cs-ex-reel { align-self:center; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut));
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      display:flex; flex-direction:column; align-items:center; gap:22px; }
+    #existence-view .cs-reel-head { display:flex; align-items:center; gap:14px; }
+    #existence-view .cs-reel-num { font-family:var(--cs-serif); font-weight:400; font-size:34px;
+      line-height:1; letter-spacing:.02em; color:#3c3c3c; }
+    #existence-view .cs-reel-eye { font-family:var(--cs-sans); font-size:13px; font-weight:500;
+      letter-spacing:.14em; text-transform:uppercase; color:rgba(255,249,233,.55); }
+    /* Rob's reel is a LANDSCAPE 16:9 video; the IG /embed/ iframe wraps it in a username
+       header (~56px, kept) plus a caption/likes/comment white footer below (cropped). The
+       frame height = header + the 16:9 video (width * 9/16); overflow hides the footer as
+       the taller iframe runs past the bottom. --ig-head / --reel-w tune the header height
+       and overall size. */
+    #existence-view .cs-reel-frame { --ig-head:56px; --reel-w:min(960px, 92vw);
+      width:var(--reel-w);
+      height:calc(var(--ig-head) + var(--reel-w) * 0.5625);
+      max-height:calc(100vh - var(--cs-navpad) - var(--cs-pad) - 60px);
+      border-radius:16px; overflow:hidden; background:#000; }
+    #existence-view .cs-reel-frame iframe { display:block; width:100%;
+      height:calc(100% + 400px); margin-top:0; border:0; }
+    #existence-view .cs-reel-frame .cs-ph { width:100%; height:100%; border-radius:0; }
+    body.night #existence-view .cs-reel-num { color:#c9bea9; }
+    body.night #existence-view .cs-reel-eye { color:rgba(11,11,11,.55); }
+
+    /* ── editorial ledger (cloned from Hatcha; monochrome via --lg-* tokens) ── */
+    #existence-view .cs-ledger { align-self:center; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut));
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      display:grid; grid-template-columns:220px minmax(0,1fr); gap:64px; box-sizing:border-box; }
+    #existence-view .cs-ledger.header-only { margin-bottom:40px; }
+    #existence-view .cs-ledger-num { font-family:var(--cs-serif); font-weight:400;
+      font-size:96px; line-height:.9; letter-spacing:.02em; color:var(--lg-num); }
+    #existence-view .cs-ledger-eye { margin-top:18px; font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--lg-faint); }
+    #existence-view .cs-ledger-h { margin:0; font-family:var(--cs-serif); font-weight:400;
+      font-size:52px; line-height:1.07; letter-spacing:0; color:var(--lg-ink); text-wrap:balance; }
+    #existence-view .cs-ledger-h i, #existence-view .cs-ledger-h em { font-style:italic; }
+    #existence-view .cs-ledger-p { margin:30px 0 0; max-width:780px; font-family:var(--cs-sans);
+      font-size:19px; line-height:1.6; color:var(--lg-ink); opacity:.86; }
+    #existence-view .cs-ledger-p + .cs-ledger-p { margin-top:18px; }
+    #existence-view .cs-ledger-label { margin-top:40px; padding-bottom:26px; display:flex; align-items:center; gap:16px; }
+    #existence-view .cs-ledger-label > span:first-child { font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--lg-faint); }
+    #existence-view .cs-ledger-rule { flex:1; height:1px; background:var(--lg-line); }
+    #existence-view .cs-ledger-rows { margin-top:8px; }
+    #existence-view .cs-ledger-row { display:grid; grid-template-columns:1fr 44px 1fr;
+      align-items:center; padding:16px 0; border-bottom:1px solid var(--lg-line); }
+    #existence-view .cs-ledger-row:last-child { border-bottom:0; }
+    #existence-view .cs-ledger-hrow { align-items:end; padding:0 0 12px; border-bottom:1px solid var(--lg-line2); }
+    #existence-view .cs-ledger-before { padding-right:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-mut); }
+    #existence-view .cs-ledger-after { padding-left:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-ink); font-weight:500; }
+    #existence-view .cs-ledger-arrow { display:flex; justify-content:center;
+      font-family:var(--cs-sans); font-size:20px; color:var(--lg-accent); }
+    #existence-view .cs-ledger-hrow .cs-ledger-before,
+    #existence-view .cs-ledger-hrow .cs-ledger-after { font-size:11px; font-weight:600;
+      letter-spacing:.14em; text-transform:uppercase; }
+    #existence-view .cs-ledger-hrow .cs-ledger-before { color:var(--lg-faint); }
+    #existence-view .cs-ledger-hrow .cs-ledger-after { color:var(--lg-accent); }
+    /* term → definition rows (02 / 03 / 04 / 05 / 06) */
+    #existence-view .cs-dir .cs-ledger-row,
+    #existence-view .cs-home .cs-ledger-row,
+    #existence-view .cs-chat .cs-ledger-row,
+    #existence-view .cs-gate .cs-ledger-row,
+    #existence-view .cs-work .cs-ledger-row { grid-template-columns:300px minmax(0,1fr); align-items:baseline; }
+    #existence-view .cs-ledger-key { padding-right:32px; font-family:var(--cs-sans);
+      font-size:19px; font-weight:600; line-height:1.35; color:var(--lg-ink); }
+    #existence-view .cs-ledger-desc { font-family:var(--cs-sans); font-size:16px; line-height:1.55; color:var(--lg-mut); }
+    /* stat → caption rows (07 outcome) */
+    #existence-view .cs-out .cs-ledger-row { grid-template-columns:210px minmax(0,1fr); align-items:baseline; }
+    #existence-view .cs-ledger-stat { padding-right:32px; font-family:var(--cs-serif);
+      font-weight:400; font-size:30px; letter-spacing:.02em; line-height:1.1; color:var(--lg-ink); }
+    /* flush "My contribution" note (left-border, monochrome accent) */
+    #existence-view .cs-ledger-note { margin-top:36px; max-width:820px; padding-left:20px;
+      border-left:2px solid var(--lg-accent); }
+    #existence-view .cs-ledger-note .lbl { font-family:var(--cs-sans); font-size:12px; font-weight:500;
+      letter-spacing:.16em; text-transform:uppercase; color:var(--lg-accent); margin-bottom:10px; }
+    #existence-view .cs-ledger-note .bd { font-family:var(--cs-sans); font-size:15.5px; line-height:1.62; color:var(--lg-mut); }
+
+    /* ── ledger tokens ── cream bands (01/03/05/07) warm-grey; dark bands (02/04/06) light-on-dark */
+    #existence-view .cs-prob, #existence-view .cs-home, #existence-view .cs-out, #existence-view .cs-work {
+      --lg-num:#c9bea9; --lg-ink:#17150f; --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2); --lg-accent:#17150f; }
+    #existence-view .cs-dir, #existence-view .cs-chat, #existence-view .cs-gate {
+      --lg-num:#3c3c3c; --lg-ink:#fff9ea; --lg-mut:rgba(255,249,233,.62); --lg-faint:rgba(255,249,233,.45); --lg-meta:rgba(255,249,233,.5);
+      --lg-line:rgba(255,255,255,.14); --lg-line2:rgba(255,255,255,.22); --lg-accent:#fff9ea; }
+
+    /* ── NIGHT THEME (cream bands go night-dark, dark bands invert to day-cream) ── */
+    body.night #existence-view { --cs-cream:var(--c-night); --cs-ink:var(--c-cream-2); }
+    body.night #existence-view .cs-prob, body.night #existence-view .cs-home,
+    body.night #existence-view .cs-out, body.night #existence-view .cs-work {
+      --lg-num:#3a3a44; --lg-ink:#fff9e9; --lg-mut:rgba(255,249,233,.6); --lg-faint:rgba(255,249,233,.5); --lg-meta:rgba(255,249,233,.55);
+      --lg-line:rgba(255,255,255,.12); --lg-line2:rgba(255,255,255,.22); --lg-accent:#fff9e9; }
+    body.night #existence-view .cs-dir, body.night #existence-view .cs-chat, body.night #existence-view .cs-gate {
+      --lg-num:#c9bea9; --lg-ink:#17150f; --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2); --lg-accent:#17150f; }
+    body.night #existence-view .cs-band.cream .cs-p { color:rgba(255,249,233,0.85); }
+    body.night #existence-view .cs-hero-intro { color:rgba(255,249,233,0.88); }
+    body.night #existence-view .cs-quote .coral { color:var(--cs-ink); }
+    body.night #existence-view .cs-closing-p { color:rgba(255,249,233,0.78); }
+    body.night #existence-view .cs-ph:not(.dark), body.night #existence-view .cs-ex-heroph {
+      background:repeating-linear-gradient(45deg,#14141a,#14141a 14px,#1b1b22 14px,#1b1b22 28px); color:#6b6b6b; }
+    /* dark bands INVERT to day-cream with ink text at night */
+    body.night #existence-view .cs-band.dark { background:#fff9f1; color:#0b0b0b; }
+    body.night #existence-view .cs-band.dark .cs-p { color:rgba(11,11,11,0.9); }
+    body.night #existence-view .cs-band.dark .cs-quote-line { border-top-color:rgba(0,0,0,0.1); }
+    body.night #existence-view .cs-band.dark .cs-ph.dark {
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px); color:#8a8474; }
+
+    /* ── responsive ── */
+    @media (max-width:1100px){
+      #existence-view { --cs-pad:28px; --cs-rail:180px; --cs-navpad:104px; }
+      #existence-view .cs-hero-h { font-size:44px; }
+      #existence-view .cs-hero-tagline { font-size:26px; }
+      #existence-view .cs-meta { margin-top:8px; }
+    }
+    @media (max-width:900px){
+      #existence-view .cs-ledger { grid-template-columns:1fr; gap:26px; }
+      #existence-view .cs-ledger-num { font-size:64px; }
+      #existence-view .cs-ledger-eye { margin-top:10px; }
+      #existence-view .cs-ledger-h { font-size:32px; }
+      #existence-view .cs-ledger-p { font-size:16px; margin-top:22px; }
+      #existence-view .cs-ledger-label { margin-top:30px; padding-bottom:20px; }
+      #existence-view .cs-ledger-before, #existence-view .cs-ledger-after { font-size:15px; }
+      #existence-view .cs-ledger-row, #existence-view .cs-ledger-hrow { grid-template-columns:1fr 30px 1fr; }
+      #existence-view .cs-dir .cs-ledger-row, #existence-view .cs-chat .cs-ledger-row,
+      #existence-view .cs-home .cs-ledger-row,
+      #existence-view .cs-gate .cs-ledger-row, #existence-view .cs-work .cs-ledger-row,
+      #existence-view .cs-out .cs-ledger-row { grid-template-columns:1fr; gap:6px; }
+    }
+    @media (max-width:760px){
+      #existence-view .cs-ex-shots.two, #existence-view .cs-ex-shots.three { grid-template-columns:1fr; }
+      #existence-view .cs-slide-sec.cs-panel .cs-ex-shots .cs-ph { height:auto; aspect-ratio:320/560; }
+    }
+    @media (max-width:1320px){
+      #existence-view .cs-quote-inner { padding-left:16px; padding-right:16px; }
+    }
+
+    /* ═══ Existence · mobile static flow (html.cs-static, set once at load ≤820px) ═══
+       Deck skipped → sections stack and scroll natively. The ≤900 block above
+       already stacks the ledger grid and steps the type down; this adds the side
+       gutter the ledger has never carried, the prose cut, and full-bleed assets. */
+
+    html.cs-static #existence-view { --cs-navpad:104px; }
+
+    html.cs-static #existence-view .cs-ledger { padding:56px var(--cs-pad) 48px; gap:24px; }
+    html.cs-static #existence-view .cs-ledger-p { display:none; }
+    html.cs-static #existence-view .cs-ledger-label { margin-top:24px; padding-bottom:16px; }
+    html.cs-static #existence-view .cs-ledger-row { padding:14px 0; }
+    /* restate the single-column stacking: the ≤900 block that sets it is
+       out-specified by any html.cs-static rule touching .cs-ledger-row */
+    html.cs-static #existence-view .cs-work .cs-ledger-row,
+    html.cs-static #existence-view .cs-out .cs-ledger-row {
+      grid-template-columns:1fr; gap:4px; align-items:start; }
+    /* term → definition rows: keep the term, drop the prose */
+    html.cs-static #existence-view .cs-work .cs-ledger-desc { display:none; }
+    html.cs-static #existence-view .cs-ledger-key { padding-right:0; font-size:17px; }
+    /* stat rows keep their caption — the number means nothing without it */
+    html.cs-static #existence-view .cs-out .cs-ledger-desc { display:block; }
+
+    /* 02 → 03 divider: both bands are cream, so in the static stack they run
+       together with nothing but padding between them. A hairline at the top of
+       03 marks the seam. Inset to the gutter rather than full-bleed so it reads
+       as part of the ledger's own rule system, and drawn as a pseudo-element
+       because a border-top would sit on the full-width padding box. --lg-line is
+       declared on the band and already flips for night, so the colour follows. */
+    html.cs-static #existence-view .cs-out .cs-ledger { position:relative; }
+    html.cs-static #existence-view .cs-out .cs-ledger::before {
+      content:''; position:absolute; top:0; left:var(--cs-pad); right:var(--cs-pad);
+      height:1px; background:var(--lg-line); }
+
+    /* app-screen recordings: three phones side by side leaves ~110px each, so
+       stack them full-bleed — one phone per row, same as every other mobile
+       asset run. The frame is a CSS bezel, so it scales with the width. */
+    html.cs-static #existence-view .cs-ex-screens { flex-direction:column;
+      align-items:center; gap:64px;
+      padding:var(--cs-navpad) var(--cs-pad) calc(var(--cs-pad) * 2); }
+    html.cs-static #existence-view .cs-ex-screen { flex:0 0 auto; width:100%; gap:14px; }
+    html.cs-static #existence-view .cs-ex-screen-vid { width:100%; height:auto;
+      max-height:none; padding:8px; border-radius:44px; }
+    html.cs-static #existence-view .cs-ex-screen-vid video { border-radius:38px; }
+    html.cs-static #existence-view .cs-ex-screen-vid::before { height:96px; }
+    html.cs-static #existence-view .cs-ex-screen-vid::after  { height:76px; }
+    html.cs-static #existence-view .cs-ex-screen-label { font-size:12px; letter-spacing:.08em; }
+
+    /* intro reel: give the beat the whole screen instead of the 306px sliver it
+       was collapsing to between two full-height sections. Rob's reel is a
+       LANDSCAPE 16:9 video, so the frame's height is capped by the column width
+       — 100svh buys air around it, it does not make the video taller. svh not
+       vh: dvh is broken on iOS here and lvh would sit under the toolbar.
+       --reel-w narrows to the padded column so the frame lines up with the
+       heading instead of overshooting the gutter (min(960px, 92vw) = 345px in a
+       319px column). It must stay a LENGTH, not 100%: --reel-w also feeds the
+       frame's height calc, where a percentage would resolve against the
+       container's height and collapse the frame. */
+    html.cs-static #existence-view .cs-ex-reel { min-height:100svh;
+      justify-content:center; gap:28px;
+      padding-top:var(--cs-navpad); padding-bottom:var(--cs-pad); }
+    html.cs-static #existence-view .cs-reel-frame {
+      --reel-w:calc(100vw - 2 * var(--cs-pad)); }
+
+    /* CTA + read-next */
+    /* full-screen close: give the final ask its own beat instead of a
+       content-height sliver between the screens stack and read-next.
+       Same recipe as .cs-ex-reel above — flex-centre inside 100svh, padded
+       to nav clearance / --cs-pad. Targets .cs-cta-inner (the .cs-wrap),
+       not the .cs-band section, since the section has no box to centre in. */
+    html.cs-static #existence-view .cs-cta-inner { min-height:100svh;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding-top:var(--cs-navpad); padding-bottom:var(--cs-pad); box-sizing:border-box; }
+    html.cs-static #existence-view .cs-cta-h { font-size:34px; }
+    /* full-screen close, same recipe as .cs-cta-inner above: this is the last
+       beat of the case study, so it gets its own screen rather than a
+       content-height sliver. The two .cs-ph thumbnails stay hidden (they're
+       desktop-grid artwork with no mobile crop yet) so centring the bare
+       kicker + heading is what fills the space. */
+
+    /* ── Hatcha mobile/tablet: single-column ledger + smaller type (placed after
+       the base .cs-ledger rules so it wins). Panels that then exceed 100vh simply
+       read-scroll (readH>0) — the cover-slide still works. */
+    @media (max-width: 900px) {
+      #hatcha-view .cs-ledger { grid-template-columns:1fr; gap:26px; }
+      #hatcha-view .cs-ledger-num { font-size:64px; }
+      #hatcha-view .cs-ledger-eye { margin-top:10px; }
+      #hatcha-view .cs-ledger-h { font-size:32px; }
+      #hatcha-view .cs-ledger-p { font-size:16px; margin-top:22px; }
+      #hatcha-view .cs-ledger-label { margin-top:34px; padding-bottom:22px; }
+      #hatcha-view .cs-ledger-before, #hatcha-view .cs-ledger-after { font-size:15px; }
+      #hatcha-view .cs-ledger-row, #hatcha-view .cs-ledger-hrow { grid-template-columns:1fr 30px 1fr; }
+      #hatcha-view .cs-dir .cs-ledger-row, #hatcha-view .cs-chat .cs-ledger-row,
+      #hatcha-view .cs-show .cs-ledger-row {
+        grid-template-columns:1fr; gap:4px; }
+      #hatcha-view .cs-out .cs-ledger-row { grid-template-columns:1fr; gap:4px; }
+      #hatcha-view .cs-ledger-key, #hatcha-view .cs-ledger-stat { padding-right:0; }
+    }
+
+    /* ═══ Hatcha · mobile static flow (html.cs-static, set once at load ≤820px) ═══
+       Deck skipped → sections stack and scroll natively. IMPORTANT: nearly all of
+       Hatcha's panel CSS above is scoped `.cs-slide-sec.cs-panel`, and the JS
+       creates that class — so in static flow every one of those rules is inert and
+       these overrides answer to the BASE band layout instead. That base layout
+       assumes a rail column to escape from; with no rail here, its negative
+       margins would hang content off the left edge. The ≤900 block above already
+       stacks the ledger grid and steps the type down; this adds the gutter the
+       ledger has never carried, the prose cut, and full-bleed assets. */
+
+    html.cs-static #hatcha-view { --cs-navpad:104px; }
+
+    html.cs-static #hatcha-view .cs-ledger { padding:56px var(--cs-pad) 48px; gap:24px; }
+    html.cs-static #hatcha-view .cs-ledger-p { display:none; }
+    html.cs-static #hatcha-view .cs-ledger-label { margin-top:24px; padding-bottom:16px; }
+    html.cs-static #hatcha-view .cs-ledger-row { padding:14px 0; }
+    html.cs-static #hatcha-view .cs-ledger-row,
+    html.cs-static #hatcha-view .cs-ledger-hrow { grid-template-columns:1fr 28px 1fr; }
+    html.cs-static #hatcha-view .cs-ledger-before { padding-right:6px; }
+    html.cs-static #hatcha-view .cs-ledger-after { padding-left:6px; }
+    /* The two-column row rule above out-specifies the ≤900 block's single-column
+       stacking, so every non-before/after row has to restate it here — otherwise
+       terms and stat captions get squeezed into a ~160px column and wrap to one
+       word per line. */
+    html.cs-static #hatcha-view .cs-show .cs-ledger-row,
+    html.cs-static #hatcha-view .cs-dir .cs-ledger-row,
+    html.cs-static #hatcha-view .cs-chat .cs-ledger-row,
+    html.cs-static #hatcha-view .cs-out .cs-ledger-row {
+      grid-template-columns:1fr; gap:4px; align-items:start; }
+    /* term → definition rows: keep the term and its sub-label, drop the prose */
+    html.cs-static #hatcha-view .cs-show .cs-ledger-desc,
+    html.cs-static #hatcha-view .cs-dir .cs-ledger-desc,
+    html.cs-static #hatcha-view .cs-chat .cs-ledger-desc { display:none; }
+    /* stat rows keep their caption — the number means nothing without it */
+    html.cs-static #hatcha-view .cs-out .cs-ledger-desc { display:block; }
+
+    html.cs-static #hatcha-view .cs-quote p { font-size:22px; }
+
+    /* rail-escape resets: there is no rail column to escape in static flow */
+    html.cs-static #hatcha-view .cs-crit,
+    html.cs-static #hatcha-view .cs-crit-eye,
+    html.cs-static #hatcha-view .cs-phones { margin-left:0; }
+
+    /* 02b criteria cards — one per row inside the gutter */
+    /* padding-top does double duty: it's the panel's own top clearance AND it
+       stops margin collapse. The desktop override that zeroes .cs-crit-note's
+       top margin is scoped to .cs-slide-sec, a class the JS deck never adds in
+       static flow — so without a padding/border barrier here, the base
+       .cs-ledger-note { margin-top:34px } collapses straight through this panel
+       and the dark <section>, pushing the section's rendered box down 34px and
+       exposing the cream body background in the gap. Zero the note's own
+       margin-top too so it doesn't just re-add the same gap below the padding. */
+    html.cs-static #hatcha-view .cs-crit-panel { padding:40px var(--cs-pad) 64px; }
+    html.cs-static #hatcha-view .cs-crit-note { margin-top:0; }
+    html.cs-static #hatcha-view .cs-crit { grid-template-columns:1fr; gap:28px; }
+    html.cs-static #hatcha-view .cs-crit > div { max-width:none; }
+    html.cs-static #hatcha-view .cs-crit-eye { margin:64px 0 24px; font-size:14px; }
+
+    /* 03b framework phones — small phone + label column side by side, same
+       mechanism as desktop: .cs-annot is position:relative and stretches to
+       the phone's height (align-items:stretch on the row, inherited from the
+       base rule), which is what gives the % top-positioned labels something
+       to measure against. An earlier pass stacked this into a full-bleed phone
+       with the labels dropped below as a plain list; the user asked for the
+       real side-by-side layout instead, shrunk to fit the mobile gutter. */
+    html.cs-static #hatcha-view .cs-fw-inner { padding:0 var(--cs-pad) 72px; }
+    /* the desktop rule giving .cs-fw-note a 30px bottom margin is scoped to
+       .cs-slide-sec.cs-panel.cs-fw, which static flow never adds — so the base
+       .cs-ledger-note has no margin-bottom at all here and the caption below it
+       sits flush against the note's last line. */
+    html.cs-static #hatcha-view .cs-fw-note { margin-bottom:56px; }
+    html.cs-static #hatcha-view .cs-phones { grid-template-columns:1fr; gap:44px; margin-top:40px; }
+    html.cs-static #hatcha-view .cs-phone-row { gap:14px; }
+    /* alternate the two rows — asset/labels, then labels/asset — instead of the
+       same order twice, so the eye zigzags down the block instead of reading
+       two identical-looking rows in a row. */
+    html.cs-static #hatcha-view .cs-phones .cs-phone-row:nth-child(2) { flex-direction:row-reverse; }
+    html.cs-static #hatcha-view .cs-phone-fig { flex:0 1 46%; max-width:46%; }
+    html.cs-static #hatcha-view .cs-annot { flex:1 1 auto; }
+    html.cs-static #hatcha-view .cs-annot-k { font-size:9px; }
+    html.cs-static #hatcha-view .cs-annot-v { font-size:11.5px; }
+
+    /* 04b design-system gallery — stacked full-bleed, same treatment as every
+       other mobile asset run (its clone + auto-scroll loop is gated off in JS) */
+    html.cs-static #hatcha-view .cs-gal-marq::before,
+    html.cs-static #hatcha-view .cs-gal-marq::after { display:none; }
+    html.cs-static #hatcha-view .cs-gallery { display:grid; grid-template-columns:1fr;
+      gap:12px; padding:0; overflow:visible; }
+    html.cs-static #hatcha-view .cs-ds-tile { width:auto; height:auto; border-radius:0; }
+    html.cs-static #hatcha-view .cs-ds-tile.t-sq   { aspect-ratio:1/1; }
+    html.cs-static #hatcha-view .cs-ds-tile.t-tall { aspect-ratio:450/610; }
+    html.cs-static #hatcha-view .cs-ds-tile.t-port { aspect-ratio:415/470; }
+
+    /* 05b/c theme panels — same white-band bug as the crit panel earlier: the
+       desktop deck wraps every panel in .cs-slide-inner, which has real
+       padding-top and blocks margin collapse. .cs-theme-grid (64px) and
+       .cs-theme-lower (110px) both carry an unscoped top margin meant to be
+       absorbed by that padding; without it in static flow, the margin
+       collapses straight through .cs-wrap and the dark <section>, pushing the
+       section's rendered box down and exposing the cream body background. */
+    html.cs-static #hatcha-view .cs-theme-p .cs-theme-grid { margin-top:0; padding-top:56px; }
+    html.cs-static #hatcha-view .cs-theme-b .cs-theme-lower { margin-top:0; padding-top:56px; }
+    /* taller than the native 949/860 (desktop) ratio — the video is object-fit:
+       cover, so this crops its left/right edges a bit to gain height rather
+       than letterboxing; the swatch strip sits at the far right edge with
+       margin to spare, so it survives this crop. */
+    html.cs-static #hatcha-view .cs-theme-p .cs-palette { aspect-ratio:5/6; }
+    /* .cs-ledger.header-only carries its own unscoped 40px margin-bottom —
+       same collapse-through-the-section bug, just on the bottom edge instead
+       of the top: with no padding-bottom on the <section> to contain it, the
+       margin escapes into the gap before the NEXT section instead of showing
+       up in this section's own rect, which is why it doesn't show up when
+       measuring the section's own box (only in the gap to its sibling). */
+    html.cs-static #hatcha-view .cs-ledger.header-only { margin-bottom:0; }
+
+    /* read-next — drop the placeholder tiles, keep the centred link */
+    /* full-screen close, same recipe used on Existence's read-next: this is
+       the case study's last beat, so it gets its own screen instead of a
+       content-height sliver. The two .cs-ph thumbnails stay hidden (desktop-
+       grid artwork, no mobile crop exists) so the centred kicker + heading
+       fills the space alone. */
+  

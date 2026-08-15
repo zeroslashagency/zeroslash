@@ -1,0 +1,352 @@
+/* CASE — Jumpable + shared (extracted) */
+/* ═══════════════ Work / Jumpable case study (routed via #jumpable) ═══════════════
+       Cover-slide 100vh panels + editorial ledger (the Existence/Fireflut model). Accent
+       is a single CHROMA brand hue — the app moved from a rainbow palette to one primary
+       colour, so the accent carries that story. Scoped tokens + scoped ledger/stage CSS. */
+    #jumpable-view { --cs-serif:'DM Serif Display', Georgia, serif;
+                     --cs-sans:'Space Grotesk', sans-serif;
+                     --cs-cream:#fff9f1; --cs-black:#000; --cs-ink:#0b0b0b;
+                     --cs-accent:#0FB9D6;
+                     --cs-max:1320px; --cs-pad:60px; --cs-rail:355px;
+                     --cs-navpad:112px; }             /* panel top clearance = 80px nav + 32px */
+
+    /* tile → hero shared-element zoom (same mechanism as Existence/Fireflut) */
+    body.vt-hero a.project-tile[href="/work/jumpable"] { view-transition-name: jumpable-hero; }
+    body.vt-hero #jumpable-view .cs-hero .cs-hero-mock { view-transition-name: jumpable-hero; }
+    ::view-transition-old(jumpable-hero),
+    ::view-transition-new(jumpable-hero) { width:100%; height:100%; object-fit:cover; }
+    ::view-transition-group(jumpable-hero) {
+      animation-duration: 0.6s; animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1); }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(jumpable-hero),
+      ::view-transition-old(jumpable-hero),
+      ::view-transition-new(jumpable-hero) { animation: none; } }
+
+    /* hero reads as two full-screen beats: the title/meta chunk, then the device mockup
+       (same fix as #fireflut-view and #existence-view). Read-scroll travel is
+       inner.scrollHeight − 100vh, which ignores the SECTION's own padding — so with
+       .cs-hero's 138px nav clearance on the section the mockup could only ever rise to
+       138px and its bottom stayed clipped. Move that clearance onto the text chunk: the
+       text lands where it did and the mockup's rest state is a full 100vh × 100vw frame. */
+    #jumpable-view .cs-slide-sec.cs-hero { padding-top: 0; }
+    #jumpable-view .cs-slide-sec.cs-hero .cs-hero-grid { padding-top: 138px; }
+
+    /* hero placeholder — own class (not .cs-ph) so its clip never fights the tile→hero morph */
+    #jumpable-view .cs-jp-heroph { position:absolute; inset:0; width:100%; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px); color:#8a8474; }
+    #jumpable-view .cs-jp-heroph span { padding:8px 14px; background:rgba(0,0,0,0.5); color:#fff;
+      border-radius:100px; font-size:12px; letter-spacing:0.04em; }
+
+    /* hero tagline — italic serif subtitle under the "Jumpable" title, muted so the title leads */
+    #jumpable-view .cs-hero-tagline { margin:16px 0 0; font-family:var(--cs-serif);
+      font-style:normal; font-weight:400; font-size:34px; line-height:1.2;
+      letter-spacing:0.01em; color:rgba(11,11,11,0.6); }
+    body.night #jumpable-view .cs-hero-tagline { color:rgba(255,249,233,0.7); }
+    /* align the ROLE/CLIENT meta labels with the top of the intro paragraph */
+    #jumpable-view .cs-meta { margin-top:157px; }
+
+    /* ── cover-slide stage (scoped; identical mechanic to Existence) ── */
+    #jumpable-view .cs-slide-scroller { position: relative; }
+    #jumpable-view .cs-slide-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; isolation: isolate; perspective: 1700px; perspective-origin: 50% 50%; }
+    #jumpable-view .cs-slide-sec { position: absolute; inset: 0; overflow: hidden; }
+    #jumpable-view .cs-slide-sec.cv { box-shadow: -26px 0 60px rgba(0,0,0,0.16); }
+    #jumpable-view .cs-slide-inner { }
+    #jumpable-view .cs-slide-sec.cs-band { min-height: 0; }
+    #jumpable-view .cs-slide-sec.cs-panel .cs-slide-inner {
+      min-height: 100vh; box-sizing: border-box;
+      padding-top: var(--cs-navpad); padding-bottom: var(--cs-pad);
+      display: flex; flex-direction: column; justify-content: center; }
+    /* closing / read-next carry old-scroll band paddings — zero them inside a centred panel */
+    #jumpable-view .cs-slide-sec.cs-panel.cs-closing { padding-top: 0; padding-bottom: 0; }
+
+    /* ── full-bleed media panels (placeholder Watch screens; swap real exports later) ── */
+    #jumpable-view .cs-jp-shots { display:grid; gap:16px; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut)); margin:0 auto;
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut); }
+    #jumpable-view .cs-jp-shots.two   { grid-template-columns:repeat(2,1fr); }
+    #jumpable-view .cs-jp-shots.three { grid-template-columns:repeat(3,1fr); }
+    #jumpable-view .cs-slide-sec.cs-panel .cs-jp-shots .cs-ph {
+      height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); border-radius:10px; }
+
+    /* full-bleed device shot panel (Jumpable on Apple Watch Ultra) — fills the panel within the gutters */
+    #jumpable-view .cs-slide-sec.cs-panel.cs-jp-device .cs-slide-inner {
+      padding-left: var(--cs-pad); padding-right: var(--cs-pad); }
+    #jumpable-view .cs-jp-device-media { position:relative; width:100%;
+      height: calc(100vh - var(--cs-navpad) - var(--cs-pad)); border-radius:10px; overflow:hidden;
+      background:#0a0a0a; display:flex; align-items:center; justify-content:center; }
+    #jumpable-view .cs-jp-device-ph { font-family:var(--cs-sans); font-size:12px; letter-spacing:.06em;
+      text-transform:uppercase; color:rgba(255,255,255,.5); }
+    #jumpable-view .cs-jp-device-media img { position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; object-position:center; display:block; }
+    /* 3-watch product shot: transparent PNG — let the band show through (adapts day/night) and show the whole shot */
+    #jumpable-view .cs-threewatch .cs-jp-device-media { background:transparent; }
+    #jumpable-view .cs-threewatch .cs-jp-device-media img { object-fit:contain; }
+    /* Phase 2 media: single home-screen recording, full height within the gutters, centred; the band shows around it so the bg adapts day/night */
+    /* Phase 2 media: home-screen recording (design points baked into the asset), full height within the gutters, centred */
+    #jumpable-view .cs-home-video-wrap { width:100%; height:calc(100vh - var(--cs-navpad) - var(--cs-pad));
+      display:flex; align-items:center; justify-content:center; }
+    #jumpable-view .cs-home-video-wrap video { height:100%; width:auto; max-width:100%; display:block;
+      border-radius:16px; object-fit:contain; }
+    /* desktop: drop the tall nav reservation on the recording panels (the nav floats over the dark top
+       edge, like the full-bleed device shots) and centre the video with symmetric gutters. This reclaims
+       the empty top band AND lets the video grow, with the wrap height matched to the box so it never scrolls. */
+    @media (min-width:1100px){
+      #jumpable-view .cs-slide-sec.cs-panel.cs-onb-video .cs-slide-inner,
+      #jumpable-view .cs-slide-sec.cs-panel.cs-home-video .cs-slide-inner {
+        padding-top: var(--cs-pad); padding-bottom: var(--cs-pad); }
+      #jumpable-view .cs-home-video-wrap { height:calc(100vh - (var(--cs-pad) * 2)); }
+    }
+    /* EXCEPTION: keep the recording slides (home + onboarding) black in BOTH day and night (matches the video's baked black bg) */
+    #jumpable-view .cs-home-video.cs-band.dark, #jumpable-view .cs-onb-video.cs-band.dark,
+    body.night #jumpable-view .cs-home-video.cs-band.dark, body.night #jumpable-view .cs-onb-video.cs-band.dark { background:#000; }
+
+    /* ── editorial ledger (cloned from Existence; chroma accent via --lg-* tokens) ── */
+    #jumpable-view .cs-ledger { align-self:center; width:100%;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut));
+      padding-left:var(--cs-gut); padding-right:var(--cs-gut);
+      display:grid; grid-template-columns:220px minmax(0,1fr); gap:64px; box-sizing:border-box; }
+    #jumpable-view .cs-ledger.header-only { margin-bottom:40px; }
+    #jumpable-view .cs-ledger-num { font-family:var(--cs-serif); font-weight:400;
+      font-size:96px; line-height:.9; letter-spacing:.02em; color:var(--lg-num); }
+    #jumpable-view .cs-ledger-eye { margin-top:18px; font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.18em; text-transform:uppercase; color:var(--lg-faint); }
+    #jumpable-view .cs-ledger-h { margin:0; font-family:var(--cs-serif); font-weight:400;
+      font-size:52px; line-height:1.07; letter-spacing:0; color:var(--lg-ink); text-wrap:balance; }
+    #jumpable-view .cs-ledger-h i, #jumpable-view .cs-ledger-h em { font-style:italic; }
+    #jumpable-view .cs-ledger-p { margin:30px 0 0; max-width:780px; font-family:var(--cs-sans);
+      font-size:19px; line-height:1.6; color:var(--lg-ink); opacity:.86; }
+    #jumpable-view .cs-ledger-p + .cs-ledger-p { margin-top:18px; }
+    /* problem intro (slide 01): match the heading's single-line measure on desktop+ so right edges align */
+    @media (min-width:1100px){ #jumpable-view .cs-show .cs-ledger-p { max-width:925px; } }
+    /* approach (slide 03): questions on the left, illustration on the right */
+    #jumpable-view .cs-appr-split { grid-template-columns:minmax(0,1fr) minmax(0,620px); gap:56px;
+      max-width:calc(var(--cs-max) + 2 * var(--cs-gut)); align-items:center; }
+    #jumpable-view .cs-appr-media { width:100%; }
+    #jumpable-view .cs-appr-media img { width:100%; height:auto; display:block; border-radius:12px;
+      /* top edge fades to transparent so it blends into the band (any theme colour) */
+      -webkit-mask-image:linear-gradient(to bottom, transparent 0%, #000 22%);
+              mask-image:linear-gradient(to bottom, transparent 0%, #000 22%); }
+    /* night: the band flips to cream — invert the dark illustration so it blends (hue-rotate keeps the teal glow) */
+    body.night #jumpable-view .cs-appr-media img { filter:invert(1) hue-rotate(180deg); }
+    @media (max-width:900px){ #jumpable-view .cs-appr-split { grid-template-columns:1fr; gap:32px; } }
+    /* closing heading: break "Now they land" onto its own line on desktop+ */
+    #jumpable-view .cs-closing-br { display:none; }
+    @media (min-width:1100px){ #jumpable-view .cs-closing-br { display:inline; } }
+    #jumpable-view .cs-ledger-label { margin-top:40px; padding-bottom:26px; display:flex; align-items:center; gap:16px; }
+    #jumpable-view .cs-ledger-label > span:first-child { font-family:var(--cs-sans);
+      font-size:12px; font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--lg-faint); }
+    #jumpable-view .cs-ledger-rule { flex:1; height:1px; background:var(--lg-line); }
+    #jumpable-view .cs-ledger-rows { margin-top:8px; }
+    #jumpable-view .cs-ledger-row { display:grid; grid-template-columns:1fr 44px 1fr;
+      align-items:center; padding:16px 0; border-bottom:1px solid var(--lg-line); }
+    #jumpable-view .cs-ledger-row:last-child { border-bottom:0; }
+    #jumpable-view .cs-ledger-hrow { align-items:end; padding:0 0 12px; border-bottom:1px solid var(--lg-line2); }
+    #jumpable-view .cs-ledger-before { padding-right:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-mut); }
+    #jumpable-view .cs-ledger-after { padding-left:24px; font-family:var(--cs-sans);
+      font-size:18px; line-height:1.4; color:var(--lg-ink); font-weight:500; }
+    #jumpable-view .cs-ledger-arrow { display:flex; justify-content:center;
+      font-family:var(--cs-sans); font-size:20px; color:var(--lg-accent); }
+    #jumpable-view .cs-ledger-hrow .cs-ledger-before,
+    #jumpable-view .cs-ledger-hrow .cs-ledger-after { font-size:11px; font-weight:600;
+      letter-spacing:.14em; text-transform:uppercase; }
+    #jumpable-view .cs-ledger-hrow .cs-ledger-before { color:var(--lg-faint); }
+    #jumpable-view .cs-ledger-hrow .cs-ledger-after { color:var(--lg-accent); }
+    /* term → definition rows (showcase / approach / design language) */
+    #jumpable-view .cs-show .cs-ledger-row,
+    #jumpable-view .cs-appr .cs-ledger-row,
+    #jumpable-view .cs-lang .cs-ledger-row { grid-template-columns:300px minmax(0,1fr); align-items:baseline; }
+    #jumpable-view .cs-ledger-key { padding-right:32px; font-family:var(--cs-sans);
+      font-size:19px; font-weight:600; line-height:1.35; color:var(--lg-ink); }
+    #jumpable-view .cs-ledger-key .cs-ledger-sub { display:block; margin-top:6px; font-size:13px;
+      font-weight:400; letter-spacing:.02em; color:var(--lg-mut); }
+    #jumpable-view .cs-ledger-desc { font-family:var(--cs-sans); font-size:16px; line-height:1.55; color:var(--lg-mut); }
+    /* stat → caption rows (outcome / impact) */
+    #jumpable-view .cs-out .cs-ledger-row,
+    #jumpable-view .cs-impact .cs-ledger-row { grid-template-columns:210px minmax(0,1fr); align-items:baseline; }
+    #jumpable-view .cs-ledger-stat { padding-right:32px; font-family:var(--cs-serif);
+      font-weight:400; font-size:30px; letter-spacing:.02em; line-height:1.1; color:var(--lg-ink); }
+    /* impact: big figures read best centred against their caption (baseline sits the number too high) */
+    #jumpable-view .cs-impact .cs-ledger-row { align-items:center; }
+    /* impact: the stat column carries hard figures, so scale it up to read as a hero metric */
+    #jumpable-view .cs-impact .cs-ledger-stat { font-size:46px; letter-spacing:0; line-height:1; }
+    /* qualitative impact row: a word label, not a figure — sit it back down so it reads as a caption, not a stat */
+    #jumpable-view .cs-impact .cs-ledger-row.cs-qual .cs-ledger-stat { font-size:26px; letter-spacing:.01em; }
+    /* flush "My contribution" note (left-border, chroma accent) */
+    #jumpable-view .cs-ledger-note { margin-top:36px; max-width:820px; padding-left:20px;
+      border-left:2px solid var(--lg-accent); }
+    #jumpable-view .cs-ledger-note .lbl { font-family:var(--cs-sans); font-size:12px; font-weight:500;
+      letter-spacing:.16em; text-transform:uppercase; color:var(--lg-accent); margin-bottom:10px; }
+    #jumpable-view .cs-ledger-note .bd { font-family:var(--cs-sans); font-size:15.5px; line-height:1.62; color:var(--lg-mut); }
+    #jumpable-view .cs-note-list { margin:14px 0 0; padding-left:18px; list-style:disc; }
+    #jumpable-view .cs-note-list li { font-family:var(--cs-sans); font-size:15.5px; line-height:1.6; color:var(--lg-mut); margin-top:9px; }
+    #jumpable-view .cs-note-list li::marker { color:var(--lg-accent); }
+    #jumpable-view .cs-note-list strong { color:var(--lg-ink); font-weight:600; }
+
+    /* ── ledger tokens ── cream bands warm-grey; dark bands light-on-dark. Accent stays chroma. */
+    #jumpable-view .cs-show, #jumpable-view .cs-prob, #jumpable-view .cs-onb,
+    #jumpable-view .cs-home, #jumpable-view .cs-lang, #jumpable-view .cs-out {
+      --lg-num:#c9bea9; --lg-ink:#17150f; --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2); --lg-accent:var(--cs-accent); }
+    #jumpable-view .cs-appr, #jumpable-view .cs-impact {
+      --lg-num:#3c3c3c; --lg-ink:#fff9ea; --lg-mut:rgba(255,249,233,.62); --lg-faint:rgba(255,249,233,.45); --lg-meta:rgba(255,249,233,.5);
+      --lg-line:rgba(255,255,255,.14); --lg-line2:rgba(255,255,255,.22); --lg-accent:var(--cs-accent); }
+
+    /* ── NIGHT THEME (cream bands go night-dark, dark bands invert to day-cream) ── */
+    body.night #jumpable-view { --cs-cream:var(--c-night); --cs-ink:var(--c-cream-2); }
+    body.night #jumpable-view .cs-show, body.night #jumpable-view .cs-prob,
+    body.night #jumpable-view .cs-onb, body.night #jumpable-view .cs-home,
+    body.night #jumpable-view .cs-lang, body.night #jumpable-view .cs-out {
+      --lg-num:#3a3a44; --lg-ink:#fff9e9; --lg-mut:rgba(255,249,233,.6); --lg-faint:rgba(255,249,233,.5); --lg-meta:rgba(255,249,233,.55);
+      --lg-line:rgba(255,255,255,.12); --lg-line2:rgba(255,255,255,.22); --lg-accent:var(--cs-accent); }
+    body.night #jumpable-view .cs-appr, body.night #jumpable-view .cs-impact {
+      --lg-num:#c9bea9; --lg-ink:#17150f; --lg-mut:#8a8271; --lg-faint:#a79c89; --lg-meta:#8a7f6c;
+      --lg-line:rgba(23,21,15,.12); --lg-line2:rgba(23,21,15,.2); --lg-accent:var(--cs-accent); }
+    body.night #jumpable-view .cs-hero-intro { color:rgba(255,249,233,0.88); }
+    body.night #jumpable-view .cs-closing-p { color:rgba(255,249,233,0.78); }
+    body.night #jumpable-view .cs-ph:not(.dark), body.night #jumpable-view .cs-jp-heroph {
+      background:repeating-linear-gradient(45deg,#14141a,#14141a 14px,#1b1b22 14px,#1b1b22 28px); color:#6b6b6b; }
+    /* dark bands INVERT to day-cream with ink text at night */
+    body.night #jumpable-view .cs-band.dark { background:#fff9f1; color:#0b0b0b; }
+    body.night #jumpable-view .cs-band.dark .cs-p { color:rgba(11,11,11,0.9); }
+    body.night #jumpable-view .cs-band.dark .cs-ph.dark {
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px); color:#8a8474; }
+
+    /* ── responsive ── */
+    @media (max-width:1100px){
+      #jumpable-view { --cs-pad:28px; --cs-rail:180px; --cs-navpad:104px; }
+      #jumpable-view .cs-hero-h { font-size:44px; }
+      #jumpable-view .cs-hero-tagline { font-size:26px; }
+      #jumpable-view .cs-meta { margin-top:8px; }
+    }
+    @media (max-width:900px){
+      #jumpable-view .cs-ledger { grid-template-columns:1fr; gap:26px; }
+      #jumpable-view .cs-ledger-num { font-size:64px; }
+      #jumpable-view .cs-ledger-eye { margin-top:10px; }
+      #jumpable-view .cs-ledger-h { font-size:32px; }
+      #jumpable-view .cs-ledger-p { font-size:16px; margin-top:22px; }
+      #jumpable-view .cs-ledger-label { margin-top:30px; padding-bottom:20px; }
+      #jumpable-view .cs-ledger-before, #jumpable-view .cs-ledger-after { font-size:15px; }
+      #jumpable-view .cs-ledger-row, #jumpable-view .cs-ledger-hrow { grid-template-columns:1fr 30px 1fr; }
+      #jumpable-view .cs-show .cs-ledger-row, #jumpable-view .cs-appr .cs-ledger-row,
+      #jumpable-view .cs-lang .cs-ledger-row,
+      #jumpable-view .cs-out .cs-ledger-row,
+      #jumpable-view .cs-impact .cs-ledger-row { grid-template-columns:1fr; gap:6px; }
+      #jumpable-view .cs-ledger-key, #jumpable-view .cs-ledger-stat { padding-right:0; }
+    }
+    @media (max-width:760px){
+      #jumpable-view .cs-jp-shots.two, #jumpable-view .cs-jp-shots.three { grid-template-columns:1fr; }
+      #jumpable-view .cs-slide-sec.cs-panel .cs-jp-shots .cs-ph { height:auto; aspect-ratio:320/560; }
+    }
+    @media (max-width:1320px){
+      #jumpable-view .cs-quote-inner { padding-left:16px; padding-right:16px; }
+    }
+
+    /* ═══ Jumpable · mobile static flow (html.cs-static, set once at load ≤820px) ═══
+       Deck skipped → sections stack and scroll natively. The ≤900 block above
+       already stacks the ledger grid and steps the type down, and the ≤1100 block
+       already drops --cs-navpad to 104px; this adds the side gutter the ledger has
+       never carried, the prose cut, and full-bleed media. */
+
+    html.cs-static #jumpable-view .cs-ledger { padding:56px var(--cs-pad) 48px; gap:24px; }
+    html.cs-static #jumpable-view .cs-ledger-label { margin-top:24px; padding-bottom:16px; }
+    html.cs-static #jumpable-view .cs-ledger-row { padding:14px 0; }
+    /* restate the single-column stacking — any html.cs-static rule touching
+       .cs-ledger-row out-specifies the ≤900 block that sets it */
+    html.cs-static #jumpable-view .cs-impact .cs-ledger-row,
+    html.cs-static #jumpable-view .cs-appr .cs-ledger-row {
+      grid-template-columns:1fr; gap:4px; align-items:start; }
+    /* 02 impact: stat rows keep their caption — the label means nothing without it */
+    html.cs-static #jumpable-view .cs-impact .cs-ledger-desc { display:block; }
+    /* 04 approach: keep the three founder questions, drop their answers */
+    html.cs-static #jumpable-view .cs-appr .cs-ledger-desc { display:none; }
+    html.cs-static #jumpable-view .cs-ledger-key { padding-right:0; font-size:17px; }
+    /* drop the intro prose everywhere it sits above data rows or a media panel.
+       01 is the exception: its paragraph is the whole panel — there are no rows
+       and no asset under it, so hiding it would leave a bare heading. */
+    html.cs-static #jumpable-view .cs-ledger-p { display:none; }
+    html.cs-static #jumpable-view .cs-show .cs-ledger-p { display:block; }
+    /* 05 + 06 are the exception to that rule: they're header-only ledgers whose whole
+       panel is a number, an eyebrow and a heading, so hiding the prose left the two
+       phase sections stating WHAT changed with no word on why. The recordings that
+       follow show the result but can't carry the reasoning. Restored at a slightly
+       tighter measure than desktop so each still fits its one screen. */
+    html.cs-static #jumpable-view .cs-onb .cs-ledger-p,
+    html.cs-static #jumpable-view .cs-home .cs-ledger-p {
+      display:block; margin-top:22px; font-size:16px; line-height:1.62; }
+
+    /* device shots + phase recordings: one full viewport, edge to edge.
+       svh so the iOS toolbar never crops them. */
+    html.cs-static #jumpable-view .cs-jp-device-media { height:100svh; border-radius:0; }
+    /* The two phase recordings are wide 1294×918 frames with the watch filling only
+       ~35% of the width — the rest is side annotations. Fitting that whole frame to
+       a 393px viewport left the prototype ~137px wide, which is the thing people
+       actually came to look at. So oversize the video and clip the gutters: the side
+       text goes (the ledger copy already says all of it) and the watch lands ~2.3×
+       bigger.
+
+       The zoom is driven off WIDTH, not height, so the crop window is a fixed slice
+       of the source at every viewport: width:259% shows 100/259 = 38.6% of the frame,
+       i.e. 500 of 1294px, centred → video-x 397–897. That matters because the frame
+       has teal annotation bars at x=100 and x=914 (measured, both clips) — a window
+       driven off viewport height widens on short screens and slides one of them into
+       view. This one can't. The watch spans 424–866, so it clears the crop by 27px
+       left and 31px right.
+
+       Wrap height still caps at 100svh so the panel never outgrows its screen; when
+       that cap bites, the overflow is the frame's own black top/bottom margin, which
+       is invisible against this panel (pinned to #000 in both themes). */
+    html.cs-static #jumpable-view .cs-home-video-wrap {
+      /* vh, matching the panel below — capping at svh would re-open the same gap the
+         panel exception exists to close */
+      height: min(183vw, 100vh);
+      overflow: hidden;
+    }
+    html.cs-static #jumpable-view .cs-home-video-wrap video {
+      width: 259%; height: auto;
+      max-width: none;          /* the base rule caps at 100% — that's the fit we're undoing */
+      flex: none;               /* the wrap is a flex row; without this it shrinks straight back */
+      border-radius: 0;
+    }
+    /* landscape has no height to crop into — 259% would run the watch off the top and
+       bottom. Fall back to fitting the whole frame; the annotations come back, which
+       is fine at that width. */
+    @media (orientation: landscape) {
+      html.cs-static #jumpable-view .cs-home-video-wrap { height: auto; }
+      html.cs-static #jumpable-view .cs-home-video-wrap video {
+        width: 100%; max-height: 100svh;
+      }
+    }
+
+    /* every panel gets its own full screen, same "one beat, one screen" rule
+       already applied section-by-section elsewhere. Scoped to .cs-panel,
+       which excludes only the hero (the one section without that class) —
+       the hero already runs well past 100vh on its own from its copy + full-
+       bleed mock, so forcing it into a flex-centred box would overflow its
+       content symmetrically past both the top (behind the nav) and bottom.
+       For every other panel, centering is provably safe: measured content
+       heights top out at 857px (02 · impact) against an 812px viewport —
+       whenever content already meets or exceeds min-height there is no
+       slack left to redistribute, so justify-content:center is a no-op
+       there and only pulls slack space for panels that are genuinely
+       shorter than one screen (the two header-only ledgers, the two phase
+       recordings, the three device shots already sized to 100svh by their
+       own media rule below, and the closing quote). */
+    html.cs-static #jumpable-view .cs-band.cs-panel { min-height:100svh;
+      display:flex; flex-direction:column; justify-content:center; box-sizing:border-box; }
+    /* EXCEPTION — the two recording panels take the LARGE viewport height. svh is the
+       toolbar-VISIBLE height, so the moment iOS retracts its toolbar mid-scroll a
+       100svh panel stops filling the screen and the neighbouring cream band slides
+       into view above or below the black. Plain vh is the large height on iOS and
+       Android alike, which is what these need. With the toolbar extended the panel
+       just runs a little past the fold, and the overrun is the recording's own black
+       margin — the watch still clears it (measured: bottom at 723px of 741 visible). */
+    html.cs-static #jumpable-view .cs-onb-video.cs-band.cs-panel,
+    html.cs-static #jumpable-view .cs-home-video.cs-band.cs-panel { min-height:100vh; }
+
+    /* read-next — drop the placeholder tiles, keep the centred link. Padding
+       now matches the nav-aware recipe used on the other three case studies
+       (var(--cs-navpad) top / var(--cs-pad) sides+bottom) instead of the old
+       flat 96px, now that the section is flex-centred full height. */
+  

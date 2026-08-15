@@ -1,0 +1,2645 @@
+/* HOME — hero, projects, testimonials (extracted from inline index.html) */
+/* ════ HERO — Figma node 1:27 (1440×1024, pinned; next section scrolls over it) ════ */
+    .hero {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+      /* base radial gradient (from Figma hero fill) — stops flip to the night sky via tokens */
+      background: radial-gradient(ellipse 1000px 1340px at 68.65% 23.5%, var(--hero-from) 0%, var(--hero-to) 100%);
+    }
+
+    /* background shader export (node 1:28 — gradient mesh) */
+    .hero-shader {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    /* day cirrus overlay — the counterpart to .hero-stars at night. Same trick as
+       the starfield: the tile carries ONLY the feature (cream wisps on transparent,
+       high-passed out of the source photo) and screen-blends it on. Compositing the
+       raw photo instead did nothing visible — its own blue cancelled the shader's,
+       and the wisps sit just 6–14% above their local sky, so any blend at a sane
+       opacity flattened them back into the gradient. */
+    .hero-sky {
+      position: absolute;
+      /* 10% of overscan each side, NOT inset:0 — the gust below slides this layer
+         horizontally, and a full-bleed layer would drag a bare edge into view.
+         .hero is overflow:hidden, so the spill costs nothing. */
+      inset: 0 -10%;
+      background-image: url("../../assets/hero-sky-day.webp");
+      background-size: cover;
+      /* bias up: the densest wisps are in the photo's lower half, and the hero's
+         own bottom is where the headline and recorder sit */
+      background-position: center 35%;
+      background-repeat: no-repeat;
+      mix-blend-mode: screen;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    /* wind gust — plays once when the theme flips night → day. A gust decays, so
+       this is a hard front-loaded ease into rest, with no overshoot: a spring
+       curve here would read as elastic, which air is not. One-shot on purpose —
+       a permanently drifting sky turns the still hero into a video loop. */
+    @keyframes hero-sky-gust {
+      0%   { transform: translate3d(-7%, 0, 0); opacity: 0.34; }
+      55%  { opacity: 0.6; }
+      100% { transform: translate3d(0, 0, 0);   opacity: 0.6; }
+    }
+
+    /* noise overlay (node 1:32 — opacity 10%, 2048px tile) */
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("../../assets/imgNoiseTexture.png");
+      background-size: 2048px 2048px;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    /* sun group (sun.svg, node 1:69 — glow + hatched sun, natural 601×545).
+       The whole sky group (sun + both clouds) is sized from one shared var
+       --sun-w (set on .hero-content) so it scales CONTINUOUSLY with the
+       viewport — every dimension/offset is a fixed ratio of --sun-w, so the
+       sun and clouds keep their relative positions (they stay a group) and
+       there is no sudden jump at a breakpoint. Ratios are taken from the
+       desktop design (sun 725.138 wide, top -185.649, right -124.138). */
+    .sun-group {
+      position: absolute;
+      width: var(--sun-w);
+      top:   calc(var(--sun-w) * -0.256087);
+      right: calc(var(--sun-w) * -0.171192);
+      height: auto;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* hero clouds (cloud.svg — nodes 1:67 / 1:68, subtle cream wisps) */
+    .hero-cloud {
+      position: absolute;
+      height: auto;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .hero-cloud.cloud-a {
+      width: calc(var(--sun-w) * 0.723655);
+      right: calc(var(--sun-w) * -0.466696);
+      top:   calc(var(--sun-w) *  0.264775);
+    }
+    .hero-cloud.cloud-b {
+      width: calc(var(--sun-w) * 0.384752);
+      right: calc(var(--sun-w) *  0.406185);
+      top:   calc(var(--sun-w) *  0.238576);
+    }
+
+    /* eyebrow (node 1:36) — left edge (dot) aligns with the "M" of Multidisciplinary */
+    .hero-eyebrow {
+      position: absolute;
+      left: calc(50% - 459px);
+      top: calc(50vh - 240px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: white;
+      white-space: nowrap;
+    }
+    .hero-eyebrow img { width: 10.49px; height: 10.49px; }
+
+    /* vertical label (node 1:39) */
+    .hero-vertical {
+      position: absolute;
+      left: calc(50% - 506px);
+      top: calc(50vh - 66px);
+      transform: translate(-50%, -50%) rotate(-90deg);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      letter-spacing: 1.4px;
+      color: white;
+      white-space: nowrap;
+    }
+
+    /* heading (nodes 1:34 / 1:35) — DM Serif Display 156px #fff9e9 +3.1px */
+    .h-line {
+      position: absolute;
+      font-family: 'DM Serif Display', serif;
+      font-size: 156px;
+      font-weight: 400;
+      letter-spacing: 3.1px;
+      color: var(--cream-text);
+      white-space: nowrap;
+      line-height: normal;
+    }
+    .h-line.multidisciplinary { left: calc(50% - 459px); top: calc(50vh - 232px); }
+    .h-line.designer {
+      left: calc(50% + 46px); top: calc(50vh - 34px);
+      /* clip the roll, but allow a 30px margin so the hover lift isn't cut off */
+      overflow: clip; overflow-clip-margin: 30px; height: 1.2em; line-height: 1.2;
+    }
+    /* vertical roll track — words stack and slide up behind the .designer clip */
+    .h-line.designer .roll { display: block; will-change: transform; }
+    .h-line.designer .roll-word { display: block; line-height: 1.2; }
+
+    /* per-letter tilt + lift on hover (letters split in via JS) */
+    .h-letter {
+      display: inline-block;
+      transform-origin: 50% 100%;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+                  color 0.25s ease;
+    }
+    /* will-change only while the pointer is on the heading. As a permanent
+       declaration it held ~17 composited layers alive for the whole session, for a
+       tilt that only ever plays on hover — and the compositor re-walks every live
+       layer each scroll frame. Promoting on the parent still gets the letters onto
+       their layers before any individual one is hovered. */
+    .h-line:hover .h-letter { will-change: transform; }
+    .h-letter:hover {
+      transform: translateY(-0.16em) rotate(-7deg);
+      color: #F4D24A;
+    }
+
+    /* ════ RECORDER — Figma node 1:40 ════ */
+    .recorder {
+      position: absolute;
+      left: calc(50% - 229px);
+      top: calc(50vh + 58px);
+      transform: translate(-50%, -50%) scale(1.08);
+      display: flex;
+      align-items: flex-start;
+      gap: 22px;
+      padding: 16px;
+      border-radius: 9999px;
+      background: #dfdcd5;
+      border: 1px solid #c9c9c9;
+      box-shadow: 0 11px 9.6px 0 rgba(0,0,0,0.25);
+    }
+    /* neumorphic inner bevel */
+    .recorder::after {
+      content: '';
+      position: absolute;
+      inset: -1px;
+      border-radius: inherit;
+      pointer-events: none;
+      box-shadow:
+        inset 0 5px 7.3px 2px #f5f1ee,
+        inset -2px -10px 2.3px 0 #b8b7b2;
+    }
+
+    /* disk (nodes 1:41 / 1:62) */
+    .disk {
+      position: relative;
+      width: 89px; height: 89px;
+      border-radius: 9999px;
+      border: 3px solid #373535;
+      box-shadow: 0 0 0 2px #62615e;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .disk-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 9999px;
+      background: conic-gradient(from 180deg,
+        rgb(18,18,18) 0%, rgb(18,18,18) 8.76%, rgb(39,39,39) 10.18%,
+        rgb(59,59,59) 11.59%, rgb(80,80,80) 13.01%, rgb(100,100,100) 14.42%,
+        rgb(79,79,79) 18.19%, rgb(59,59,59) 21.95%, rgb(38,38,38) 31%,
+        rgb(18,18,18) 40.04%, rgb(18,18,18) 59.51%, rgb(39,39,39) 61.29%,
+        rgb(59,59,59) 63.07%, rgb(80,80,80) 64.84%, rgb(100,100,100) 66.62%,
+        rgb(79,79,79) 68.72%, rgb(57,57,57) 70.82%, rgb(38,38,38) 80.96%,
+        rgb(18,18,18) 91.1%, rgb(18,18,18) 100%);
+    }
+
+    .disk-texture {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 9999px;
+      mix-blend-mode: color-dodge;
+      opacity: 0.1;
+    }
+
+    .disk-cap {
+      position: absolute;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .disk-cap.c1 { width: 32.19px; height: 32.19px; }
+    .disk-cap.c2 { width: 18.45px; height: 18.45px; }
+    .disk-cap.c3 { width: 5.94px;  height: 5.94px;  }
+
+    .disk.spinning { animation: disk-spin 1.8s linear infinite; }
+    @keyframes disk-spin { to { transform: rotate(360deg); } }
+
+    /* center column (node 1:45) */
+    .rec-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 171.42px;
+      align-self: stretch;
+    }
+
+    .rec-title {
+      font-family: 'JetBrains Mono', monospace;
+      /* 11 not 12: the title has to clear .rec-center's fixed 171.42px in ONE
+         line, and this string measures 180px at 12px. Kept as a wrap (not
+         nowrap) so a font fallback degrades to two lines instead of spilling
+         out of the pill. */
+      font-size: 11px;
+      letter-spacing: -0.12px;
+      color: #070707;
+      width: 100%;
+      margin-bottom: 4px;
+    }
+
+    /* play slider (node 1:49) */
+    .play-slider {
+      position: relative;
+      width: 100%;
+      height: 23.45px;
+      cursor: pointer;
+      touch-action: none;
+    }
+    /* smooth follow during playback; disabled mid-drag so scrubbing stays 1:1 */
+    .play-slider:not(.scrubbing) .slider-knob { transition: left .12s linear; }
+    .play-slider:not(.scrubbing) .slider-fill { transition: width .12s linear; }
+    .play-slider.scrubbing { cursor: grabbing; }
+
+    .slider-track {
+      position: absolute;
+      left: 0; right: 0;
+      top: 5.58px;
+      height: 12.29px;
+      border-radius: 9999px;
+      background: #686360;
+      box-shadow: 0 3px 1px 0 #ededed;
+      overflow: hidden;
+    }
+    .slider-track::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      box-shadow:
+        inset 0 -1px 3px 0 rgba(0,0,0,0.2),
+        inset 3px 3px 3.4px 0 rgba(0,0,0,0.5);
+    }
+
+    .slider-fill {
+      position: absolute;
+      left: 0;
+      top: 0.46px;
+      height: 11.83px;
+      width: 0;
+      background: var(--gold);
+    }
+
+    .slider-knob {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 23.45px; height: 23.45px;
+      border-radius: 9999px;
+      border: 1px solid #e4e5e5;
+      background: radial-gradient(circle at 50% 50%, #f6f4f5 0%, #caccc9 100%);
+      box-shadow: 2px 4px 4px 0 rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .slider-knob::after {
+      content: '';
+      width: 7.32px; height: 7.32px;
+      border-radius: 9999px;
+      background: linear-gradient(150deg, #ffffff 15.95%, #8d8b8f 70.17%);
+      box-shadow: 0 1px 1.9px 0 rgba(0,0,0,0.51);
+    }
+
+    .timestamps {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: -0.1px;
+      color: #070707;
+    }
+
+    /* play circle (node 1:57) */
+    .play-circle {
+      position: relative;
+      width: 41.32px; height: 41.32px;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      border-radius: 50%;
+      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .play-circle:hover  { transform: scale(1.1); }
+    .play-circle:active { transform: scale(0.92); }
+    .play-circle:focus-visible { outline: 2px solid #070707; outline-offset: 2px; }
+
+    .play-circle .ring { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .play-circle .tri  { position: absolute; inset: 8.33%; width: 83.34%; height: 83.34%; }
+
+    .pause-bars {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .pause-bars span {
+      width: 4px; height: 14px;
+      background: #070707;
+      border-radius: 2px;
+    }
+    .play-circle.playing .tri { display: none; }
+    .play-circle.playing .pause-bars { display: flex; }
+
+    /* hero content wrapper — scroll-driven scale + fade */
+    .hero-content {
+      position: absolute;
+      inset: 0;
+      transform-origin: center center;
+      will-change: transform, opacity;
+      /* drives the whole sky group's size (sun + clouds). 48vw keeps the desktop
+         art near full size on wide screens but scales the sky down faster on
+         narrower laptops (e.g. 13") so it stops overlapping the hero text; the
+         300px floor keeps the sun prominent on phones instead of collapsing. */
+      --sun-w: clamp(300px, 48vw, 725.138px);
+    }
+
+    /* ════ PROJECTS SECTION (scrolls over pinned hero) — node 1:104 ════ */
+    .projects {
+      position: relative;
+      z-index: 10;
+      background: var(--bg-base);
+      padding: 317px 0 200px;
+    }
+
+    /* cream cloud band (node 128:3824 "sky") — cream horizon (#fff9f1, Vector 27)
+       rises up into the blue hero; #fef2e2 accent wisps float above it.
+       Clean Figma vector export, no color-key filter. */
+    .sky-band {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 1440 / 471;
+      /* Anchor the cream seam (band bottom) at projects +200px. At 1440px this
+         resolves to top:-271px — the design value (correct, do not change).
+         height = 32.71vw; bottom = top + height = 200px. */
+      top: calc(200px - 32.71vw);
+      background-image: url("../../assets/sky-band.svg");
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-position: top;
+      pointer-events: none;
+    }
+    /* Above 1440px the band scaled taller and rode too high into the hero.
+       Gentler slope keeps it lower; continuous with the base at exactly 1440px
+       (both give top:-271px there), so there's no jump. Only affects >1440. */
+    @media (min-width: 1440px) {
+      .sky-band { top: calc(35px - 21.25vw); }
+      /* scale the client logos up a touch on larger viewports */
+      .client-logo.logo-gskinner  { height: 38px; }
+      .client-logo.logo-existence { height: 34px; }
+      .client-logo.logo-google    { height: 42px; }
+      .client-logo.logo-pga       { height: 81px; }
+      .client-logo.logo-jumpable  { height: 78px; }
+      .client-logo.logo-vibes     { height: 29px; }
+    }
+
+    /* laptops (13"–15", ~1280–1536 CSS px — a 13" MacBook Air reports ~1470,
+       a 13/14" Pro ~1512): give the sun a bit more presence while trimming the
+       headline + recorder so the two balance. Wide monitors (>1536) keep base. */
+    @media (max-width: 1536px) {
+      .hero-content { --sun-w: clamp(300px, 44vw, 680px); }
+      .h-line { font-size: 136px; letter-spacing: 2.70px; }
+      /* center the whole text block on the viewport: the 1440-tuned base anchors
+         sit ~61px left of centre on narrower laptops, so shift every text element
+         right by 61px together (keeps all internal alignments intact). Also push
+         the whole block DOWN by 40px (all five tops +40) so it sits lower in the
+         hero on 13"/tablet instead of riding high — internal spacing unchanged. */
+      .hero-eyebrow             { left: calc(50% - 398px); top: calc(50vh - 200px); }
+      .hero-vertical            { left: calc(50% - 445px); top: calc(50vh - 26px); }
+      .h-line.multidisciplinary { left: calc(50% - 398px); top: calc(50vh - 192px); }
+      /* rotating word: centered on the recorder, tucked close and lifted up */
+      .h-line.designer { left: calc(50% + 59px); top: calc(50vh - 2px); }
+      /* scale down; left edge stays on the "D"; lifted to tighten under "Designer who" */
+      .recorder { left: calc(50% - 184px); top: calc(50vh + 80px); transform: translate(-50%, -50%) scale(1.0); }
+    }
+
+    /* intro paragraph (node 1:115) */
+    .intro-copy {
+      position: relative;
+      width: 982.9px;
+      max-width: calc(100% - 96px);
+      margin: 0 auto;
+      text-align: center;
+      font-size: 32px;
+      letter-spacing: -1.28px;
+      line-height: 1.358;
+      color: var(--text-heading);
+    }
+    .intro-copy .bold {
+      font-weight: 700;
+      display: block;
+      margin-top: 1.358em;
+    }
+
+    /* ════ FEATURED WORK (node 1:117) ════ */
+    .featured-work {
+      /* sticky-pinned at its tail: scrolls normally through the tiles, then holds
+         its last screen while the testimonials section scrolls up over it (the same
+         pinned-reveal the hero uses). `top` is set from JS = 100vh − section height
+         so the bottom pins to the viewport bottom. */
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-base);
+      padding-top: 80px;
+      /* cream clearance below the tiles: extends the section's own background
+         (covering the pinned hero behind) and pushes the testimonials' green
+         crest down to ~142px below the tiles, per Figma (frame 128:3787) */
+      padding-bottom: 338px;
+      overflow: visible;
+    }
+
+    /* scroll-driven paper-plane decoration.
+       The overlay extends UPWARD over the projects section (sky + intro) so the
+       flight starts in the cloud band above. top/height are set in JS from the
+       live projects→featured span; left/width fill the column. */
+    .plane-fly {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 3;
+    }
+    .plane-trail {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+    /* dotted trail stroke tracks the theme (overrides the SVG's stroke attr) */
+    #planeTrailPath { stroke: var(--trail-stroke); }
+    .plane-sprite {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 88px;
+      height: auto;
+      transform-origin: center center;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+
+    .featured-heading {
+      font-family: 'Inter', 'Space Grotesk', sans-serif;
+      font-size: 40px;
+      font-weight: 300;
+      letter-spacing: -1.6px;
+      line-height: 1.358;
+      color: var(--text-heading);
+      text-align: center;
+      margin-bottom: 38px;
+    }
+
+    /* clients marquee (node 1:124) */
+    .logo-marquee-wrap {
+      position: relative;
+      overflow: hidden;
+      width: 50%;
+      margin: 0 auto 96px;
+    }
+
+    /* edge fade via pseudo-elements so mix-blend-mode on children works against page bg */
+    .logo-marquee-wrap::before,
+    .logo-marquee-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .logo-marquee-wrap::before { left: 0;  background: linear-gradient(to right, var(--bg-base), transparent); }
+    .logo-marquee-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg-base), transparent); }
+
+    .logo-marquee-inner {
+      display: flex;
+      align-items: center;
+      gap: 72px;
+      width: max-content;
+      animation: logo-scroll 24s linear infinite;
+    }
+
+    .logo-marquee-inner:hover { animation-play-state: paused; }
+
+    @keyframes logo-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* two-row opposite-direction variant — mobile only */
+    .logo-marquee-mobile { display: none; }
+
+    .client-logo {
+      width: auto;
+      flex-shrink: 0;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* per-logo heights tuned so each reads at the same optical size
+       (assets are pre-tinted dark grey — no blend modes needed) */
+    .client-logo.logo-gskinner  { height: 31px; }
+    .client-logo.logo-existence { height: 29px; }
+    .client-logo.logo-google    { height: 35px; }
+    .client-logo.logo-pga       { height: 68px; }
+    .client-logo.logo-jumpable  { height: 65px; }
+    .client-logo.logo-vibes     { height: 23px; }
+
+    /* staggered 2×2 tile grid (nodes 61:2057 / 61:2063 / 61:2074 / 61:2084) */
+    .project-tiles {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      padding: 0 60px;
+    }
+
+    .tiles-row {
+      display: flex;
+      gap: 1.97%;
+      /* scroll-reveal: JS scrubs --reveal 0→1 as the row enters the viewport,
+         scaling it up from half size to full. The row spans the full content
+         width, so scaling from its centre grows the tiles toward the page centre. */
+      --reveal: 0;
+      transform: scale(calc(0.5 + 0.5 * var(--reveal)));
+      transform-origin: center center;
+      opacity: calc(0.35 + 0.65 * var(--reveal));
+      will-change: transform, opacity;
+    }
+
+    .project-tile {
+      border-radius: 40px;
+      overflow: hidden;
+      height: 595px;
+      flex-shrink: 0;
+      position: relative;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 0px #323131;
+      transition: box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .project-tile:hover {
+      box-shadow: inset 0 0 0 1px #323131;
+    }
+
+    .project-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .project-tile.tile-wide   { width: 59.39%; }
+    .project-tile.tile-narrow { width: 38.64%; }
+
+    /* ── tile hover overlay ── */
+    .tile-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      backdrop-filter: blur(7.7px);
+      -webkit-backdrop-filter: blur(7.7px);
+      background: var(--overlay-scrim);
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .project-tile:hover .tile-overlay {
+      opacity: 1;
+    }
+
+    .tile-overlay-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 40px;
+      letter-spacing: -1.6px;
+      line-height: 1.358;
+      text-align: center;
+      color: var(--text-contrast);
+      text-transform: uppercase;
+      width: 100%;
+      margin: 0;
+    }
+
+    .tile-overlay-subtitle {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 19px;
+      letter-spacing: -0.76px;
+      line-height: 1.358;
+      text-align: center;
+      color: var(--text-contrast);
+      width: 100%;
+      margin: 0;
+    }
+    /* dark mode: description reads lighter than the all-caps title */
+    body.night .tile-overlay-subtitle { font-weight: 300; }
+
+    /* desktop-only line break inside tile subtitles */
+    .tile-break { display: inline; }
+    @media (max-width: 1100px) { .tile-break { display: none; } }
+
+
+    /* ════ TESTIMONIALS — Figma node 128:3851 (1440×900) ════ */
+    .testimonials {
+      /* slides up over the pinned featured-work, then PINS once it fills the
+         viewport so the card deck can fan out on further scroll (scrubbed via the
+         spacer below) before the footer scrolls over it. */
+      position: sticky;
+      top: 0;
+      z-index: 11;
+      height: max(1010px, 100vh);  /* ≥ viewport so the pinned section fully covers */
+      /* willow-forest painting (Figma node 128:3851) as the section background.
+         Uses a MIRRORED tile (painting + its horizontal flip) so it can repeat across
+         the full width with no visible seams — the mirror edges line up, so it reads as
+         one continuous forest, never as tiles. Sized `auto 100%` so the full painting
+         height (cream sky → willows → meadow) maps to the section height: the cream sky
+         lands at the top edge and the lush willows fill the body. The painting itself
+         now lives on the .t-willow layer below so it can sway in the breeze; this rule
+         just holds the sky-cream base colour behind it. */
+      background: var(--surface-raised);
+      /* clip horizontal land bleed, but let the wavy grass overflow the top —
+         it sits at top:-196 and a plain overflow:hidden cropped the whole wave */
+      overflow-x: clip;
+      overflow-y: visible;
+    }
+
+    /* willow-painting layer — carries the mirrored-tile background so it can be
+       transformed independently of the section (cards/heading stay still). Two nested
+       skins sway on slightly different clocks; anchored at the bottom (transform-origin
+       50% 100%) so the roots stay planted and the canopy leans, like a breeze moving
+       through the fronds. Compound motion (two out-of-sync periods) keeps it organic
+       rather than metronomic. Only transform is animated → stays on the compositor. */
+    .t-willow {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .t-willow-sway,
+    .t-willow-skin {
+      position: absolute;
+      /* horizontal overscan so the sway never exposes the cream base at the edges;
+         no vertical overscan → the cream sky stays pinned to the top edge */
+      inset: 0 -7%;
+      transform-origin: 50% 100%;
+      will-change: transform;
+      backface-visibility: hidden;
+    }
+    .t-willow-skin {
+      inset: 0;
+      background: url("../../assets/testimonials-willow-tile.jpg") top center / auto 100% repeat-x;
+      animation: willow-breeze 7.5s ease-in-out infinite alternate;
+    }
+    .t-willow-sway {
+      animation: willow-drift 12.5s ease-in-out infinite alternate;
+    }
+    /* Both skins lean the SAME direction on different clocks so their skews REINFORCE
+       (an earlier version had them in opposite phase, which cancelled to near-zero and
+       looked static). The 6.5s / 11s beat keeps the sway from feeling metronomic. */
+    @keyframes willow-breeze {
+      from { transform: skewX(-1deg)   translateX(-0.45%) scaleX(1.007); }
+      to   { transform: skewX(1.15deg) translateX(0.45%)  scaleX(1); }
+    }
+    @keyframes willow-drift {
+      from { transform: skewX(-0.4deg) translateX(-0.2%); }
+      to   { transform: skewX(0.45deg) translateX(0.2%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .t-willow-sway,
+      .t-willow-skin { animation: none; }
+    }
+
+    /* (the node 128:4830 noise overlay was removed — it shipped disabled and only
+       held a dead 2MB texture reference) */
+
+    /* wavy grass band — node 128:3978. The cream above the crest was made
+       transparent (testimonials-grass.png) so only the green grass overlaps the
+       pinned work tiles; a soft upward drop-shadow casts the crest onto them. */
+    .t-wavy {
+      position: absolute;
+      top: -196px;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* tree clusters — exported groups 128:3857 (left) / 128:3852 (right).
+       Hidden: the willow-painting background now supplies the trees, so the flat
+       SVG ornaments would double up. (Matches Figma 128:3851, which has no ornament
+       trees over the willow fill.) */
+    .t-trees-left,
+    .t-trees-right {
+      display: none;
+      position: absolute;
+      width: 199px;
+      height: auto;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .t-trees-left  { left: 43px;  top: 473px; }
+    .t-trees-right { right: 36px; top: 434px; }
+
+    /* land / meadow — exported group 128:3997. Lowered so the meadow reads as a
+       slimmer strip beneath the centred card deck (bleeds off the bottom). */
+    .t-land {
+      position: absolute;
+      bottom: -96px;
+      left: 0;
+      width: 100%;
+      height: auto;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    /* full-width content layer (heading + card positioned vs section centre) */
+    .t-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      z-index: 3;
+    }
+
+    /* eyebrow — node 238:1857 (Inter Regular 14px, centred above the heading) */
+    .t-eyebrow {
+      position: absolute;
+      top: -15.31px;
+      /* centred via left/right + text-align (NOT translateX): the .reveal class owns
+         `transform` for the entrance animation and would otherwise clobber the centring */
+      left: 0;
+      right: 0;
+      text-align: center;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 1.3576;
+      letter-spacing: -0.04em;
+      color: var(--text-eyebrow);
+      white-space: nowrap;
+    }
+
+    /* heading — node 128:4197 (Inter Regular 40px, centred near top) */
+    .t-heading {
+      position: absolute;
+      top: 0.96px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      font-weight: 400;
+      font-size: 40px;
+      line-height: 1.3576;
+      letter-spacing: -0.04em;
+      color: var(--text-title);
+      white-space: nowrap;
+    }
+
+    /* testimonial card stack — node 203:2130.
+       The cards begin stacked at centre and fan out left/right as --spread goes
+       0 → 1 (set from JS on scroll). --pos is -1 / 0 / +1 per card. */
+    .t-cards {
+      position: absolute;
+      /* centred in the viewport height while the section is pinned (deck half-height
+         = 255px) — the deck fans out from the middle of the screen */
+      top: calc(50vh - 255px);
+      left: 50%;
+      width: 430px;
+      height: 510px;                 /* reserves the deck's footprint */
+      transform: translateX(-50%);
+      --spread: 0;
+    }
+    .t-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 430px;
+      min-height: 510px;             /* equal-height deck (tallest card) */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 34px;
+      margin: 0;
+      border-radius: 34px;
+      background: linear-gradient(180deg, rgba(251,252,248,0.5) 0%, rgba(149,150,148,0.5) 100%);
+      border: 1px solid #999;
+      /* 18px, not 45px: three big glass cards blurring a continuously-swaying
+         willow backdrop inside a pinned section re-rasterized every frame — the
+         heaviest paint on the desktop page. 18px is what phones already use and
+         still reads as glass. (user-approved trim, 2026-07-30) */
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: 4px 4px 20px 0 rgba(0,0,0,0.3);
+      will-change: transform;
+      /* straight horizontal fan: side cards slide out from directly behind the
+         front card by ±462px × --spread (430px card + 32px gap). No tilt — pure
+         translateX. At --spread 0 all three overlap exactly (only the front shows). */
+      transform: translateX(calc(var(--pos) * var(--spread) * 462px));
+    }
+
+    .t-quoteicon {
+      display: block;
+      width: 82px;
+      height: 82px;
+      flex-shrink: 0;
+    }
+
+    .t-quote {
+      margin: 0;
+      width: 100%;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;                /* regular (Figma 203:2134) */
+      font-size: 14px;
+      line-height: 1.45;
+      color: #000;                     /* black (Figma 203:2134) */
+      word-break: break-word;
+    }
+
+    .t-divider {
+      width: 100%;
+      height: 0;
+      margin: 0;
+      margin-top: auto;             /* pin the divider + author to the card bottom */
+      border: 0;
+      border-top: 1px solid rgba(0,0,0,0.5);   /* Figma Line 57: black @ 50% */
+    }
+
+    .t-author {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      width: 100%;
+    }
+    .t-authorrow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+    .t-avatar {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 999px;
+      object-fit: cover;
+    }
+    .t-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      line-height: normal;
+      color: #000;
+      white-space: nowrap;
+    }
+    .t-role {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: normal;
+      color: #000;
+    }
+
+    /* scrub zone — adds scroll length while the testimonials section is pinned, so
+       the deck can fan out before the footer rises over it. Sits behind the pinned
+       section (no z-index) so it's never seen; only provides scroll distance. */
+    .t-scrub { height: 620px; }
+    /* Mobile bottom-pins the testimonials (JS), so keep a scrub spacer here too —
+       it holds the pinned section on screen for a beat before the footer rises.
+       Kept short (was 65vh) so the footer is reached in a scroll or two, not many. */
+    @media (max-width: 1100px) {
+      .t-scrub {
+        display: block;
+        height: 32vh;
+        /* Willow scene behind the spacer so the footer's CREAM crest (which pokes up
+           over this region) always overlaps willow, not the blank page bg. On desktop
+           the pinned willow section covers this; on phones the sticky can slip, leaving
+           the crest over cream (invisible) — this guarantees willow is there either way.
+           Same tile as the testimonials, so no seam when the section covers it. */
+        background: url("../../assets/testimonials-willow-tile.jpg") center bottom / cover no-repeat;
+      }
+    }
+
+
+    /* ════ RESPONSIVE — below 1100px the absolute 1440 canvas reflows ════ */
+    @media (max-width: 1100px) {
+
+
+      .hero {
+        /* THE BLUE FLICKER: the hero is a sticky blue panel; the cream .projects
+           section (z-index 10, opaque) begins immediately after it in flow. If the
+           hero is only as tall as the SMALL viewport (svh, toolbar shown), then the
+           moment the mobile browser toolbar RETRACTS the visual viewport grows past
+           the hero and the top of the cream section slides into view at the bottom;
+           when the toolbar returns it snaps back to full blue. That is the flicker.
+           dvh does NOT fix it — iOS Safari jumps dvh at the end of the toolbar
+           animation instead of tracking it. The stable fix: size the hero to the
+           LARGE viewport (lvh) so the cream section starts below even the tallest
+           (toolbar-hidden) viewport and can never peek in. lvh is a fixed value, so
+           the hero never resizes as the toolbar toggles — no snap, no flicker.
+           The CONTENT box is pinned to svh below so the recorder still fits on load. */
+        height: 100svh;    /* fallback for browsers without lvh */
+        height: 100lvh;
+        min-height: 100svh;
+        min-height: 100lvh;
+      }
+      /* keep the hero's laid-out content (heading + bottom-anchored recorder) inside
+         the SMALL viewport so it's fully visible on first load (toolbar shown), even
+         though the blue panel itself extends down to lvh behind it. */
+      .hero-content {
+        height: 100svh;
+        bottom: auto;
+      }
+
+      /* NOTE: the hero no longer reflows here. Through tablet the staggered
+         absolute layout is KEPT and continuously fit-scaled by JS (see
+         baseHeroScale) so it never snaps. The flex-column reflow now happens
+         only at mobile (<=640px) — see that block below. */
+
+      /* The hero is sized to lvh (see above) to kill the blue flicker, which pushes
+         this section — and the sky-band cloud seam anchored to its top — down by the
+         toolbar's height (lvh − svh). Pull it back up by exactly that amount so the
+         cloud seam sits where it did before (anchored to the svh fold). This is 0 on
+         desktop (svh == lvh) and only lifts on mobile/tablet where the toolbar exists.
+         The seam still meets the cream cleanly because the sky-band moves up with it. */
+      .projects {
+        padding: 150px 24px 120px;
+        margin-top: calc(100svh - 100lvh);
+      }
+      .sky-band {
+        top: -120px;
+        left: -40px;
+        width: calc(100% + 40px);
+      }
+      .intro-copy {
+        width: 100%;
+        max-width: 640px;
+        font-size: clamp(19px, 4.6vw, 28px);
+        letter-spacing: -0.5px;
+      }
+
+      /* ── featured work responsive (tablet) ── */
+      /* the paper plane's opening arc is fixed-size (tuned to the 1440 canvas);
+         on narrow screens its trail crosses the intro copy — hide the decoration */
+      .plane-fly { display: none; }
+      .featured-work { padding-top: 60px; padding-bottom: 160px; }
+      .featured-heading { font-size: clamp(24px, 4vw, 36px); margin-bottom: 44px; }
+      .logo-marquee-wrap { width: min(620px, 86vw); margin-bottom: 72px; }
+      .project-tile { height: clamp(300px, 40vw, 500px); }
+      .project-tiles { padding: 0 24px; }
+      .tile-overlay-title { font-size: clamp(22px, 3.4vw, 32px); letter-spacing: -0.8px; }
+      .tile-overlay-subtitle { font-size: clamp(15px, 2.2vw, 19px); letter-spacing: -0.4px; }
+
+      /* ── testimonials responsive — reflow the 1440 canvas into one column ── */
+      .testimonials {
+        position: relative;          /* JS re-pins it (sticky, bottom-anchored) */
+        top: auto;
+        height: auto;
+        /* cover the pinned work section at LARGE viewport height (toolbar
+           collapsed mid-page) — svh left a sliver of the tiles showing below */
+        min-height: 100vh;
+        min-height: 100lvh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 80px 24px calc(21vw + 24px);  /* bottom reserves room for the meadow */
+      }
+      .t-wavy { top: -30px; }
+      .t-land { bottom: -16px; }
+      .t-trees-left, .t-trees-right, .t-grid { display: none; }  /* ornaments crowd the column */
+      .t-inner { width: 100%; max-width: 620px; height: auto; }
+      .t-eyebrow {
+        position: static;
+        transform: none;
+        text-align: center;
+        margin-bottom: 6px;
+      }
+      .t-heading {
+        position: static;
+        transform: none;
+        font-size: clamp(34px, 6vw, 48px);
+        letter-spacing: -1.6px;
+        line-height: 1.15;
+        white-space: normal;
+        margin-bottom: 36px;
+        text-align: center;
+      }
+      /* below the fan breakpoint the deck becomes a horizontal snap carousel —
+         swipe sideways through the cards; the next card peeks in at the edge */
+      .t-cards {
+        position: static;
+        transform: none;
+        left: auto;
+        width: auto;
+        height: auto;
+        display: flex;
+        flex-direction: row;
+        align-items: stretch;
+        gap: 16px;
+        overflow-x: auto;
+        /* proximity (not mandatory): the deck still centres a card when you release
+           near one, but the browser stops constantly re-snapping — mandatory inside a
+           sticky section traps the vertical gesture (the "stuck / flashes" glitch). */
+        scroll-snap-type: x proximity;
+        /* allow BOTH pans: the browser routes a horizontal-dominant swipe to this
+           row's scroll and a vertical-dominant swipe to the page (footer). `pan-x`
+           alone blocks vertical on this element, so a vertical swipe over the cards
+           was swallowed instead of scrolling the page — the reported "can't scroll
+           down over the cards" bug. */
+        touch-action: pan-x pan-y;
+        /* don't chain horizontal fling into the page scroll (and vice-versa). */
+        overscroll-behavior-x: contain;
+        /* bleed to the section edges (cancel its 24px side padding) */
+        margin: 0 -24px;
+        padding: 8px 24px 28px;      /* bottom room for the card shadow */
+        scrollbar-width: none;
+      }
+      .t-cards::-webkit-scrollbar { display: none; }
+      .t-card,
+      .t-card--side {
+        position: static;
+        transform: none;
+        left: auto;
+        flex: 0 0 min(430px, 84vw);
+        width: min(430px, 84vw);
+        min-height: 0;               /* row-stretch equalises heights instead */
+        margin: 0;
+        scroll-snap-align: center;
+        /* the base rule sets will-change:transform for the desktop fan; on mobile the
+           cards never transform, so drop the permanent GPU layers (9 of them) — they
+           add memory pressure and cause the repaint flash on scroll. */
+        will-change: auto;
+      }
+      .t-quote { width: 100%; }
+
+    }
+
+    /* tablet: pull the cream sky-band higher into the hero so it reads clearly at
+       the bottom of the pinned hero (the ≤1100 rule sits at -120px; -190px lifts
+       it ~70px more). Scoped to >=641px because on narrower phones the band is
+       shorter than 190px and this would open a blue gap below its seam — mobile
+       keeps the -120px value from the reflow block. The seam (band bottom) stays
+       below the projects top here, so it still joins the cream page cleanly. */
+    @media (min-width: 641px) and (max-width: 1100px) {
+      .sky-band { top: -190px; }
+      /* sit the sky group (sun + clouds, and the night moon) a little higher in
+         the taller tablet hero so it isn't stranded mid-canvas. translateY is in
+         the pre-fit-scale space, so the on-screen lift is ~56px × fit-scale. */
+      .sun-group, .hero-cloud, .moon-group { transform: translateY(-56px); }
+    }
+
+    /* tablet fit-range: the whole staggered canvas is JS fit-scaled
+       (baseHeroScale), which already shrinks the sky group. --sun-w is normally
+       vw-based, so it would shrink a SECOND time and the sun/clouds end up too
+       small relative to the text. Pin it to a fixed px here so the sky group
+       scales ONLY through the fit transform — same as the px-sized headline —
+       keeping the sun/clouds prominent across tablet. 560px == 44vw at 1272px,
+       so it meets the laptop tier continuously at the top and never disturbs the
+       already-tuned 1280 layout. */
+    @media (min-width: 641px) and (max-width: 1272px) {
+      .hero-content { --sun-w: 560px; }
+    }
+
+    /* phones */
+    /* landscape phones are short: size the sky group off the viewport HEIGHT so
+       the sun stays in the corner instead of swallowing the heading (portrait
+       keeps the larger width-based floor above). NB: this is AFTER the tablet
+       rule above so short-landscape keeps its smaller height-based sun. */
+    @media (orientation: landscape) and (max-height: 480px) {
+      .hero-content { --sun-w: clamp(180px, 62vh, 320px); }
+    }
+
+    /* ════ HERO REFLOW — only at mobile: narrow widths (<=640, phone portrait) and
+       short landscape (phone landscape). Above this, through tablet, the staggered
+       absolute canvas is KEPT and JS-fit-scaled (no snap). Here it flattens into a
+       centered flex column so it reads on a phone. ════ */
+    @media (max-width: 640px), (max-height: 480px) and (orientation: landscape) {
+      /* stays hidden in short landscape — the label is 225px tall, so on a 375px
+         -high viewport its bottom third falls into the cream sea band and white
+         text vanishes. Portrait restores it in the max-width:640 block below. */
+      .hero-vertical { display: none; }
+
+      /* the content wrapper (absolute, full-bleed) becomes the flex column —
+         flex on .hero itself never reached the flow content inside this wrapper */
+      .hero-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;   /* push the eyebrow + header up (not centred) */
+        padding: 96px 24px 48px;       /* the phones block below refines top/bottom */
+      }
+
+      /* flow content must stay positioned + above the absolute art layers */
+      .hero-eyebrow {
+        position: relative;
+        z-index: 2;
+        left: auto; top: auto;
+        transform: none;
+        font-size: 13px;
+        margin-bottom: 22px;
+      }
+
+      h1 { display: block; position: relative; z-index: 2; }
+      .h-line {
+        position: static;
+        display: block;
+        /* much bigger on mobile; nowrap keeps each word intact (no mid-word
+           breaks between the per-letter spans) — the forced break below splits
+           "Designer who" cleanly into two lines. */
+        font-size: clamp(46px, 14.5vw, 120px);
+        letter-spacing: 0;
+        line-height: 1.0;
+        white-space: nowrap;
+      }
+      /* break "Designer who" after "Designer": the tagged word-space becomes a
+         zero-size block, dropping "who" to its own line (rotating word is line 3). */
+      .h-line.multidisciplinary .h-space { display: block; width: 0; height: 0; }
+
+      .recorder {
+        position: relative;
+        z-index: 2;
+        left: auto; top: auto;
+        transform: none;
+        width: fit-content;
+        align-self: flex-start;   /* LEFT align the recorder */
+        margin: 44px 0 0;
+      }
+    }
+
+    @media (max-width: 640px) {
+
+      /* vertical label, portrait phones only. It sits inside h1 (position:relative
+         here), so top:50% centres it on the HEADING box — it tracks the header at
+         any viewport height instead of drifting with the viewport's own centre.
+         vertical-rl + 180deg gives the same bottom-to-top read as the desktop
+         rotate(-90deg), and its box hugs `left` exactly (no half-width math against
+         an unknown text length). left backs out of the column's own padding so the
+         label lands 16px from the viewport edge. */
+      .hero-vertical {
+        display: block;
+        top: 50%;
+        left: calc(16px - var(--col-pad-l));
+        transform: translateY(-50%) rotate(180deg);
+        writing-mode: vertical-rl;
+        z-index: 2;
+        font-size: 13px;   /* matches the "Hello, I'm…" eyebrow's mobile size */
+      }
+
+      /* smaller, corner-tucked sun on mobile so the much-bigger header has room
+         up top; the sky group (sun + clouds + moon) rides high in the corner. */
+      .hero-content {
+        --sun-w: clamp(258px, 66vw, 340px);
+        /* left pad clears the vertical label's gutter; the label reads it back to
+           park itself 16px from the viewport edge, so the two stay in sync */
+        --col-pad-l: 64px;
+        /* iOS Safari's toolbars make the visible (svh) height short, so the header
+           sits just under the sun — NOT pushed far down. The +45 constant is tuned
+           so a bigger sun bleeds further into the top-right corner instead of
+           moving the header. Bottom pad keeps the recorder clear of the sky-band. */
+        padding: calc(var(--sun-w) * 0.5 + 45px) 24px 124px var(--col-pad-l);
+      }
+      /* nudge the sky group down so it sits just below the nav buttons */
+      .sun-group, .hero-cloud, .moon-group { transform: translateY(70px); }
+
+      .recorder {
+        transform: scale(0.66);
+        transform-origin: top left;    /* keep the left edge fixed when scaling */
+        /* was `auto`, which bottom-pinned the recorder and dumped ALL the column's
+           spare height into this one gap — fine on a 667px phone, but it grew to
+           ~170px on a tall viewport and the hero read as two split-apart blocks.
+           A bounded gap keeps eyebrow → header → recorder reading as one group at
+           any height; the leftover space now falls below, into the sky art. */
+        margin: clamp(24px, 4.5vh, 56px) 0 0;
+      }
+
+      /* ── featured work mobile ── */
+      .featured-work { padding-top: 48px; padding-bottom: 120px; }
+      .featured-heading { font-size: 28px; letter-spacing: -0.8px; margin-bottom: 32px; }
+      .logo-marquee-wrap { width: 100%; margin-bottom: 48px; }
+      .logo-marquee-wrap::before, .logo-marquee-wrap::after { width: 40px; }
+      .logo-marquee-inner { gap: 44px; }
+
+      /* swap the single row for two rows moving in opposite directions */
+      .logo-marquee-wrap > .logo-marquee-inner { display: none; }
+      .logo-marquee-mobile { display: flex; flex-direction: column; gap: 18px; }
+      /* uniform margin-right (incl. last item) instead of gap so the duplicated
+         half is exactly equal width — translateX(-50%) then loops seamlessly */
+      .logo-marquee-mobile .mrow { gap: 0; }
+      .logo-marquee-mobile .mrow .client-logo { margin-right: 44px; }
+      .logo-marquee-mobile .mrow-a { animation: logo-scroll 18s linear infinite; }
+      .logo-marquee-mobile .mrow-b { animation: logo-scroll 18s linear infinite reverse; }
+      .client-logo.logo-gskinner  { height: 20px; }
+      .client-logo.logo-existence { height: 18px; }
+      .client-logo.logo-google    { height: 22px; }
+      .client-logo.logo-pga       { height: 43px; }
+      .client-logo.logo-jumpable  { height: 41px; }
+      .client-logo.logo-vibes     { height: 12px; }
+      .tiles-row { flex-direction: column; gap: 16px; }
+      .project-tile.tile-wide,
+      .project-tile.tile-narrow { width: 100%; height: clamp(240px, 60vw, 380px); }
+      .project-tiles { gap: 16px; }
+
+      /* stacked column: reveal each tile on its own (one by one) instead of scaling
+         the whole row (two tiles) at once. Neutralise the row-level transform and
+         move the same scrub onto each tile, driven by its own --reveal (set in JS). */
+      .tiles-row { transform: none; opacity: 1; will-change: auto; }
+      .project-tile {
+        --reveal: 0;
+        transform: scale(calc(0.5 + 0.5 * var(--reveal)));
+        transform-origin: center center;
+        opacity: calc(0.35 + 0.65 * var(--reveal));
+        will-change: transform, opacity;
+      }
+
+      /* ── testimonials mobile ── */
+      .testimonials { padding-top: 84px; }
+      .t-heading { font-size: clamp(30px, 8vw, 40px); letter-spacing: -1.2px; margin-bottom: 28px; }
+      /* lighter glass blur on phones — blur(45px) over the pinned deck is a heavy
+         per-frame repaint that makes the scroll stutter; 18px still reads as glass. */
+      .t-card { padding: 28px; border-radius: 28px; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); }
+      .t-name { font-size: 22px; }
+      .t-role { font-size: 17px; }
+      .t-arrows { gap: 44px; }
+
+    }
+
+    /* very narrow phones: the recorder (natural ~425px) needs a deeper scale */
+    @media (max-width: 360px) {
+      .recorder { transform: scale(0.58); }
+    }
+
+
+    /* ── About intro: line-by-line reveal on scroll ──
+       No pin — the blurb scrolls normally. JS splits each paragraph into visual
+       lines (.tw-line); each fades + rises as a whole line as the blurb travels
+       up the viewport, driven by its scroll position so it can't be outrun. */
+    .intro-copy .tw-line {
+      display: block;
+      opacity: 0;
+      transform: translateY(0.55em);
+      transition: opacity 0.5s ease,
+                  transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+      /* no will-change: this reveal plays once. The browser composites a running
+         opacity/transform transition on its own, whereas the declaration would keep
+         a layer per line alive for the rest of the session. */
+    }
+    .intro-copy .tw-line.is-in {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-copy .tw-line { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ── Work featured on: logos cascade in when the marquee scrolls into view ──
+       The reveal (opacity + translateY) rides on top of the marquee's translateX
+       (which animates the parent), so they don't conflict. Triggered as a group
+       via .logos-in so logos don't pop individually as the marquee loops. */
+    .logo-marquee-inner .client-logo {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease,
+                  transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+      transition-delay: var(--logo-delay, 0s);
+      /* no will-change — one-shot group reveal, same reasoning as .tw-line above */
+    }
+    .logo-marquee-wrap.logos-in .client-logo {
+      opacity: 1;
+      transform: none;
+    }
+    /* stagger both duplicate sets identically (children 1–6 and 7–12) */
+    .logo-marquee-inner .client-logo:nth-child(6n + 1) { --logo-delay: 0.10s; }
+    .logo-marquee-inner .client-logo:nth-child(6n + 2) { --logo-delay: 0.18s; }
+    .logo-marquee-inner .client-logo:nth-child(6n + 3) { --logo-delay: 0.26s; }
+    .logo-marquee-inner .client-logo:nth-child(6n + 4) { --logo-delay: 0.34s; }
+    .logo-marquee-inner .client-logo:nth-child(6n + 5) { --logo-delay: 0.42s; }
+    .logo-marquee-inner .client-logo:nth-child(6n + 6) { --logo-delay: 0.50s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .logo-marquee-inner .client-logo { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* ════ NIGHT THEME — Figma node 256:1861 (Home page, night) ════
+       Dark mode = re-point the Tier-2 role tokens (values read 1:1 from the night
+       frame). Everything themed by a token flips automatically; only asset swaps,
+       filters, blend modes and display toggles need explicit rules below.
+       Toggled by body.night (nav switch; persisted in localStorage). */
+
+    /* hero geometry is identical day/night; only the gradient stops (tokens) change.
+       night aurora shader export (node 256:1865) */
+    body.night .hero-shader { content: url("../../assets/hero-shader-night.webp"); }
+    /* finer noise grain at night (day tiles at 2048px) */
+    body.night .hero-noise { background-size: 1024px 1024px; }
+    /* starfield overlay — night only, screen blend so only the stars show */
+    .hero-stars {
+      display: none;
+      position: absolute;
+      inset: 0;
+      /* seamless mirrored 2×2 tile built from the starfield (edges mirror → no seam) */
+      background-image: url("../../assets/hero-stars-tile.webp");
+      background-size: 700px auto;
+      background-repeat: repeat;
+      background-position: center;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    body.night .hero-stars { display: block; }
+    /* the two sky overlays are mutually exclusive — starfield at night, cirrus by day */
+    body.night .hero-sky { display: none; }
+
+    /* shooting star — night only. Colours are sampled straight out of
+       hero-stars-tile (core #fffbff, halo #d6ebff, glow #a5caf6) so it reads as
+       one of the starfield's own stars breaking loose rather than a new element.
+       Geometry comes in as custom properties the JS randomises per pass; the
+       keyframes animate `transform` (not the properties themselves) so this
+       still interpolates on Safari without @property support. Rotating first and
+       translating along the element's OWN x-axis keeps the streak aligned with
+       its direction of travel, which is what sells it as motion. */
+    .hero-meteor {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: var(--m-top, 12%);
+      width: var(--m-len, 200px);
+      height: 2.5px;
+      border-radius: 999px;
+      transform-origin: 0 50%;
+      opacity: 0;             /* base state between passes — the animation owns the fade */
+      background: linear-gradient(90deg,
+        rgba(165,202,246,0) 0%,
+        rgba(214,235,255,0.55) 55%,
+        rgba(255,251,255,1) 100%);
+      /* the trail needs its own glow — without it the line reads as a 1px hairline
+         at desktop width and the streak barely registers against the starfield */
+      filter: drop-shadow(0 0 4px rgba(165,202,246,0.6));
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    /* the head: a hot core with the starfield's two-stop halo */
+    .hero-meteor::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 50%;
+      width: 5px; height: 5px;
+      margin-top: -2.5px;
+      border-radius: 50%;
+      background: #fffbff;
+      box-shadow: 0 0 8px 2px rgba(214,235,255,0.95),
+                  0 0 20px 7px rgba(165,202,246,0.6);
+    }
+    body.night .hero-meteor { display: block; }
+
+    @keyframes hero-meteor-fly {
+      0%   { opacity: 0; transform: rotate(var(--m-angle, 14deg)) translateX(calc(-1 * var(--m-len, 200px))); }
+      10%  { opacity: 1; }
+      72%  { opacity: 1; }
+      100% { opacity: 0; transform: rotate(var(--m-angle, 14deg)) translateX(var(--m-travel, 1600px)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-meteor { display: none !important; }
+    }
+
+    /* sun ↔ moon (256:1905) */
+    body.night .sun-group { display: none; }
+    .moon-group {
+      display: none;
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+    }
+    body.night .moon-group { display: block; }
+    /* moon glow + disc scale from the SAME --sun-w as the sun (ratios taken from
+       the desktop design: glow 418.34, disc 194.63 against the 725.138 art) so the
+       moon tracks the sun's size + position identically across every viewport —
+       day and night stay consistent. */
+    .moon-glow {
+      /* ellipse (white 45%), blur scales with the group too */
+      position: absolute;
+      top:   calc(var(--sun-w) * -0.037579);
+      right: calc(var(--sun-w) *  0.039441);
+      width:  calc(var(--sun-w) * 0.576911);
+      height: calc(var(--sun-w) * 0.576911);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.45);
+      filter: blur(calc(var(--sun-w) * 0.105773));
+    }
+    /* hatched moon (moon.svg) — same cross-hatch pattern as the light-mode sun */
+    .moon-disc {
+      position: absolute;
+      top:   calc(var(--sun-w) * 0.116668);
+      right: calc(var(--sun-w) * 0.193702);
+      width:  calc(var(--sun-w) * 0.268405);
+      height: calc(var(--sun-w) * 0.268405);
+    }
+
+    /* hero clouds (256:1903/1904): #000 @ 50% */
+    body.night .hero-cloud { filter: brightness(0); opacity: 0.5; }
+
+    /* — nav: label + pin colour are now driven by the backdrop-contrast rules in
+       site.css (#nav.nav-on-dark / .nav-on-light, set by initNavContrast), so the
+       pin stays legible over any section regardless of theme. No night override. — */
+
+    /* — sky band: same vectors recolored (Vector 27 #0a0a0f, wisps #0f0f2d) — */
+    body.night .sky-band { background-image: url("../../assets/sky-band-night.svg"); }
+
+    /* projects/featured bg + intro/heading text + tile-overlay (256:1927/1945) all
+       flip via tokens (--bg-base, --text-heading, --overlay-scrim, --text-contrast). */
+
+    /* logos row (256:1930): opacity 70%; svg logos go light (#fff9f1 / white variants),
+       photo logos blend against the dark bg (luminosity / difference, per Figma) */
+    body.night .logo-marquee-inner { opacity: 0.7; }
+    body.night .client-logo.logo-gskinner  { filter: brightness(0) invert(1); }
+    body.night .client-logo.logo-existence,
+    body.night .client-logo.logo-google    { filter: brightness(0) invert(0.93); }
+    body.night .client-logo.logo-pga      { mix-blend-mode: luminosity; }
+    /* jumpable + vibes: dedicated white night-mode logo exports swapped in via content.
+       Keep these filenames free of "+" — Vercel decodes a literal + in a path back to a
+       space, so /assets/vibes+logic-night mode.png 404s in the browser (curl with %2B
+       hides it). Spaces are fine; the plus is not. */
+    body.night .client-logo.logo-jumpable { content: url("../../assets/jumpable-night-mode.png"); }
+    body.night .client-logo.logo-vibes    { content: url("../../assets/logo-vibes-night.png"); }
+    /* marquee edge-fades track --bg-base; plane trail tracks --trail-stroke — no night rule needed */
+
+    /* — testimonials night art: purple willow watercolour on the
+       willow layer (seamless horizontal mirror-tile, same repeat-x/sway as day) and the
+       purple night meadow on the land layer; green day crest hidden for the dark one — */
+    /* section bg + eyebrow/heading text flip via tokens; only art swaps stay here */
+    body.night .t-willow-skin { background-image: url("../../assets/testimonials-willow-night-tile.png"); }
+    /* night meadow art has a thin transparent left column + tapered bottom corners;
+       bleed it a few % past both edges (section clips overflow-x) so opaque meadow
+       reaches edge-to-edge, matching the day land strip */
+    body.night .t-land { content: url("../../assets/land-meadow-night.png"); width: 106%; left: -3%; }
+    body.night .t-wavy { visibility: hidden; }
+    .t-wavy-night {
+      display: none;
+      background: var(--surface-raised);   /* night-only crest; token resolves to navy */
+      -webkit-mask-image: url("../../assets/testimonials-grass-cream.png");
+      -webkit-mask-size: 100% 100%;
+      mask-image: url("../../assets/testimonials-grass-cream.png");
+      mask-size: 100% 100%;
+      /* .t-wavy gives position/top/width; height:auto has no box on a div, so match the img ratio */
+      aspect-ratio: 2880 / 395;
+      height: auto;
+    }
+    body.night .t-wavy-night { display: block; visibility: visible; }
+
+    /* — footer (256:2317): bg, crest fill and head/sub text all flip via tokens
+       (--surface-raised, --text-heading); only the meadow art swap stays here — */
+    /* footer meadow: swap in the purple night meadow (same asset as testimonials night
+       land); bleed a few vw past both edges (footer clips overflow-x) so the art's thin
+       transparent edges fall off-screen and the meadow spans full viewport width */
+    body.night .ft-land { content: url("../../assets/land-meadow-night.png"); width: 106vw; }
+
+    /* menu-overlay gradient stops follow the night sky via --hero-from/--hero-to (no rule needed) */
+
+    /* ════════════════════════════════════════════════════════════════════
+       ABOUT PAGE — in-page view (Figma node 1:452). Phase A: content only.
+       ════════════════════════════════════════════════════════════════════ */
+    /* no box of its own: the about sections flow directly in <body> so their
+       position:sticky is confined to the page (not this wrapper) — this lets
+       fun-facts stay pinned while the (body-level) footer scrolls up over it.
+       The [hidden] rule is more specific, so routing still hides the view. */
+    #about-view { display: contents; }
+    #about-view[hidden] { display: none; }
+
+    /* — Intro / hero (node 1:453, 1440×1024) — */
+    .about-intro {
+      position: sticky;                  /* pin the hero so the next section scrolls up over it */
+      top: 0;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fff9f1 0%, #e7d6bd 100%);  /* light warm gradient; night restored below */
+      color: var(--text-heading);
+      /* body ink: near-black in light, warm cream in night */
+      --about-ink: #2b2b2b;
+      /* JS shrinks this (≤1) so the whole 1440×1024 frame — land included —
+         fits within the viewport height; section collapses to the scaled height */
+      --intro-scale: 1;
+      height: calc(1024px * var(--intro-scale));
+      min-height: 100vh;                 /* always fill the viewport when pinned (no gap behind) */
+      /* JS-set vertical offset that drops the scaled frame down so the content
+         column sits at the viewport's vertical centre (esp. ≤1440px, where the
+         frame scales down and would otherwise float near the top) */
+      --intro-offset: 0px;
+    }
+    .about-intro-stage {
+      position: relative;
+      width: 1440px;
+      height: 1024px;
+      margin: 0 auto;
+      transform-origin: top center;
+      /* translate is in final px (applied after scale) → centres content vertically */
+      transform: translateY(var(--intro-offset, 0px)) scale(var(--intro-scale));
+    }
+    /* scene wrapper (holds art + content): shrinks from its centre as the page
+       scrolls, mirroring the home page's .hero-content (1 → 0.88). Kept separate
+       from the stage so the fit-scale / centring offset stay independent. */
+    .ai-scene {
+      position: absolute;
+      inset: 0;
+      transform-origin: center center;
+      transform: scale(var(--intro-scroll, 1));
+      will-change: transform;
+    }
+
+    /* decorative art (behind content) */
+    .ai-sun-clouds { position: absolute; pointer-events: none; }
+    .ai-sun-clouds{ left: 713px;  top: 93.6px;   width: 697px;  height: auto;  z-index: 1; }
+
+    /* content row (node 1:563): 1320px centred, cols vertically centred */
+    .ai-content {
+      position: absolute;
+      left: 50%;
+      top: 233.75px;
+      transform: translateX(-50%);
+      width: 1320px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 3;
+    }
+    .ai-copy {
+      width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .ai-heading {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: 40px;
+      line-height: 1.358;
+      color: var(--text-heading);
+    }
+    .ai-body {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 24px;
+      line-height: 1.68;
+      letter-spacing: -0.96px;
+      color: var(--about-ink);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;                          /* visible break between paragraphs */
+    }
+    .ai-body p { margin: 0; }
+    .ai-body strong { font-weight: 700; }
+
+    /* polaroid stack (node 1:568, 516×588.695) */
+    .ai-photos { position: relative; width: 516px; height: 588.695px; flex-shrink: 0; }
+    .ai-polaroid {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ai-polaroid .ai-card {
+      background: #fff;
+      border: 0.723px solid rgba(0,0,0,0.2);
+      border-radius: 2.89px;
+      padding: 11.561px 11.561px 26.012px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .ai-polaroid .ai-photo {
+      display: block;
+      width: 212.431px;
+      height: 299.137px;
+      border-radius: 2.89px;
+      overflow: hidden;
+    }
+    .ai-polaroid .ai-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .ai-polaroid.p1 { left: 170.7px;  top: 49.43px;  width: 247.505px; height: 344.96px;  }
+    .ai-polaroid.p1 .ai-card { transform: rotate(-2.06deg); }
+    .ai-polaroid.p2 { left: 43.32px;  top: 133.79px; width: 283.772px; height: 368.465px; }
+    .ai-polaroid.p2 .ai-card { transform: rotate(-8.7deg); }
+    .ai-polaroid.p3 { left: 206.09px; top: 181.63px; width: 266.583px; height: 357.635px; }
+    .ai-polaroid.p3 .ai-card { transform: rotate(5.47deg); }
+    /* front polaroid (node 1:575) — larger, on top */
+    .ai-polaroid.p4 { left: 106.41px; top: 74px; width: 291.539px; height: 401.654px; z-index: 4; }
+    .ai-polaroid.p4 .ai-card {
+      transform: rotate(3.06deg);
+      border-width: 0.832px;
+      border-radius: 3.328px;
+      padding: 13.313px 13.313px 29.955px;
+    }
+    .ai-polaroid.p4 .ai-photo { width: 244.63px; height: 344.479px; border-radius: 3.328px; }
+
+    /* — drag interaction — pick up & move polaroids one by one — */
+    .ai-polaroid {
+      cursor: grab;
+      touch-action: none;                 /* let pointer drag beat page scroll */
+      will-change: transform;
+      transform: translate3d(0, 0, 0);
+    }
+    .ai-polaroid .ai-card { pointer-events: none; }   /* drag the whole tile, not the image */
+    .ai-polaroid.is-dragging { cursor: grabbing; }
+    .ai-polaroid.is-dragging .ai-card { box-shadow: 0 22px 48px rgba(0,0,0,0.24); }
+    /* drop: spring the lift-scale back with a gentle overshoot → subtle bounce */
+    .ai-polaroid.is-dropping {
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    /* reset: glide each tile home with a smooth, un-bouncy settle */
+    .ai-polaroid.is-settling {
+      transition: transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ai-polaroid.is-settling,
+      .ai-polaroid.is-dropping { transition: none; }
+    }
+
+    /* restart / reset button (bottom-right of the photo stage) */
+    .ai-photos-reset {
+      position: absolute;
+      right: 2px;
+      bottom: 6px;
+      z-index: 10;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      padding: 0;
+      border: 0.9px solid rgba(43,43,43,0.18);
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(6px);
+      color: var(--about-ink);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(6px) scale(0.9);
+      transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                  background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 18px rgba(43,43,43,0.14);
+    }
+    .ai-photos.has-moved .ai-photos-reset {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .ai-photos-reset svg { width: 22px; height: 22px; display: block; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+    .ai-photos-reset:hover { background: rgba(255,255,255,0.95); box-shadow: 0 10px 24px rgba(43,43,43,0.2); }
+    .ai-photos-reset:hover svg { transform: rotate(-160deg); }
+    .ai-photos-reset:active { transform: translateY(1px) scale(0.96); }
+    .ai-photos-reset:focus-visible { outline: 2px solid var(--about-ink); outline-offset: 3px; }
+    body.night .ai-photos-reset {
+      background: rgba(20,20,26,0.6);
+      border-color: rgba(255,249,233,0.24);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+    }
+    body.night .ai-photos-reset:hover { background: rgba(30,30,38,0.85); }
+
+    /* — Intro night treatment (Figma node 339:3219) — */
+    /* deep charcoal→navy sky (#0a0a0f → #152f5d), light #eee ink, and the
+       night-painted sun+clouds / land art swapped in. */
+    body.night .about-intro   {
+      background: linear-gradient(180deg, #0a0a0f 0%, #152f5d 100%);
+      --about-ink: #eee;
+      --text-heading: #eee;
+    }
+    body.night .ai-sun-clouds { content: url("../../assets/about-sun-clouds-night.png"); }
+    body.night .ai-land       { content: url("../../assets/about-land-night.png"); }
+    body.night .ai-polaroid .ai-card { box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+    /* — Professional Experience (node 1:707, 1440×1024) — */
+    .about-exp {
+      position: sticky;                  /* pin it too, so fun-facts scrolls up over it */
+      top: 0;
+      z-index: 2;                        /* scroll up and over the pinned hero */
+      /* clip sideways (the land is wider than the viewport) but let the land
+         spill upward past the top edge so it laps over the hero on scroll */
+      overflow-x: clip;
+      overflow-y: visible;
+      background: var(--bg-base);         /* light warm base (#fff9f1) */
+      --about-ink: #2b2b2b;
+      min-height: 100vh;                 /* always fill the viewport when pinned (no gap behind) */
+    }
+    /* land: the crest is the section's visible top edge (like the home-page grass
+       wave). The land's solid cream band must fully cover the section's straight top
+       edge across the whole width, so only the wavy crest shows — never a flat line.
+       Its deepest valley (~80% down the art) is kept just above the section edge,
+       and the land's cream base matches the section fill (#fff9f1) so the two are seamless. */
+    .about-exp > .ai-land {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% - 20px);         /* solid base laps 20px into the green; crest rises over the hero */
+      width: 1920px;
+      transform: translateX(-50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+    .about-exp-stage {
+      position: relative;
+      width: 1440px;
+      max-width: 100%;
+      height: 1024px;
+      margin: 0 auto;
+    }
+    /* rotated section label (node 1:708) */
+    .aexp-label {
+      position: absolute;
+      left: 103.5px;
+      top: 50%;
+      transform: translate(-50%, -50%) rotate(-90deg);
+      transform-origin: center;
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: 44px;
+      line-height: 1.358;
+      color: rgba(0,0,0,0.53);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    /* accordion list (node 1:709) */
+    .aexp-list {
+      position: absolute;
+      left: calc(50% + 98px);
+      top: 101.5px;
+      transform: translateX(-50%);
+      width: 1124px;
+      max-width: calc(100% - 220px);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .aexp-divider { width: 100%; height: 1px; background: rgba(0,0,0,0.18); }
+
+    .aexp-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      width: 100%;
+      min-height: 89px;
+      padding: 0;
+      border: 0;
+      background: none;
+      text-align: left;
+      cursor: pointer;
+      transition: opacity 0.25s ease;
+    }
+    .aexp-head:hover { opacity: 0.72; }
+    .aexp-head:active { opacity: 0.55; }
+    .aexp-head:focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 6px; border-radius: 4px; }
+
+    .aexp-company { display: flex; flex-direction: column; align-items: flex-start; min-width: 0; }
+    .aexp-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 500;
+      font-size: 30px;
+      line-height: 1.358;
+      letter-spacing: -1.2px;
+      color: var(--text-heading);       /* black day → cream night */
+    }
+    .aexp-role {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 1.68;
+      letter-spacing: -0.8px;
+      color: var(--about-ink);
+    }
+    .aexp-meta { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+    .aexp-date {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 1.68;
+      letter-spacing: -0.8px;
+      color: var(--about-ink);
+      text-align: right;
+      white-space: nowrap;
+    }
+    /* +/× toggle (node 1:719/1:733) — a plus that rotates 45° to a cross when open */
+    .aexp-toggle {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .aexp-toggle::before,
+    .aexp-toggle::after {
+      content: "";
+      position: absolute;
+      background: var(--text-heading);
+      border-radius: 2px;
+    }
+    .aexp-toggle::before { left: 50%; top: 8px; width: 2.4px; height: 24px; transform: translateX(-50%); }
+    .aexp-toggle::after  { top: 50%; left: 8px; height: 2.4px; width: 24px; transform: translateY(-50%); }
+    .aexp-item.is-open .aexp-toggle { transform: rotate(45deg); }
+
+    /* expandable panel (node 1:722) */
+    .aexp-panel { overflow: hidden; max-height: 0; transition: max-height 0.42s ease; }
+    .aexp-item.is-open .aexp-panel { max-height: 700px; }
+    .aexp-panel-inner {
+      padding: 17px 8px 8px;
+      width: 1029.55px;
+      max-width: 100%;
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 1.68;
+      letter-spacing: -0.8px;
+      color: var(--about-ink);
+    }
+    .aexp-panel-inner p { margin: 0; }
+    .aexp-panel-inner strong { font-weight: 700; }
+    /* bulleted highlights (e.g. gskinner) */
+    .aexp-bullets {
+      margin: 14px 0 0;
+      padding-left: 1.2em;
+      list-style: disc;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .aexp-bullets li { padding-left: 4px; }
+    .aexp-bullets li::marker { color: rgba(0,0,0,0.4); }
+    body.night .aexp-bullets li::marker { color: rgba(255,249,233,0.5); }
+
+    /* — Experience night treatment (deep-green surface derived for dark mode) — */
+    body.night .about-exp     { --about-ink: rgba(255,249,233,0.82); }
+    body.night .aexp-label    { color: rgba(255,249,233,0.5); }
+    body.night .aexp-divider  { background: rgba(255,249,233,0.18); }
+
+    /* — Fun facts (node 1:767, 1440×1088) — */
+    .about-fun {
+      position: sticky;                  /* pin it too, so the footer scrolls up over it */
+      top: 0;
+      z-index: 3;                        /* scroll up and over the pinned experience */
+      overflow-x: clip;                  /* clip sideways, let the crest spill up over experience */
+      overflow-y: visible;
+      background: #9eafbe;               /* fallback behind the photo */
+      min-height: 100vh;                 /* always fill the viewport when pinned (no gap behind) */
+    }
+    /* photo background — one continuous image whose TOP edge is the wavy crest, lapping
+       up over the experience on scroll. A single layer (image + wave mask) keeps the
+       photo seamless across the crest → body: no duplicated sky, no straight line. */
+    .about-fun > .aff-bg {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: -94px;                        /* rise 94px above the section top (the crest poke) */
+      bottom: 0;
+      z-index: 0;
+      background: url("../../assets/fun-facts-background.webp") center bottom / cover no-repeat;
+      --aff-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%20116'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fff'%20d='M0,116%20L0,50%20Q%2090,24%20180,50%20T%20360,50%20T%20540,50%20T%20720,50%20T%20900,50%20T%201080,50%20T%201260,50%20T%201440,50%20L1440,116%20Z'/%3E%3C/svg%3E");
+      /* wave silhouette across the top 116px + fully-opaque below → union: the photo's
+         visible top edge follows the wave, everything below shows the full photo */
+      -webkit-mask: var(--aff-wave) top left / 100% 116px no-repeat,
+                    linear-gradient(#000, #000) bottom left / 100% calc(100% - 115px) no-repeat;
+      mask: var(--aff-wave) top left / 100% 116px no-repeat,
+            linear-gradient(#000, #000) bottom left / 100% calc(100% - 115px) no-repeat;
+      pointer-events: none;
+    }
+    /* the 1440×1088 card grid, absolutely centred in the pinned viewport and scaled down
+       (never up) by --ff-fit so every card stays visible on shorter/narrower viewports.
+       Taken out of flow so it never forces the section taller than the viewport. */
+    .about-fun-stage {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 1440px;
+      height: 1088px;
+      transform: translate(-50%, -50%) scale(var(--ff-fit, 1));
+      transform-origin: center center;
+      z-index: 1;
+      --ff-open: 1;
+    }
+    /* trailing flow space after the pinned fun-facts section: keeps it pinned (grid held
+       on screen) for this much extra scroll before the footer rises over it */
+    .aff-hold { height: 900px; pointer-events: none; }
+
+    .ff-card {
+      position: absolute;
+      width: 305px; height: 300px;
+      /* --ff-open (set on the stage, scroll-driven): 1 = grid, 0 = stacked pile.
+         --dx/--dy/--rot are each card's stacked-pile offset from its grid spot (set by JS).
+         At open=1 this collapses to the original translateX(-50%) grid layout. */
+      transform:
+        translateX(-50%)
+        translate(calc(var(--dx, 0px) * (1 - var(--ff-open, 1))),
+                  calc(var(--dy, 0px) * (1 - var(--ff-open, 1))))
+        rotate(calc(var(--rot, 0deg) * (1 - var(--ff-open, 1))))
+        scale(calc(1 - 0.06 * (1 - var(--ff-open, 1))));
+      transform-origin: center center;
+      will-change: transform;
+      border-radius: 32px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 10px 10px 20px rgba(0,0,0,0.15);
+    }
+    .ff-card.b1 { border: 1px solid rgba(0,0,0,0.15); }
+    .pos-lt { left: 345px;  top: 203.5px; }
+    .pos-ct { left: 720px;  top: 203.5px; }
+    .pos-rt { left: 1098px; top: 203.5px; }
+    .pos-lb { left: 345px;  top: 584.5px; }
+    .pos-cb { left: 720px;  top: 584.5px; }
+    .pos-rb { left: 1098px; top: 584.5px; }
+
+    /* hikes 2025 (node 1:838) */
+    .ff-hikes-label { position: absolute; left: 27.78px; top: 29.61px; display: flex; flex-direction: column; gap: 8px; z-index: 2; }
+    .ff-hikes-label .k { font-family: 'Space Grotesk', sans-serif; font-size: 16px; text-transform: uppercase; color: #6d6d6d; }
+    .ff-hikes-label .y { font-family: 'DM Serif Display', serif; font-size: 60px; letter-spacing: -2.4px; color: #2b2b2b; line-height: 1; }
+    .ff-photo { position: absolute; width: 211px; height: 253px; border: 6px solid #fff; border-radius: 27px; box-shadow: 0 0 16px 8px rgba(0,0,0,0.15); overflow: hidden; box-sizing: border-box; }
+    .ff-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .ff-photo.h1 { left: 140.6px; top: 370.8px; transform: translate(-50%,-50%) rotate(-8.86deg); }
+    .ff-photo.h2 { left: 218.2px; top: 299px;   transform: translate(-50%,-50%) rotate(-5.54deg); z-index: 1; }
+    .ff-photo.h3 { left: 295.9px; top: 235.3px; transform: translate(-50%,-50%) rotate(-1.56deg); z-index: 2; }
+    /* hikes card hover: grow 1.3x + tilt right; photos slide up to reveal more.
+       Uses the independent scale/rotate/translate longhands so it composes with the
+       scroll-driven `transform` on .ff-card without transitioning that transform. */
+    .ff-card.ff-hikes { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-hikes:hover { scale: 1.12; rotate: 5deg; z-index: 5; box-shadow: 20px 24px 44px rgba(0,0,0,0.26); }
+    .ff-hikes .ff-photo { transition: translate 0.45s cubic-bezier(0.22,1,0.36,1); }
+    .ff-hikes:hover .ff-photo.h1 { translate: 0 -56px; }
+    .ff-hikes:hover .ff-photo.h2 { translate: 0 -46px; }
+    .ff-hikes:hover .ff-photo.h3 { translate: 0 -36px; }
+
+    /* weekend to do (node 1:845) */
+    .ff-wk { background: #f4cd44; }
+    .ff-wk-friday { position: absolute; left: 19px; top: 19px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; text-transform: uppercase; color: #6d6d6d; }
+    .ff-wk-dots { position: absolute; left: 256px; top: 24px; display: flex; gap: 4px; }
+    .ff-wk-dots i { width: 5px; height: 5px; border-radius: 50%; background: #6d6d6d; }
+    .ff-wk-panel { position: absolute; left: -1px; top: 55.94px; width: 305px; height: 243px; background: #fff; border-radius: 22px; overflow: hidden; }
+    .ff-wk-inner { position: absolute; left: 20px; top: 20px; width: 264px; display: flex; flex-direction: column; gap: 16px; }
+    .ff-wk-title { font-family: 'DM Serif Display', serif; font-size: 32px; letter-spacing: -1.28px; color: #00315c; line-height: 0.97; }
+    .ff-wk-list { display: flex; flex-direction: column; gap: 16px; }
+    .ff-wk-list .r { display: flex; gap: 8px; align-items: center; }
+    .ff-wk-list .cb { width: 16px; height: 16px; border: 1px solid rgba(0,0,0,0.25); border-radius: 4px; flex-shrink: 0; }
+    .ff-wk-list .t { font-family: 'Space Grotesk', sans-serif; font-size: 16px; line-height: 1.15; color: #6d6d6d; text-transform: capitalize; position: relative; transition: color 0.3s cubic-bezier(0.22,1,0.36,1); }
+    /* weekend card hover: grow + tilt (independent scale/rotate longhands so it composes
+       with the scroll-driven `transform` on .ff-card). Alternate rows (1,3,5) animate to a
+       "completed" state — checkbox fills + ticks, label greys and strikes through. */
+    .ff-card.ff-wk { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-wk:hover { scale: 1.07; rotate: -4deg; z-index: 5; box-shadow: -16px 24px 44px rgba(0,0,0,0.24); }
+    .ff-wk-list .cb { position: relative; transition: background 0.3s cubic-bezier(0.22,1,0.36,1), border-color 0.3s cubic-bezier(0.22,1,0.36,1); }
+    .ff-wk-list .cb::after { content: ""; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); transform-origin: center; transition: transform 0.3s cubic-bezier(0.22,1,0.36,1); }
+    .ff-wk-list .t::after { content: ""; position: absolute; left: 0; top: 52%; width: 100%; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
+    .ff-wk:hover .ff-wk-list .r:nth-child(odd) .cb { background: #00315c; border-color: #00315c; }
+    .ff-wk:hover .ff-wk-list .r:nth-child(odd) .cb::after { transform: rotate(45deg) scale(1); }
+    .ff-wk:hover .ff-wk-list .r:nth-child(odd) .t { color: #a2a2a2; }
+    .ff-wk:hover .ff-wk-list .r:nth-child(odd) .t::after { transform: scaleX(1); }
+
+    /* gully boy music (node 1:885) */
+    .ff-gully { background: #111; }
+    /* white frame drawn as an overlay (not a layout border) so the image fills the whole
+       card — corners included — with the frame sitting on top of it. */
+    .ff-gully::after { content: ""; position: absolute; inset: 0; border: 11px solid #fff; border-radius: 32px; pointer-events: none; z-index: 6; }
+    /* clip-path (geometric) reliably contains the zoomed/composited image to the rounded
+       frame even while the card is transformed on hover — plain overflow+border-radius
+       drops the rounded clip on transformed children in WebKit/Blink. */
+    .ff-media { position: absolute; inset: 0; overflow: hidden; border-radius: 32px; clip-path: inset(0 round 32px); }
+    /* image starts slightly zoomed in and eases out on hover to add motion */
+    .ff-media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transform-origin: center; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .ff-gully:hover .ff-media img { transform: scale(1); }
+    .ff-gully-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(50,50,50,0.52) 78%); border-radius: 32px; clip-path: inset(0 round 32px); }
+    .ff-gully-pill { position: absolute; left: 20px; top: 22px; display: flex; gap: 6px; align-items: center; background: rgba(0,0,0,0.45); border-radius: 999px; padding: 4px 12px 4px 4px; backdrop-filter: blur(2px); }
+    .ff-vinyl { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; position: relative;
+      background: repeating-radial-gradient(circle at 50% 50%, #121212 0 2px, #2a2a2a 2px 3px); border: 0.64px solid #373535; box-shadow: 0 0 0 0.5px #62615e; }
+    .ff-vinyl::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: #8a8a8a; transform: translate(-50%,-50%); }
+    .ff-gully-pill .meta { display: flex; flex-direction: column; gap: 3px; }
+    .ff-gully-pill .meta .a { font-family: 'Inter', sans-serif; font-size: 12px; color: #fff; white-space: nowrap; }
+    .ff-gully-pill .meta .a em { font-style: italic; }
+    .ff-gully-pill .meta .b { font-family: 'Inter', sans-serif; font-size: 8px; color: rgba(255,255,255,0.7); }
+    .ff-gully-player { position: absolute; left: 28px; top: 207px; width: 241px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
+    .ff-gully-prog { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .ff-gully-time { display: flex; justify-content: space-between; font-family: 'Inter', sans-serif; font-size: 10px; color: #fff; }
+    .ff-gully-bar { height: 4px; border-radius: 99px; background: rgba(137,137,137,0.28); position: relative; overflow: hidden; }
+    .ff-gully-bar span { position: absolute; left: 0; top: 0; height: 4px; width: 0; background: #fff; border-radius: 99px; }
+    .ff-gully-ctrls { display: flex; gap: 32px; align-items: center; }
+    .ff-gully-ctrls svg { width: 30px; height: 30px; display: block; fill: #fff; }
+    /* gully card hover: grow + tilt right (independent scale/rotate longhands so it composes
+       with the scroll-driven `transform` on .ff-card). Whole card links out to YouTube. */
+    .ff-card.ff-gully { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-gully:hover { scale: 1.07; rotate: 5deg; z-index: 6; box-shadow: 20px 24px 44px rgba(0,0,0,0.3); }
+    .ff-gully-link { position: absolute; inset: 0; z-index: 5; display: block; }
+
+    /* quote (node 1:778) — graph-paper note */
+    .ff-quote-grid { position: absolute; inset: 0; pointer-events: none;
+      background-image: linear-gradient(#cfe0f0 1px, transparent 1px), linear-gradient(90deg, #cfe0f0 1px, transparent 1px);
+      background-size: 18px 18px; opacity: 0.7; }
+    /* format-quote icon (node 1:783) — inset from the top-left with padding, rotated 180° */
+    .ff-quote-mark { position: absolute; left: 16px; top: 16px; width: 84px; height: 84px; transform: rotate(180deg); pointer-events: none; }
+    .ff-quote-mark img { width: 100%; height: 100%; display: block; }
+    /* quote text + citation — Figma spec (nodes 1:785 / 1:786), left-aligned */
+    .ff-quote-text { position: absolute; left: 15px; top: 102px; width: 264px; font-family: 'DM Serif Display', serif; color: #00315c; letter-spacing: -2.4px; line-height: 0.97; }
+    .ff-quote-text .a { font-size: 60px; } .ff-quote-text .b { font-size: 52px; } .ff-quote-text .c { font-size: 60px; font-style: italic; }
+    .ff-quote-cite { position: absolute; left: 108px; top: 245px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; color: #5b5b5b; text-transform: uppercase; white-space: nowrap; }
+    /* scale flush to the right edge — translucent column + tick ruler + numbers (nodes 1:787–1:837) */
+    .ff-quote-spine { position: absolute; right: 1px; top: 0; width: 25px; height: 100%; display: flex; flex-direction: column; align-items: flex-start; padding-top: 22px; padding-left: 2px; gap: 22px; background: rgba(255,255,255,0.45); }
+    .ff-quote-spine i { font-family: 'Inter', sans-serif; font-size: 10px; color: #939393; font-style: normal; letter-spacing: -0.4px; line-height: 1; }
+    .ff-quote-ruler { position: absolute; right: 0; top: -1px; width: 16px; height: 328px; pointer-events: none; }
+    .ff-quote-ruler img { width: 100%; height: 100%; display: block; }
+    /* quote card hover: grow + tilt (independent scale/rotate longhands so it composes with
+       the scroll-driven `transform` on .ff-card). "details." shifts to the quote-mark yellow. */
+    .ff-card.ff-quote { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-quote:hover { scale: 1.07; rotate: 4deg; z-index: 5; box-shadow: 20px 24px 44px rgba(0,0,0,0.22); }
+    .ff-quote-text .c { background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 3px; transition: background-size 0.35s cubic-bezier(0.22,1,0.36,1); }
+    .ff-quote:hover .ff-quote-text .c { background-size: 100% 3px; }
+
+    /* blog (node 342:5315) */
+    .ff-blog-img { position: absolute; left: 9.5px; top: 9.79px; width: 284px; height: 178px; border-radius: 22px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.16); }
+    /* resting zoom via width/height (keeps the image crisp); transform is used only for the
+       hover zoom-out motion. own border-radius keeps it clipped while transformed on hover. */
+    .ff-blog-img img { position: absolute; top: -4%; left: -4%; width: 108%; height: 108%; object-fit: cover; border-radius: 22px; transform-origin: center; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
+    .ff-blog:hover .ff-blog-img img { transform: scale(0.93); }
+    .ff-blog-title { position: absolute; left: 14.45px; top: 201.79px; width: 279px; font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.16; color: #00315c; }
+    .ff-blog-foot { position: absolute; left: 14.5px; top: 259.79px; width: 272px; display: flex; align-items: center; justify-content: space-between; }
+    .ff-blog-foot .rl { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #6d6d6d; text-transform: uppercase; }
+    .ff-play-btn svg, .ff-play-btn .pl-icon { width: 20px; height: 20px; display: block; }
+    /* icon via CSS mask so its colour can change on hover (an <img> SVG can't be recoloured) */
+    .ff-blog-foot .rl-icon { width: 20px; height: 20px; display: block; background-color: #6d6d6d;
+      -webkit-mask: url("../../assets/about-blog-extlink.svg) center / contain no-repeat; mask: url("../../assets/about-blog-extlink.svg) center / contain no-repeat; }
+    .ff-bookmark { position: absolute; right: -1px; top: 1.79px; width: 63px; height: 63px; }
+    /* blog card hover: grow + tilt (matches the checklist card's hover) */
+    .ff-card.ff-blog { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-blog:hover { scale: 1.07; rotate: -4deg; z-index: 5; box-shadow: -16px 24px 44px rgba(0,0,0,0.24); }
+    /* on hover the CTA (READ BLOG + link-out icon) grows for emphasis */
+    .ff-blog-foot .rl { transform-origin: left center; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 1.5px; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), background-size 0.35s cubic-bezier(0.22,1,0.36,1); }
+    .ff-blog-foot .rl-icon { transform-origin: right center; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), background-color 0.35s cubic-bezier(0.22,1,0.36,1); }
+    .ff-blog:hover .ff-blog-foot .rl { transform: scale(1.18); background-size: 100% 1.5px; }
+    .ff-blog:hover .ff-blog-foot .rl-icon { transform: scale(1.22); background-color: #00315c; }
+    .ff-blog-link { position: absolute; inset: 0; z-index: 5; display: block; }
+
+    /* starry night game (node 342:5417) */
+    .ff-starry { border: 9px solid #fff; }
+    /* white panel is a shaped SVG (Vector 214) — rounded body with a raised tab on the top-left */
+    .ff-starry-panel { position: absolute; left: 0; right: 0; bottom: 0; top: 118px; background: url("../../assets/about-starry-panel.svg) no-repeat; background-size: 100% 100%; }
+    .ff-starry-panel .k { position: absolute; left: 12px; top: 22px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; text-transform: uppercase; color: #6d6d6d; }
+    .ff-starry-panel .t { position: absolute; left: 12px; top: 42px; font-family: 'Space Grotesk', sans-serif; font-size: 19px; color: #101010; }
+    .ff-starry-row { position: absolute; left: 12px; right: 12px; bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
+    .ff-avatars { display: flex; align-items: center; }
+    .ff-avatars .av { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; margin-right: -14px; overflow: hidden; background: #d9e0e6; }
+    .ff-avatars .av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .ff-avatars .plus { margin-left: 22px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; text-transform: uppercase; color: #6d6d6d; }
+    .ff-play-btn { display: flex; gap: 8px; align-items: center; background: #f4cd44; border: 1px solid #000; border-radius: 16px; height: 40px; padding: 12px 16px; cursor: pointer; transition: transform 0.2s ease; }
+    .ff-play-btn:hover { transform: translateY(-1px); }
+    .ff-play-btn:active { transform: translateY(0); }
+    .ff-play-btn span { font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 22px; line-height: 1.16; color: #00315c; }
+    /* starry card hover: grow + tilt right + game image zoom-out (matches the gully card) */
+    .ff-card.ff-starry { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
+    .ff-card.ff-starry:hover { scale: 1.07; rotate: 5deg; z-index: 6; box-shadow: 20px 24px 44px rgba(0,0,0,0.3); }
+    .ff-starry:hover .ff-media img { transform: scale(1); }
+    .ff-starry-link { position: absolute; inset: 0; z-index: 5; display: block; }
+
+    /* — Fun facts night treatment (photo dimmed a touch; cards stay light) — */
+    body.night .about-fun { background: #0f1830; }
+    body.night .about-fun > .aff-bg { filter: brightness(0.82) saturate(0.9); }
+
+    /* ════ ABOUT — RESPONSIVE: below 1100px the 1440 canvases reflow into a
+       single flow column (no pins, no fixed stages). ════ */
+    @media (max-width: 1100px) {
+
+      /* — intro: flow column, vertically centred in the first screen — */
+      .about-intro {
+        position: relative;
+        height: auto;
+        min-height: 100vh;      /* lvh (below): the pinned hold must cover a collapsed-toolbar viewport */
+        min-height: 100lvh;
+        /* generous bottom buffer so the experience section slides up through empty
+           space first — the end of the description stays readable during the reveal */
+        padding: 128px 24px 200px;
+        display: flex;
+        align-items: center;
+      }
+      .about-intro-stage {
+        width: 100%;
+        height: auto;
+        transform: none;
+      }
+      .ai-scene {
+        position: relative;
+        inset: auto;
+        transform: none;
+      }
+      .ai-sun-clouds {
+        left: auto;
+        right: -28px;
+        top: -52px;               /* sit in the gap below the fixed nav, not behind it */
+        width: min(52vw, 280px);
+      }
+      .ai-content {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 48px;
+      }
+      /* unwrap copy so heading / photos / body order independently:
+         header → polaroids → description (mobile only) */
+      .ai-copy { display: contents; }
+      .ai-heading {
+        order: 1;
+        width: 100%;
+        font-size: clamp(28px, 5.4vw, 38px);
+        line-height: 1.28;
+      }
+      .ai-body {
+        order: 3;
+        width: 100%;
+        font-size: clamp(16px, 4.4vw, 20px);
+        line-height: 1.65;
+        letter-spacing: -0.4px;
+        gap: 16px;
+      }
+      /* polaroid stack scales as one unit — --pol-scale is set from JS
+         (min(1, (vw − 48) / 516)); the negative margin returns the ghost
+         space the transform leaves under the scaled box */
+      .ai-photos {
+        order: 2;
+        align-self: center;
+        transform: scale(var(--pol-scale, 1));
+        transform-origin: top center;
+        margin-bottom: calc(-588px * (1 - var(--pol-scale, 1)));
+      }
+
+      /* — experience: static flow, horizontal section heading — */
+      .about-exp {
+        position: relative;
+        min-height: 0;
+      }
+      .about-exp > .ai-land { width: max(1100px, 150vw); }
+      .about-exp-stage {
+        width: 100%;
+        height: auto;
+        padding: 96px 24px;
+      }
+      .aexp-label {
+        position: static;
+        transform: none;
+        font-size: clamp(30px, 7vw, 40px);
+        line-height: 1.2;
+        white-space: normal;
+        margin-bottom: 40px;
+      }
+      .aexp-list {
+        position: static;
+        transform: none;
+        width: 100%;
+        max-width: none;
+        gap: 20px;
+      }
+      /* rows wrap: company + toggle share the first line, date drops below */
+      .aexp-head {
+        min-height: 0;
+        padding: 4px 0;
+        gap: 16px;
+        row-gap: 6px;
+        flex-wrap: wrap;
+        align-items: flex-start;
+      }
+      .aexp-meta { display: contents; }
+      .aexp-company { flex: 1 1 0; order: 1; }
+      .aexp-toggle { order: 2; width: 32px; height: 32px; }
+      .aexp-toggle::before { top: 7px; width: 2px; height: 18px; }
+      .aexp-toggle::after  { left: 7px; width: 18px; height: 2px; }
+      .aexp-date {
+        order: 3;
+        width: 100%;
+        text-align: left;
+        font-size: 14px;
+        line-height: 1.4;
+        letter-spacing: -0.3px;
+        white-space: normal;
+      }
+      .aexp-name { font-size: clamp(20px, 5.2vw, 26px); letter-spacing: -0.8px; line-height: 1.3; }
+      .aexp-role { font-size: 16px; line-height: 1.5; letter-spacing: -0.4px; }
+      .aexp-panel-inner {
+        width: 100%;
+        padding: 12px 0 8px;
+        font-size: 16px;
+        line-height: 1.6;
+        letter-spacing: -0.3px;
+      }
+      .aexp-bullets { gap: 8px; }
+
+      /* — fun facts: cards stack in a centred column — */
+      .about-fun {
+        position: relative;
+        min-height: 0;
+        padding: 110px 24px 140px;
+      }
+      .about-fun-stage {
+        position: static;
+        width: 100%;
+        height: auto;
+        transform: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 28px;
+      }
+      .ff-card {
+        position: relative;
+        left: auto;
+        top: auto;
+        transform: none;
+        flex-shrink: 0;
+      }
+      .aff-hold { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      /* generous bottom buffer: the experience section slides up through this empty
+         space first, so the end of the description stays readable during the reveal */
+      .about-intro { padding: 112px 20px 200px; }
+      .about-exp-stage { padding: 80px 20px; }
+      .about-fun { padding: 96px 24px 120px; }
+    }
+
+    /* — About routing: when #about is active, hide the landing sections and
+       reveal #about-view (shared <site-nav> + <site-footer> stay). — */
+    body.route-about .hero,
+    body.route-about .projects,
+    body.route-about .featured-work,
+    body.route-about .testimonials,
+    body.route-about .t-scrub { display: none !important; }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PLAYGROUND PAGE (Figma node 128:6061) — in-page view, routed via
+       #playground exactly like About. Uniform brick grid: every tile is
+       the same size (3-column even grid); the note fills a 2-wide brick.
+       ═══════════════════════════════════════════════════════════════ */
+    body.route-playground .hero,
+    body.route-playground .projects,
+    body.route-playground .featured-work,
+    body.route-playground .testimonials,
+    body.route-playground .t-scrub { display: none !important; }
+
+    #playground-view { display: contents; }
+    #playground-view[hidden] { display: none; }
+
+    /* — Work / Hatcha case study: routed via #hatcha, hides landing sections — */
+    body.route-hatcha .hero,
+    body.route-hatcha .projects,
+    body.route-hatcha .featured-work,
+    body.route-hatcha .testimonials,
+    body.route-hatcha .t-scrub { display: none !important; }
+    #hatcha-view { display: contents; }
+    #hatcha-view[hidden] { display: none; }
+
+    /* — Work / Fireflut case study: routed via #fireflut, hides landing sections — */
+    body.route-fireflut .hero,
+    body.route-fireflut .projects,
+    body.route-fireflut .featured-work,
+    body.route-fireflut .testimonials,
+    body.route-fireflut .t-scrub { display: none !important; }
+    #fireflut-view { display: contents; }
+    #fireflut-view[hidden] { display: none; }
+
+    /* — Work / Existence case study: routed via #existence, hides landing sections — */
+    body.route-existence .hero,
+    body.route-existence .projects,
+    body.route-existence .featured-work,
+    body.route-existence .testimonials,
+    body.route-existence .t-scrub { display: none !important; }
+    #existence-view { display: contents; }
+    #existence-view[hidden] { display: none; }
+
+    /* — Work / Jumpable case study: routed via #jumpable, hides landing sections — */
+    body.route-jumpable .hero,
+    body.route-jumpable .projects,
+    body.route-jumpable .featured-work,
+    body.route-jumpable .testimonials,
+    body.route-jumpable .t-scrub { display: none !important; }
+    #jumpable-view { display: contents; }
+    #jumpable-view[hidden] { display: none; }
+
+    /* first project tile is a link to the case study */
+    a.project-tile { display: block; text-decoration: none; color: inherit; }
+
+    /* frame: tiles start at y141 on the 1440 design; content column is
+       1336 wide (x50 → x1386) with 16px gutters between tiles */
+    .playground {
+      background: var(--bg-base);
+      padding: 141px 32px 200px;          /* bottom pad so the footer eases over, not abruptly */
+      position: relative;                 /* JS bottom-pins it (sticky) so the footer scrolls over */
+      z-index: 1;                         /* below the footer (z-index 12) so it laps over */
+      overflow-x: clip;                   /* contains the full-bleed immersive gallery; no page scroll */
+    }
+    .pg-grid {
+      max-width: 1720px;                   /* wider cap → larger tiles on roomy screens */
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;                           /* more breathing room between tiles */
+    }
+    /* intro band above the staggered field — header and paragraph side by side */
+    .pg-intro {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);  /* mirror the tile columns */
+      gap: 32px;                              /* match tile gutters so edges line up */
+      align-items: start;
+      margin-bottom: 8px;
+      font-size: 16px;
+      line-height: 30px;
+      color: var(--text-heading);
+    }
+    .pg-intro h2 {
+      grid-column: 1;                      /* sits over the first tile column */
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: 40px;                     /* matches About's .ai-heading */
+      line-height: 1.358;
+      margin: 0;
+      color: var(--text-heading);
+    }
+    .pg-intro p { grid-column: 2 / 4; margin: 0; }  /* aligns with tile columns 2 & 3 */
+    .pg-tile {
+      /* --pg-offset = the running-bond stagger (per column, below).
+         --reveal = scroll-scrub 0→1 (JS), scaling the tile up to full size as
+         it enters the viewport — same treatment as the home project tiles. */
+      --pg-offset: 0px;
+      --reveal: 1;
+      position: relative;
+      border-radius: 40px;
+      overflow: hidden;
+      background: var(--c-ink);           /* dark base while video buffers */
+      aspect-ratio: 4 / 3;                 /* uniform brick — all tiles identical */
+      transform: translateY(var(--pg-offset)) scale(calc(0.5 + 0.5 * var(--reveal)));
+      transform-origin: center center;
+      opacity: calc(0.35 + 0.65 * var(--reveal));
+      will-change: transform, opacity;
+      cursor: pointer;
+      box-shadow: inset 0 0 0 0 #323131;   /* hover ring grows in (matches home) */
+      transition: box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .pg-tile:hover { box-shadow: inset 0 0 0 1px #323131; }
+    .pg-tile video,
+    .pg-tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* hover overlay — blurred scrim + label, fades in (mirrors home .tile-overlay) */
+    .pg-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;                          /* above the video so the ring/label show */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 24px;
+      text-align: center;
+      backdrop-filter: blur(7.7px);
+      -webkit-backdrop-filter: blur(7.7px);
+      background: var(--overlay-scrim);
+      opacity: 0;
+      transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    .pg-tile:hover .pg-overlay { opacity: 1; }
+    .pg-overlay-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 28px;
+      letter-spacing: -1.12px;
+      line-height: 1.2;
+      text-transform: uppercase;
+      color: var(--text-contrast);
+      margin: 0;
+    }
+    .pg-overlay-sub {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: -0.4px;
+      color: var(--text-contrast);
+      margin: 0;
+    }
+    /* the stagger: push the 2nd and 3rd columns down so the rows interlock
+       (running-bond brick). nth-of-type counts only the <figure> tiles, so
+       the full-width intro band above doesn't shift the column cycle. */
+    .pg-tile:nth-of-type(3n+2) { --pg-offset: 136px; }
+    .pg-tile:nth-of-type(3n+3) { --pg-offset: 68px; }
+
+    @media (max-width: 900px) {
+      .playground { padding: 112px 20px 140px; }
+      .pg-grid { grid-template-columns: repeat(2, 1fr); }
+      .pg-intro { grid-template-columns: 1fr; gap: 16px; }        /* stack header over para */
+      .pg-intro h2, .pg-intro p { grid-column: auto; }           /* full width once stacked */
+      .pg-tile:nth-of-type(3n+2),
+      .pg-tile:nth-of-type(3n+3) { --pg-offset: 0px; }           /* reset 3-col stagger */
+      .pg-tile:nth-of-type(2n) { --pg-offset: 64px; }            /* offset the right column */
+    }
+    @media (max-width: 560px) {
+      .playground { padding: 112px 20px 96px; }
+      .pg-grid { grid-template-columns: 1fr; }
+      .pg-tile:nth-of-type(2n) { --pg-offset: 0px; }             /* no stagger in one column */
+    }
+
+    /* ═══════════════════════════════════════════════════════════════
+       PLAYGROUND — 3D COVERFLOW CAROUSEL
+       Cards arranged on a rotating ring: the centred card sits upright and
+       plays; neighbours recede in Z, rotate away and dim. Drag / wheel /
+       ← → to rotate. Click the centre card (or "Open full screen") to
+       expand into a lightbox. Page scroll is locked while #playground is
+       active (fully immersive, footer hidden). ════════════════════════ */
+    body.route-playground { overflow: hidden; }              /* lock page scroll on this route */
+    body.route-playground site-footer { display: none; }     /* fully immersive — no footer */
+    /* .pg-flow (below) owns the section's box on this route — padding clears the nav */
+
+    .pg-flow {
+      position: fixed; inset: 0; z-index: 2;
+      --pgf-accent: #000;                          /* accent: black in light mode… */
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: clamp(6px, 1.5vh, 16px);
+      padding: clamp(112px, 17vh, 156px) 0 24px;   /* clear the fixed nav + breathing room before the copy */
+      background: var(--bg-base); overflow: hidden;
+      -webkit-user-select: none; user-select: none;
+    }
+    body.night .pg-flow { --pgf-accent: #fff; }    /* …white in dark mode */
+
+    /* head */
+    .pgf-head { text-align: center; padding: 0 20px; }
+    .pgf-eyebrow {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
+      letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+    }
+    .pgf-title {
+      font-family: 'DM Serif Display', serif; font-weight: 400; letter-spacing: -0.02em;
+      font-size: clamp(30px, 5vw, 52px); line-height: 1; color: var(--text-heading);
+    }
+    .pgf-lead {
+      font-family: 'Space Grotesk', sans-serif; font-size: 15px; line-height: 1.55;
+      color: var(--text-heading); opacity: .78; max-width: 56ch; margin: 12px auto 0;
+    }
+    .pgf-hint {
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em;
+      color: var(--text-heading); opacity: .5; margin-top: 10px;
+    }
+
+    /* stage / coverflow */
+    .pgf-stage {
+      position: relative; width: 100%;
+      flex: 1 1 auto; min-height: 0;               /* fills the space between head + caption */
+      perspective: 1600px;
+      display: flex; align-items: center; justify-content: center;
+      touch-action: none; overscroll-behavior: contain;
+    }
+    .pgf-track { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+    .pgf-card {
+      position: absolute; top: 50%; left: 50%; translate: -50% -50%;
+      height: min(100%, 480px); width: auto; aspect-ratio: 4 / 3; max-width: 92vw;
+      border-radius: 14px; overflow: hidden; background: #0a090c;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 30px 90px -30px rgba(0,0,0,.7);
+      transform-style: preserve-3d; cursor: pointer; will-change: transform, opacity;
+      transition: transform .7s cubic-bezier(.22,.61,.36,1),
+                  opacity .7s cubic-bezier(.22,.61,.36,1),
+                  filter .7s cubic-bezier(.22,.61,.36,1);
+    }
+    .pgf-card-media { width: 100%; height: 100%; }
+    .pgf-card-media img, .pgf-card-media video {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+      -webkit-user-drag: none; pointer-events: none;
+    }
+    .pgf-card-vhs { position: absolute; inset: 0; pointer-events: none;
+      box-shadow: inset 0 0 120px 20px rgba(0,0,0,.55); }
+    .pgf-card-expand {
+      position: absolute; bottom: 12px; right: 12px; z-index: 3;
+      display: inline-flex; align-items: center; gap: 7px; padding: 6px 11px; border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+      color: #fff; background: rgba(0,0,0,.5); border: 1px solid rgba(255,255,255,.22);
+      backdrop-filter: blur(4px); pointer-events: none;
+      opacity: 0; transform: translateY(6px); transition: opacity .25s ease, transform .25s ease;
+    }
+    .pgf-card-expand i { font-style: normal; }
+    .pgf-card.is-active:hover .pgf-card-expand { opacity: 1; transform: none; }
+    .pgf-card:not(.is-active) { filter: brightness(.45) saturate(.75); }
+    .pgf-card:not(.is-active) .pgf-card-vhs { box-shadow: inset 0 0 140px 40px rgba(0,0,0,.85); }
+
+    /* arrows */
+    .pgf-arrow {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 20;
+      width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(10,9,12,.55); border: 1px solid rgba(255,255,255,.18);
+      color: var(--text-heading); font-size: 26px; line-height: 1; cursor: pointer;
+      backdrop-filter: blur(6px); transition: border-color .25s ease, color .25s ease, transform .2s ease;
+    }
+    body:not(.night) .pgf-arrow { background: rgba(255,255,255,.6); border-color: rgba(0,0,0,.12); }
+    .pgf-arrow:hover { border-color: var(--pgf-accent); color: var(--pgf-accent); }
+    .pgf-arrow:active { transform: translateY(-50%) scale(.94); }
+    .pgf-arrow--prev { left: clamp(10px, 3vw, 40px); }
+    .pgf-arrow--next { right: clamp(10px, 3vw, 40px); }
+
+    /* caption */
+    /* fixed min-height fits the tallest caption (2-line description), so the caption
+       never changes size between assets — that keeps the flex stage, the card, and the
+       prev/next arrows at a constant vertical position while rotating. */
+    .pgf-caption { max-width: 640px; text-align: center; padding: 0 20px; min-height: 152px; }
+    .pgf-cap-meta { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
+    .pgf-cap-index { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; color: var(--pgf-accent); }
+    .pgf-cap-tags { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-heading); opacity: .55; }
+    .pgf-cap-title { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(24px, 4vw, 40px); line-height: 1.05; color: var(--text-heading); margin-bottom: 10px; }
+    .pgf-cap-desc { font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.55; color: #8a8a8a; max-width: 52ch; margin: 0 auto 16px; }
+    .pgf-caption > * { transition: opacity .35s ease; }
+    .pgf-caption.swap > * { opacity: 0; }
+
+    /* click-to-expand lightbox */
+    .pgf-lightbox {
+      position: fixed; inset: 0; z-index: 120;   /* above the nav (z-index 100) */
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 22px; padding: clamp(16px, 4vw, 48px);
+      background: rgba(4,4,6,.94); backdrop-filter: blur(14px);
+      opacity: 0; visibility: hidden; transition: opacity .4s ease, visibility .4s;
+    }
+    .pgf-lightbox.open { opacity: 1; visibility: visible; }
+    /* fixed 4:3 frame so every expanded asset opens at the same max size,
+       regardless of its native aspect ratio; media is contained (never cropped),
+       black letterbox blends with the assets' own black backgrounds. */
+    .pgf-lb-stage {
+      position: relative;
+      width: min(1000px, 92vw, calc(74vh * 4 / 3)); aspect-ratio: 4 / 3;
+      display: flex; align-items: center; justify-content: center;
+      background: #000; border-radius: 10px; overflow: hidden;
+      box-shadow: 0 40px 120px -30px #000;
+    }
+    .pgf-lb-stage video, .pgf-lb-stage img {
+      width: 100%; height: 100%; object-fit: contain; display: block;
+    }
+    .pgf-lb-info { text-align: center; max-width: 60ch; color: #fff; }
+    .pgf-lb-index { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; color: #fff; }
+    .pgf-lb-title { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(22px, 4vw, 34px); line-height: 1.05; margin: 6px 0 8px; }
+    .pgf-lb-desc { font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.55; color: #9a9a9a; margin-bottom: 8px; }
+    .pgf-lb-tags { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.55); }
+    .pgf-lb-close {
+      position: absolute; top: clamp(16px, 3vw, 28px); right: clamp(16px, 3vw, 28px); z-index: 5;
+      width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(20,22,26,.8); border: 1px solid rgba(255,255,255,.2); color: #fff;
+      font-size: 16px; cursor: pointer; transition: border-color .25s ease, color .25s ease, transform .25s ease;
+    }
+    .pgf-lb-close:hover { border-color: #fff; color: #fff; transform: rotate(90deg); }
+    .pgf-lb-nav {
+      position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
+      width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
+      background: rgba(20,22,26,.7); border: 1px solid rgba(255,255,255,.2); color: #fff;
+      font-size: 26px; cursor: pointer; transition: border-color .25s ease, color .25s ease;
+    }
+    .pgf-lb-nav:hover { border-color: #fff; color: #fff; }
+    .pgf-lb-nav--prev { left: clamp(10px, 3vw, 32px); }
+    .pgf-lb-nav--next { right: clamp(10px, 3vw, 32px); }
+
+    @media (max-width: 620px) {
+      .pgf-card { width: 84vw; height: auto; max-width: none; }   /* width-driven on phones */
+      .pgf-arrow { width: 44px; height: 44px; font-size: 22px; }
+      .pgf-cap-desc { font-size: 14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pgf-card { transition: opacity .3s ease, filter .3s ease; }
+      .pgf-lightbox, .pgf-caption > * { transition: opacity .3s ease; }
+    }
+  

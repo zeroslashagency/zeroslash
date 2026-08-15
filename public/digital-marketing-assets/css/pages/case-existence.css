@@ -1,0 +1,993 @@
+/* CASE — Hatcha (extracted) */
+#hatcha-view { --cs-serif:'DM Serif Display', Georgia, serif;
+                   --cs-sans:'Space Grotesk', sans-serif;
+                   --cs-cream:#fff9f1; --cs-black:#000; --cs-ink:#0b0b0b;
+                   --cs-coral:#fc9073;
+                   --cs-max:1320px; --cs-pad:60px; --cs-rail:355px;
+                   --cs-navpad:112px;        /* panel top clearance = 80px nav + 32px (Phase 2) */
+                   --cs-palette-ar:949 / 860; --cs-guardrail-ar:1001 / 860; }
+
+    .cs-page { font-family:var(--cs-sans); background:var(--cs-cream); color:var(--cs-ink);
+               -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    .cs-page *, .cs-page *::before, .cs-page *::after { box-sizing:border-box; }
+
+    /* section shells: cream / black bands */
+    .cs-band { width:100%; }
+    .cs-band.dark  { background:var(--cs-black); color:#fff9ea; }
+    .cs-band.cream { background:var(--cs-cream); color:var(--cs-ink); }
+    .cs-wrap { max-width:var(--cs-max); margin:0 auto; padding-left:var(--cs-pad); padding-right:var(--cs-pad); }
+
+    /* numbered-section rail (number + eyebrow) + content column */
+    .cs-numbered { display:grid; grid-template-columns:var(--cs-rail) minmax(0,1fr); gap:0; }
+    .cs-rail { padding-left:128px; }
+    .cs-num { font-family:var(--cs-serif); font-weight:400; font-size:118px; line-height:0.9; letter-spacing:0.02em; color:#c9c4ba; }
+    .cs-band.dark .cs-num { color:#3c3c3c; }
+    .cs-eyebrow { font-family:var(--cs-sans); font-size:13px; font-weight:400; letter-spacing:0.06em;
+                  text-transform:uppercase; color:#8f8a80; margin-top:20px; }
+
+    /* headings + body */
+    .cs-h { font-family:var(--cs-serif); font-weight:400; letter-spacing:0.02em; line-height:1.13; }
+    .cs-h i, .cs-h em { font-style:italic; }
+    .cs-sec-h { font-size:50px; margin-bottom:48px; }
+    .cs-p { font-size:17px; line-height:1.65; max-width:940px; color:inherit; }
+    .cs-band.dark .cs-p { color:rgba(255,249,233,0.85); }
+    .cs-band.cream .cs-p { color:rgba(11,11,11,0.9); }
+    .cs-p + .cs-p { margin-top:32px; }
+
+    /* note card (WHAT I DID / MY CONTRIBUTION) */
+    .cs-note { background:#4c4a49; border-radius:20px; padding:34px 38px; margin-top:64px; max-width:960px; }
+    .cs-note-label { font-size:14px; font-weight:400; letter-spacing:0.06em; text-transform:uppercase;
+                     color:#9a958c; margin-bottom:16px; }
+    .cs-note-body { font-size:16.5px; line-height:1.7; color:#ece8df; }
+
+    /* ── HERO ── */
+    .cs-hero { padding:138px 0 0; }
+    .cs-hero-grid { display:grid; grid-template-columns:minmax(0,1fr) 540px; gap:40px; align-items:start; max-width:none; padding-bottom:60px; }
+    .cs-hero-h { font-family:var(--cs-serif); font-weight:400; font-size:60px; line-height:1.13; letter-spacing:0.02em; }
+    .cs-hero-h i { font-style:italic; display:block; }
+    .cs-hero-intro { margin-top:32px; font-size:17px; line-height:1.6; max-width:560px; color:rgba(11,11,11,0.92); }
+    .cs-meta { display:grid; grid-template-columns:232px 1fr; gap:40px 0; margin-top:168px; }
+    .cs-meta-k { font-size:13px; font-weight:400; letter-spacing:0.06em; text-transform:uppercase; color:#8f8a80; margin-bottom:10px; }
+    .cs-meta-v { font-size:18px; color:var(--cs-ink); }
+
+    /* placeholder blocks (swap for assets) */
+    .cs-ph { position:relative; display:flex; align-items:center; justify-content:center; text-align:center;
+             background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px);
+             color:#8a8474; font-family:var(--cs-sans); font-size:14px; letter-spacing:0.04em;
+             border-radius:0; overflow:hidden; }
+    .cs-ph.dark { background:repeating-linear-gradient(45deg,#161616,#161616 14px,#1e1e1e 14px,#1e1e1e 28px); color:#6b6b6b; }
+    .cs-ph span { padding:8px 14px; background:rgba(0,0,0,0.35); color:#fff; border-radius:100px; font-size:12px; }
+    .cs-ph.light span { background:rgba(0,0,0,0.5); }
+
+    .cs-hero-img { height:1095px; margin-top:0; width:100%; object-fit:cover; display:block; }
+
+    /* ── live-video laptop mockup (hero) ──
+       Plate PNG carries the empty black screen; the recording is warped into
+       the screen quad with a matrix3d homography (see the .cs-hero-mock script).
+       Corner fractions were measured off the plate, so the video tracks the
+       screen at any width. */
+    /* full-bleed, one viewport tall; the room photo covers the band naturally
+       and the warp script mirrors the cover-crop so the video stays on the screen */
+    .cs-hero-mock { position:relative; width:100%; height:100vh; height:100svh; overflow:hidden; }
+    /* ambient loop: the whole scene (plate + warped video) breathes together;
+       scale only ever goes above 1 so the cover-fit never exposes an edge */
+    .cs-hero-zoom { position:absolute; inset:0; animation:csHeroZoom 18s ease-in-out infinite; will-change:transform; }
+    @keyframes csHeroZoom { 0%,100% { transform:scale(1); } 50% { transform:scale(1.05); } }
+    @media (prefers-reduced-motion: reduce){ .cs-hero-zoom { animation:none; } }
+    .cs-hero-plate { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; z-index:0; }
+    .cs-hero-screen { position:absolute; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+    .cs-hero-vid { position:absolute; top:0; left:0; width:1000px; height:671px; object-fit:cover; transform-origin:0 0; backface-visibility:hidden; border-radius:22px; }
+    /* narrow viewports: a 100svh box on this 2.357 plate cover-crops to x 0.38–0.62,
+       which clips the laptop's own edges (it spans x 0.38–0.64). Size the band by
+       aspect instead — 4/5 keeps x 0.33–0.67 visible at any width. */
+    @media (max-width: 900px){ .cs-hero-mock { height:auto; aspect-ratio:4 / 5; max-height:100svh; } }
+    /* same mockup inside a fixed-size project tile: fill the tile (cover) and
+       isolate so the hover overlay still paints above the warped video. */
+    .project-tile .tile-mock { position:absolute; inset:0; width:100%; height:100%; aspect-ratio:auto; margin:0; isolation:isolate; }
+    /* phone-plate variant of the same mockup (Fireflut's MWC hero + its home tile):
+       portrait video base box and a phone-sized screen radius. The measured quad
+       and bezel insets ride along in each element's data-warp. */
+    .cs-mock-phone .cs-hero-vid { width:450px; height:1000px; border-radius:62px; }
+    /* Existence variant (its case-study hero + its home tile): the measured screen quad
+       on that plate is 201.8x437.2px (aspect 0.4616), which is exactly the 1180x2556
+       recording's aspect, so the base box takes the video's own ratio and
+       object-fit:cover crops nothing. Radius is the iPhone display corner (~14% of
+       screen width) measured in this box. Declared after the rule above so it wins at
+       equal specificity when both classes are present. */
+    .cs-mock-ex .cs-hero-vid { width:462px; height:1000px; border-radius:64px; }
+    /* Jumpable variant (Apple Watch Ultra on a desk plate). The recording is used WHOLE —
+       nothing cut from the file — but its capture carries a 72px near-black strip down the
+       left and 108px of dead black at the bottom (verified never to hold content: 316 frames
+       sampled at 20fps across the clip, transitions included). Showing the frame edge-to-edge
+       would leave the app UI floating ~6% in from the glass. So the element is scaled up to
+       the FULL frame (1212x1476 x 0.731) and the warp's sx/sw map only its live area onto the
+       screen quad — the empty strips land just outside the glass on the plate's black bezel,
+       where they're invisible. Radius is the watch display corner (~30px on the 1584px plate,
+       ~28% of screen width) in this box. Declared last so it wins at equal specificity. */
+    .cs-mock-watch .cs-hero-vid { width:885.96px; height:1078.95px; border-radius:230px; }
+    /* ── watch scene zoom: geometry, not a wrapper transform ──
+       Same 100svh band as Fireflut and Existence, but this plate frames the watch smaller
+       (its display is ~6% of the plate width vs Existence's ~13%), so the scene sits in
+       closer: 1.3 on desktop takes the screen from 131 to 170 CSS px with the concrete
+       stand, notebooks and plant still in frame; the home tile needs 1.8 (a tile box
+       cover-crops the plate to ~1403px wide, where the display would read just 87px)
+       which puts it at ~156 CSS px, between Fireflut's tile (150) and Existence's (178).
+       Unlike those two the zoom is NOT transform:scale() on .cs-hero-zoom — a composited
+       layer is rasterised once and GPU-stretched, which measured 17% softer on the app's
+       type. --warp-zoom drives both the plate's box below and the warp script's cover-fit
+       rect, so the video is sampled straight to its final size and the two stay locked.
+       Mobile stays at 1: the 100svh band already crops to x 0.44–0.56 at 390px wide. */
+    .cs-mock-watch { --warp-zoom: 1; }
+    @media (min-width: 901px){ .cs-mock-watch:not(.tile-mock) { --warp-zoom: 1.3; } }
+    .cs-mock-watch.tile-mock { --warp-zoom: 1.8; }
+    /* grow the plate about its centre with layout, not a transform, so it resamples cleanly */
+    .cs-mock-watch .cs-hero-plate {
+      width: calc(100% * var(--warp-zoom)); height: calc(100% * var(--warp-zoom));
+      left: calc((100% - 100% * var(--warp-zoom)) / 2);
+      top:  calc((100% - 100% * var(--warp-zoom)) / 2);
+      right: auto; bottom: auto; }
+    /* nothing left to animate on the wrapper — the scene is static and sharp */
+    .cs-mock-watch .cs-hero-zoom { animation: none; transform: none; will-change: auto; }
+    /* this plate's phone is wide in frame (x 0.345–0.658) where Fireflut's is narrow, so
+       the tile-in base scale below would clip its ends — keep the shared 1→1.05 breathe,
+       whose crop still leaves x 0.327–0.673 visible in a tile-sized box. */
+    .cs-mock-ex.tile-mock .cs-hero-zoom { animation-name:csHeroZoom; }
+    /* narrow viewports: the rule above swaps in the laptop plate's aspect, which is
+       both the wrong plate and short of a full viewport. This plate's phone sits
+       mid-frame (x 0.43–0.58), so a full-height box cover-crops straight to it.
+       Tiles keep their own box. */
+    @media (max-width: 900px){
+      .cs-mock-phone:not(.tile-mock) { height:100svh; aspect-ratio:auto; }
+      /* the watch plate shares the 2.357 room-photo ratio, and its watch sits dead
+         centre (x 0.472–0.560), so a full-height box cover-crops straight onto it —
+         the laptop-plate aspect above would instead squash the band to ~300px tall
+         and shrink the watch to ~43px. */
+      .cs-mock-watch:not(.tile-mock) { height:100svh; aspect-ratio:auto; }
+    }
+    /* in a tile-sized box the cover-crop leaves this device reading small, so sit
+       the scene in closer by default. Same 18s / 5% breathe as the shared loop,
+       just a higher base scale — plate + video still scale together so the warp
+       stays locked, and it never drops below 1 so the cover fill can't expose an
+       edge. Kept under the plate's native width at tile sizes so it stays sharp. */
+    @keyframes csHeroZoomTileIn { 0%,100% { transform:scale(1.18); } 50% { transform:scale(1.23); } }
+    .cs-mock-phone.tile-mock .cs-hero-zoom { animation-name:csHeroZoomTileIn; }
+    /* the laptop plate is a wide room shot and its device only spans x 0.38–0.64, so a
+       tile-sized cover-crop leaves it reading as a photo of a sofa. Same breathe, higher
+       base — 1.32 still samples the plate at ~1263px, well under its 2376px native width. */
+    @keyframes csHeroZoomTileLap { 0%,100% { transform:scale(1.32); } 50% { transform:scale(1.37); } }
+    .cs-mock-lap.tile-mock .cs-hero-zoom { animation-name:csHeroZoomTileLap; }
+    @media (prefers-reduced-motion: reduce){
+      .cs-mock-lap.tile-mock .cs-hero-zoom { animation:none; transform:scale(1.32); }
+    }
+    /* the shared reduced-motion rule kills the animation, which would also drop
+       the base scale — hold the zoomed-in framing statically instead. */
+    @media (prefers-reduced-motion: reduce){
+      .cs-mock-phone.tile-mock .cs-hero-zoom { animation:none; transform:scale(1.18); }
+    }
+    /* full-bleed phone mockup (portrait plate); reuses the .cs-hero-* mechanics
+       and the shared warp script via data-warp, but its own band sizing + a
+       portrait video base box and larger (phone) screen radius. */
+    .cs-phone-bleed { position:relative; width:100%; height:1090px; overflow:hidden; }
+    /* Glass fill, warped onto the iPad's measured screen quad by the script below.
+       Base box 703x1000 = the GLASS's own aspect (the measured quad is 788x1121px on
+       the 2400x1800 plate), so the fill covers the plate's screen exactly — this plate
+       ships a chroma-green screen, and any gap would show as a green fringe.
+       The recording is 0.644 wide-to-tall against the glass's 0.703, and UI sits hard
+       against BOTH its edges (× and sparkle buttons 20px down, the "Looks Good" CTA
+       23px up), so a cover-crop would eat one or the other. It plays at full height,
+       its true aspect, centred — the ~29px each side is near-black, exactly what an
+       iPad shows letterboxing a phone app. No crop, no stretch.
+       Radius is the display corner measured off the plate (21px on 788 → 19 here). */
+    .cs-phone-frame { position:absolute; top:0; left:0; width:703px; height:1000px; transform-origin:0 0;
+      background:#0a0a0c; border-radius:19px; overflow:hidden; backface-visibility:hidden; }
+    .cs-phone-vid { position:absolute; top:0; left:29.4px; width:644.2px; height:1000px;
+      object-fit:cover; display:block; }
+    @media (max-width: 900px){ .cs-phone-bleed { height:auto; aspect-ratio:2400 / 1800; } }
+
+    /* ── tile → hero shared-element zoom ──
+       The home tile and the case-study hero share a view-transition-name, so
+       document.startViewTransition (see the routing script) morphs the tile
+       rect into the hero rect on #hatcha open, and back on exit. The tile and the
+       hero never collide because only one of their views is rendered at a time
+       (the other is display:none). Browsers without View Transitions keep the
+       instant swap.
+
+       The names are gated on body.vt-hero, which the router adds only for the
+       duration of a case-study nav. A named element is lifted out of the page
+       into the view-transition top layer, ABOVE the root snapshot — so if the
+       names were always on, any other transition (the day/night toggle) would
+       hoist the pinned home tiles over the sticky testimonials covering them.
+
+       Scoped to `.cs-hero .cs-hero-mock` (the same node rtHero.open picks up), NOT
+       every .cs-hero-mock in the view — the read-next panel's asset is one too. That
+       one is visibility:hidden at every scroll depth so it is never captured and the
+       name does not actually collide today, but two capturable elements sharing a
+       name aborts the whole transition (InvalidStateError), so keep this precise. */
+    body.vt-hero a.project-tile[href="/work/hatcha"] { view-transition-name: hatcha-hero; }
+    body.vt-hero #hatcha-view .cs-hero .cs-hero-mock { view-transition-name: hatcha-hero; }
+    /* both snapshots cover the morphing box, so the move reads as a zoom
+       instead of a stretch */
+    ::view-transition-old(hatcha-hero),
+    ::view-transition-new(hatcha-hero) { width:100%; height:100%; object-fit:cover; }
+    ::view-transition-group(hatcha-hero) {
+      animation-duration: 0.6s;
+      animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      ::view-transition-group(hatcha-hero),
+      ::view-transition-old(hatcha-hero),
+      ::view-transition-new(hatcha-hero) { animation: none; }
+    }
+
+    /* ── SHOWCASE (event planner) ── */
+    .cs-showcase { padding:110px 0; }
+    .cs-showcase-grid { display:grid; grid-template-columns:minmax(0,613fr) minmax(0,718fr); gap:40px; align-items:start; max-width:none; }
+    .cs-showcase-eye { font-size:16px; font-weight:400; letter-spacing:0.06em; text-transform:uppercase; color:rgba(0,0,0,0.5); margin-bottom:12px; }
+    .cs-showcase-h { font-family:var(--cs-serif); font-weight:400; font-size:48px; line-height:1.25; letter-spacing:0.02em; margin-bottom:32px; }
+    .cs-showcase-grid .cs-p { font-size:16px; line-height:1.875; }
+    .cs-hgp-rows { display:flex; flex-direction:column; gap:4px; }
+    .cs-hgp { display:grid; grid-template-columns:68px 1fr; background:rgba(0,0,0,0.1); border-radius:0; overflow:hidden; }
+    .cs-hgp-tab { display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; transform:rotate(180deg);
+                  font-size:16px; font-weight:400; letter-spacing:normal; text-transform:uppercase; color:#fdf1e1; padding:22px 0; }
+    .cs-hgp:nth-child(1) .cs-hgp-tab { background:#000; }
+    .cs-hgp:nth-child(2) .cs-hgp-tab { background:#3a3a38; }
+    .cs-hgp:nth-child(3) .cs-hgp-tab { background:#7a7a76; }
+    .cs-hgp-body { padding:24px 16px; }
+    .cs-hgp-k { font-size:12px; font-weight:400; letter-spacing:0.06em; text-transform:uppercase; color:rgba(0,0,0,0.5); margin-bottom:0; }
+    .cs-hgp-v { font-size:16px; line-height:1.875; color:#0b0b0b; }
+
+    /* logo band — a full-viewport black moment with the mark centred */
+    .cs-logoband { background:#0d0c0c; min-height:100vh; display:flex; align-items:center; justify-content:center; }
+
+    /* — Hatcha logo-band animation (Figma 384:1971, Wireframe-7 → Wireframe-6 smart animate) —
+       Stage is the 1440×1024 design canvas, scaled to the viewport via --s (set in JS).
+       Starts zoomed into the splash phone (scale 5.353 at the spinner), zooms out to the
+       five-phone row, then cycles "Hatcha ‹Birthday/Potluck/Hackathon/Anniversary›". */
+    /* viewport bg goes pure #000 while zoomed so the splash covers the full
+       viewport width on any screen (the phone's own black can fall short) */
+    .cs-anim-viewport { width:100%; height:100vh; overflow:hidden; background:#000;
+                        display:flex; align-items:center; justify-content:center; }
+    .play .cs-anim-viewport { animation:hatchaBg 11s linear infinite; }
+    @keyframes hatchaBg {
+      0%,31.82% { background-color:#000; }
+      39.09%,90.91% { background-color:#0d0c0c; }
+      98.18%,100% { background-color:#000; }
+    }
+    .cs-anim-stage { flex:none; width:1440px; height:1024px; position:relative;
+                     transform:scale(var(--s,1)); }
+    /* One shared 11s loop, fully seamless (starts and ends zoomed into the splash).
+       Splash compressed so the petals whip through faster and the zoom-out fires
+       sooner; the word phase keeps its original real pacing, just shifted earlier.
+       0–3.5s      splash — petals slide v1→v2→v3→v4→v1 (moves ~0.13/1.0/2.1/3.1s)
+       3.5–4.3s    zoom out to the five-phone row (800ms ease-in-out)
+       4.1–4.6s    "Hatcha Birthday" fades in (overlaps the zoom tail)
+       5.1–9.0s    four word turns (Potluck→Hackathon→Anniversary→Birthday)
+       9.6–9.9s    texts fade out
+       10.0–10.8s  zoom back into the splash (800ms ease-in-out) → replay */
+    .cs-anim-zoom { position:absolute; inset:0;
+                    transform:scale(5.353); transform-origin:720px 434.18px; }
+    .play .cs-anim-zoom { animation:hatchaZoom 11s linear infinite; }
+    @keyframes hatchaZoom {
+      0%,31.82%  { transform:scale(5.353); animation-timing-function:cubic-bezier(0.42,0,0.58,1); }
+      39.09%,90.91% { transform:scale(1); animation-timing-function:cubic-bezier(0.42,0,0.58,1); }
+      98.18%,100% { transform:scale(5.353); }
+    }
+
+    /* side phones — frames baked into the PNGs, so shadow follows alpha.
+       Hidden while zoomed in (they'd bleed into the splash on wide screens);
+       fade in with the zoom-out so the outer two render fully unclipped. */
+    .cs-ph-img { position:absolute; top:136.45px; width:341.5px; height:754px;
+                 filter:drop-shadow(9px 12px 18.3px rgba(0,0,0,0.71)); opacity:0; }
+    .play .cs-ph-img { animation:hatchaSides 11s linear infinite; }
+    @keyframes hatchaSides {
+      0%,31.82% { opacity:0; }
+      39.09%,90.91% { opacity:1; }
+      94.09%,100% { opacity:0; }
+    }
+    .cs-ph-img.i1 { left:-243.68px; }
+    .cs-ph-img.i2 { left:152.82px; }
+    .cs-ph-img.i3 { left:945.68px; }
+    .cs-ph-img.i4 { left:1342.18px; }
+
+    /* center splash phone — border hidden while zoomed in, appears with the zoom-out */
+    .cs-hphone { position:absolute; left:549.32px; top:136.46px; width:341.367px; height:753.99px;
+                 background:#000; border:6.628px solid transparent; border-radius:26.514px;
+                 box-shadow:9px 12px 36.6px 0 rgba(0,0,0,0.71); overflow:hidden; }
+    .play .cs-hphone { animation:hatchaBorder 11s linear infinite; }
+    @keyframes hatchaBorder {
+      0%,31.82% { border-color:transparent; }
+      39.09%,87.27% { border-color:#6b6b6b; }
+      90%,100% { border-color:transparent; } /* fully gone before the zoom-in starts */
+    }
+    .cs-hphone-in { position:absolute; left:-6.628px; top:-6.628px; width:341.367px; height:753.99px; }
+
+    /* status bar */
+    .cs-hsb { position:absolute; left:0; right:0; top:0; height:43.085px;
+              padding:8.286px 19.885px; display:flex; align-items:flex-end; justify-content:space-between; }
+    .cs-hsb-time { font-family:'Roboto',sans-serif; font-weight:500; font-size:11.6px;
+                   line-height:16.571px; letter-spacing:0.116px; color:#fff; }
+    .cs-hsb-icons { position:relative; width:32.72px; height:14.086px; }
+    .cs-hsb-icons img { position:absolute; display:block; }
+    .cs-hsb-icons .wifi    { left:0; top:0; width:14.086px; height:14.086px; }
+    .cs-hsb-icons .signal  { left:10.98px; top:0; width:14.086px; height:14.086px; }
+    .cs-hsb-icons .battery { left:26.09px; top:0.69px; width:6.628px; height:12.428px; }
+    .cs-hcam { position:absolute; left:50%; top:14.91px; width:19.885px; height:19.885px;
+               transform:translateX(-50%); }
+    .cs-hnav { position:absolute; left:0; right:0; bottom:0; height:19.885px; }
+    .cs-hnav span { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+                    width:89.485px; height:3.314px; border-radius:12px; background:#fff; }
+
+    /* spinner mark — literal smart animate (Figma 388:2075): all 4 variants use
+       the SAME four petal shapes, only translated. Each petal slides through its
+       4 variant positions (a circuit of the mark) with a small per-petal delay,
+       exactly like the prototype. SVG viewBox 0 0 48 48; translate units = design px.
+         P1 (17,0)→(0,0)→(0,27)→(17,27)   P2 (0,0)→(32,0)→(32,27)→(0,27)
+         P3 (17,22)→(0,22)→(0,0)→(17,0)   P4 (0,22)→(32,22)→(32,0)→(0,0)  */
+    .cs-hspin { position:absolute; left:50%; top:274.25px; width:46.941px; height:46.941px;
+                transform:translateX(-50%); }
+    /* 48-unit design space scaled onto the 46.941px box; petals are separate
+       composited elements so the slides run off the main thread */
+    .cs-hspin-in { position:absolute; left:0; top:0; width:48px; height:48px;
+                   transform:scale(0.97794); transform-origin:0 0; }
+    .cs-hspin .hp { position:absolute; left:0; top:0; display:block; will-change:transform; }
+    .cs-hspin .hp1 { transform:translate(17px,0); }
+    .cs-hspin .hp2 { transform:translate(0,0); }
+    .cs-hspin .hp3 { transform:translate(17px,22px); }
+    .cs-hspin .hp4 { transform:translate(0,22px); }
+    .play .cs-hspin .hp1 { animation:hatchaP1 11s linear infinite; }
+    .play .cs-hspin .hp2 { animation:hatchaP2 11s linear infinite; }
+    .play .cs-hspin .hp3 { animation:hatchaP3 11s linear infinite; }
+    .play .cs-hspin .hp4 { animation:hatchaP4 11s linear infinite; }
+    /* splash moves compressed into 0–3.5s (~0.7s each) so the mark whips through
+       its circuit faster and the zoom-out fires sooner; word-turn moves at
+       5.1/6.4/7.7/9.0s run 560ms, synced with the word slides;
+       spring ease with slight overshoot + settle (Figma "gentle");
+       all four petals move together on identical timing */
+    @keyframes hatchaP1 {
+      0%,1.15% { transform:translate(17px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      7.52%,9.25% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      15.62%,17.35% { transform:translate(0,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      23.72%,25.45% { transform:translate(17px,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      31.82%,46.36% { transform:translate(17px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      51.45%,58.18% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      63.27%,70% { transform:translate(0,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      75.09%,81.82% { transform:translate(17px,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      86.91%,100% { transform:translate(17px,0); }
+    }
+    @keyframes hatchaP2 {
+      0%,1.15% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      7.52%,9.25% { transform:translate(32px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      15.62%,17.35% { transform:translate(32px,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      23.72%,25.45% { transform:translate(0,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      31.82%,46.36% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      51.45%,58.18% { transform:translate(32px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      63.27%,70% { transform:translate(32px,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      75.09%,81.82% { transform:translate(0,27px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      86.91%,100% { transform:translate(0,0); }
+    }
+    @keyframes hatchaP3 {
+      0%,1.15% { transform:translate(17px,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      7.52%,9.25% { transform:translate(0,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      15.62%,17.35% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      23.72%,25.45% { transform:translate(17px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      31.82%,46.36% { transform:translate(17px,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      51.45%,58.18% { transform:translate(0,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      63.27%,70% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      75.09%,81.82% { transform:translate(17px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      86.91%,100% { transform:translate(17px,22px); }
+    }
+    @keyframes hatchaP4 {
+      0%,1.15% { transform:translate(0,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      7.52%,9.25% { transform:translate(32px,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      15.62%,17.35% { transform:translate(32px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      23.72%,25.45% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      31.82%,46.36% { transform:translate(0,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      51.45%,58.18% { transform:translate(32px,22px); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      63.27%,70% { transform:translate(32px,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      75.09%,81.82% { transform:translate(0,0); animation-timing-function:cubic-bezier(0.3,1.25,0.4,1); }
+      86.91%,100% { transform:translate(0,22px); }
+    }
+
+    /* wordmark + rotating word — hidden while zoomed (Wireframe-7 has them at opacity 0) */
+    .cs-hfade { opacity:0; }
+    .play .cs-hfade { animation:hatchaFade 11s linear infinite; }
+    @keyframes hatchaFade {
+      0%,37.27% { opacity:0; animation-timing-function:ease-out; }
+      41.82%,87.27% { opacity:1; animation-timing-function:ease-in; }
+      90%,100% { opacity:0; }
+    }
+    .cs-hword { position:absolute; left:calc(50% - 125px); top:50%; transform:translateY(-50%);
+                font-family:'Darker Grotesque',sans-serif; font-weight:700;
+                font-size:38.942px; line-height:normal; color:#fff; white-space:nowrap; }
+    /* +5.7/+5 nudge vs Figma coords: web font metrics render "Hatcha" wider, was colliding */
+    .cs-hrot { position:absolute; left:152.5px; top:358.8px; width:169.855px; height:38.942px;
+               overflow:hidden; }
+    .cs-hrot-stack { position:absolute; inset:0; }
+    .play .cs-hrot-stack { animation:hatchaWords 11s linear infinite; }
+    @keyframes hatchaWords {
+      0%,46.36%  { transform:translateY(0); animation-timing-function:cubic-bezier(0.65,0,0.35,1); }
+      51.45%,58.18% { transform:translateY(-45.57px); animation-timing-function:cubic-bezier(0.65,0,0.35,1); }
+      63.27%,70% { transform:translateY(-91.14px); animation-timing-function:cubic-bezier(0.65,0,0.35,1); }
+      75.09%,81.82% { transform:translateY(-136.71px); animation-timing-function:cubic-bezier(0.65,0,0.35,1); }
+      86.91%,100% { transform:translateY(-182.28px); }
+    }
+    .cs-hrot-stack span { position:absolute; left:0; display:flex; align-items:center;
+                          height:38.942px; padding:0 6.628px; white-space:nowrap;
+                          font-family:'Charter','Bitter',Georgia,serif; font-style:italic;
+                          font-size:32.13px; letter-spacing:-0.6426px; color:#fff; line-height:normal; }
+    .cs-hrot-stack span:nth-child(1) { top:0; font-size:33.14px; letter-spacing:-0.6628px; }
+    .cs-hrot-stack span:nth-child(2) { top:45.57px; }
+    .cs-hrot-stack span:nth-child(3) { top:91.14px; }
+    .cs-hrot-stack span:nth-child(4) { top:136.71px; }
+    .cs-hrot-stack span:nth-child(5) { top:182.28px; font-size:33.14px; letter-spacing:-0.6628px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .cs-anim-zoom, .play .cs-anim-zoom { transform:scale(1); animation:none; }
+      .cs-hfade, .play .cs-hfade { opacity:1; animation:none; }
+      .cs-hphone, .play .cs-hphone { border-color:#6b6b6b; animation:none; }
+      .cs-anim-viewport, .play .cs-anim-viewport { background:#0d0c0c; animation:none; }
+      .cs-ph-img, .play .cs-ph-img { opacity:1; animation:none; }
+      .play .cs-hspin .hp, .play .cs-hrot-stack { animation:none; }
+      .play .iv-scroll, .play .es-scroll { animation:none; }
+    }
+
+    /* ── problem / numbered section body ── */
+    .cs-numbered.pad { padding:120px 0 150px; }
+
+    /* pull quote */
+    .cs-quote { padding:36px 0 190px; }
+    .cs-quote-inner { max-width:var(--cs-max); margin:0 auto; padding-left:0; padding-right:0; }
+    .cs-quote p { font-family:var(--cs-serif); font-weight:400; font-size:44px; line-height:1.3; letter-spacing:0.02em; margin:0; padding:80px 0 80px var(--cs-rail); }
+    .cs-quote-center .cs-quote-inner { text-align:center; padding-left:var(--cs-pad); padding-right:var(--cs-pad); }
+    .cs-quote-center p { padding-left:0; }
+    .cs-quote i, .cs-quote em { font-style:italic; }
+    .cs-quote .coral { color:var(--cs-coral); font-style:italic; }
+    .cs-band.dark .cs-quote-line { border-top:1px solid rgba(255,255,255,0.12); }
+    .cs-band.cream .cs-quote-line { border-top:1px solid rgba(0,0,0,0.1); }
+
+    .cs-shift-eye { color:rgba(255,255,255,0.5); font-size:16px; letter-spacing:normal; margin-top:52px; margin-bottom:0; }
+
+    /* comparison table (before / after) */
+    .cs-cmp { margin-top:40px; border:1px solid rgba(255,255,255,0.25); overflow:hidden; max-width:960px; }
+    .cs-cmp-row { display:grid; grid-template-columns:1fr 60px 1fr; }
+    .cs-cmp-cell { padding:16px; font-size:16px; line-height:30px; }
+    .cs-cmp-arrow { display:flex; align-items:center; justify-content:center; border-left:1px solid rgba(255,255,255,0.25);
+                    border-right:1px solid rgba(255,255,255,0.25); color:#fdf1e1; font-size:16px; }
+    .cs-cmp-row:not(:last-child) .before,
+    .cs-cmp-row:not(:last-child) .cs-cmp-arrow { border-bottom:1px solid rgba(255,255,255,0.25); }
+    .cs-cmp-row:not(:last-child) .after { border-bottom:1px solid rgba(0,0,0,0.25); }
+    .cs-cmp .before { color:#fdf1e1; }
+    .cs-cmp .after  { background:#fff9f1; color:#141414; }
+    .cs-cmp-head .cs-cmp-cell { font-size:16px; font-weight:400; letter-spacing:normal; line-height:1.358; text-transform:uppercase; }
+    .cs-cmp-head .before { background:rgba(255,255,255,0.1); }
+    .cs-cmp-head .cs-cmp-arrow { background:rgba(255,255,255,0.1); }
+    .cs-cmp-head .after { background:#fdf1e1; color:#141414; }
+
+    /* fixed / composed table (cream section) */
+    .cs-fx { margin-top:52px; display:grid; grid-template-columns:1fr 1fr; max-width:940px; border:1px solid rgba(0,0,0,0.25); }
+    .cs-fx + .cs-note { margin-top:52px; }
+    .cs-fx-cell { display:flex; align-items:center; padding:16px; min-height:60px; font-size:16px; line-height:30px; }
+    .cs-fx-cell:nth-child(2n) { background:#000; color:#fdf1e1; border-top:1px solid rgba(255,255,255,0.25); }
+    .cs-fx-cell:nth-child(2n+1){ border-top:1px solid rgba(0,0,0,0.25); }
+    .cs-fx-head { padding:16px; font-size:16px; font-weight:400; letter-spacing:normal; line-height:1.358; text-transform:uppercase; white-space:nowrap; }
+    .cs-fx-head.f { background:#7a7a76; color:#fdf1e1; }
+    .cs-fx-head.g { background:#000; color:#fdf1e1; }
+
+    /* criteria cards (section 02) */
+    .cs-crit-eye { font-size:16px; font-weight:500; text-transform:uppercase; color:#fff; line-height:1.5; margin:84px 0 40px; margin-left:calc(-1 * var(--cs-rail)); }
+    .cs-crit { display:grid; grid-template-columns:repeat(3,1fr); gap:80px; align-items:start; margin-left:calc(-1 * var(--cs-rail)); }
+    .cs-crit-head { display:flex; align-items:center; gap:12px; margin-bottom:14px; }
+    .cs-crit-num { font-family:var(--cs-sans); font-weight:400; font-size:30px; line-height:1; color:rgba(255,255,255,0.5); }
+    .cs-crit-lbl { font-size:12px; font-weight:500; letter-spacing:0.01em; text-transform:uppercase; color:rgba(255,255,255,0.75); }
+    .cs-card-img { display:block; width:100%; height:auto; border-radius:18px; }
+    .cs-card { position:relative; border:1px solid rgba(255,255,255,0.5); border-radius:18px; padding:12px; overflow:hidden;
+               font-family:'Lato',var(--cs-sans); backdrop-filter:blur(6px);
+               background:radial-gradient(125% 125% at 50% 46%, rgba(255,255,255,0) 30%, rgba(255,255,255,0.16) 100%),linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0)); }
+    .cs-card-title { font-size:12px; font-weight:400; color:#fff; margin-bottom:11px; }
+    .cs-opt { display:flex; align-items:center; gap:9px; height:42px; padding:0 11px; margin-bottom:9px;
+              border:1px solid rgba(255,255,255,0.5); border-radius:9px; font-size:12px; }
+    .cs-opt:last-child { margin-bottom:0; }
+    .cs-opt.on  { background:linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0)); }
+    .cs-opt.off { background:rgba(255,255,255,0.15); }
+    .cs-opt > span { flex:1; }
+    .cs-opt.on  > span { font-weight:400; color:#fff; }
+    .cs-opt.off > span { font-weight:300; color:rgba(255,255,255,0.8); }
+    .cs-cbx { width:18px; height:18px; border-radius:5px; border:1.5px solid rgba(255,255,255,0.45); flex-shrink:0; position:relative; }
+    .cs-cbx.on { background:#e5c07b; border-color:#e5c07b; }
+    .cs-cbx.on::after { content:""; position:absolute; left:5.5px; top:2px; width:4px; height:8px; border:solid #1c1c1c; border-width:0 2px 2px 0; transform:rotate(45deg); }
+    .cs-donut-wrap { display:flex; align-items:center; gap:22px; }
+    .cs-donut { width:140px; height:140px; flex-shrink:0; display:block; }
+    .cs-legend { display:flex; flex-direction:column; gap:16px; }
+    .cs-legend-row { display:flex; align-items:center; gap:10px; font-size:11px; line-height:1; }
+    .cs-legend .sw { width:12px; height:12px; border-radius:3px; flex-shrink:0; }
+    .cs-legend .pct { color:#fff; min-width:24px; }
+    .cs-legend .lbl { color:rgba(255,255,255,0.5); white-space:nowrap; }
+    .cs-list { display:flex; flex-direction:column; }
+    .cs-list-row { display:flex; align-items:center; gap:9px; padding:9px; font-size:12px; font-weight:300; color:#fff; }
+    .cs-list-sep { height:1px; background:rgba(255,255,255,0.12); }
+
+    /* phone mockups (fixed / flexible) — annotations sit beside each phone.
+       The block escapes the text column and centers the two phone units in the viewport. */
+    .cs-phones { display:grid; grid-template-columns:auto auto; justify-content:center; gap:48px; margin-top:116px;
+                 margin-left:calc(-1 * var(--cs-rail)); }
+    .cs-phone-row { display:flex; gap:24px; align-items:stretch; }
+    .cs-phone-fig { position:relative; flex:0 0 350px; max-width:350px; }
+    /* translucent annotation bands — geometry from Figma 1:2873, % of the phone box */
+    .cs-band-hl { position:absolute; left:-7.1%; width:112.9%; background:#e5c07b; border:2px solid #000; opacity:0.4; pointer-events:none; z-index:5; }
+    .cs-band-hl.green { background:#8bff49; }
+
+    /* ── scrolling phone stages — fixed 350×772.62 design space scaled via --ps
+       (set in JS). Fixed chrome (bg, nav, title, CTA, device frame) is layered
+       around a clipped window whose card strip auto-scrolls.
+       Timeline (16s ping-pong): hold 1s → scroll 5.9s → hold 2.2s → back 5.9s → hold 1s ── */
+    .cs-pshell { position:relative; aspect-ratio:350/772.62; overflow:hidden; border-radius:44px; }
+    .cs-pstage { position:absolute; left:0; top:0; width:350px; height:772.62px;
+                 transform:scale(var(--ps,1)); transform-origin:0 0; font-family:'Lato',sans-serif; }
+    .cs-pstage img { display:block; position:absolute; }
+    .cs-pstage .pbg    { left:0; top:0; width:350px; height:772.62px; }
+    .cs-pstage .pnav   { left:0; top:30.59px; width:350px; z-index:3; }
+    .cs-pstage .ptitle { left:0; top:105px; width:350px; z-index:3; }
+    .cs-pstage .pcta   { left:0; bottom:0; width:350px; z-index:3; }
+    .cs-pstage .pbar   { left:0; bottom:0; width:350px; z-index:3; }
+    .cs-pstage .phead  { left:24px; top:91.7px; width:301.8px; z-index:3; }
+    .cs-pstage .pframe { left:0; top:0; width:350px; z-index:4; }
+    .cs-pwin { position:absolute; left:0; overflow:hidden; z-index:2; }
+    .iv-win { top:170.79px; width:350px; height:480px; }
+    .es-win { top:167.86px; width:350px; height:418px; }
+    .iv-scroll { position:absolute; left:0; top:0; width:350px; height:970.69px; will-change:transform; }
+    .es-scroll { position:absolute; left:24px; top:0; width:1292.9px; height:418px; will-change:transform; }
+    .play .iv-scroll { animation:hatchaVScroll 16s linear infinite; }
+    .play .es-scroll { animation:hatchaHScroll 16s linear infinite; }
+    @keyframes hatchaVScroll {
+      0%, 6%   { transform:translateY(0); animation-timing-function:cubic-bezier(0.45,0.05,0.25,1); }
+      43%, 57% { transform:translateY(-490.7px); animation-timing-function:cubic-bezier(0.45,0.05,0.25,1); }
+      94%, 100% { transform:translateY(0); }
+    }
+    @keyframes hatchaHScroll {
+      0%, 6%   { transform:translateX(0); animation-timing-function:cubic-bezier(0.45,0.05,0.25,1); }
+      43%, 57% { transform:translateX(-990.9px); animation-timing-function:cubic-bezier(0.45,0.05,0.25,1); }
+      94%, 100% { transform:translateX(0); }
+    }
+    .iv-scroll > * { position:absolute; left:20.38px; }
+    .iv-scroll .ivc1 { top:0; width:309.9px; height:445.29px; padding:13.58px; border-radius:20.38px; border-width:0.85px; }
+    .ivc1 .hc-sub { line-height:20.38px; margin-top:6.79px; }
+    .ivc1 .hc-sep { margin-top:13.58px; }
+    .ivc1 .hc-btn { height:33.96px; font-size:11.89px; }
+    /* dual-axis slider visual — glow + dot grid + four axis labels */
+    .hs-axis { position:relative; width:291.22px; height:291.22px; border-radius:22px; overflow:hidden; margin-top:13.58px; }
+    .hs-axis img { position:absolute; }
+    .ax-glow { left:28.86px; top:28.86px; width:234.22px; height:234.22px; }
+    .ax-dots { left:13.58px; top:13.58px; width:263.58px; height:271.69px; }
+    .ax-lbl { position:absolute; font-size:13.58px; line-height:20.38px; letter-spacing:0.14px;
+              white-space:nowrap; transform:translate(-50%,-50%); }
+    .ax-lbl.top { left:calc(50% + 0.42px); top:7.64px; }
+    .ax-lbl.bottom { left:calc(50% + 0.85px); top:280.18px; }
+    .ax-lbl.left { left:calc(50% - 127.35px); top:calc(50% - 3.4px); transform:translate(-50%,-50%) rotate(-90deg); }
+    .ax-lbl.right { left:calc(50% + 126.93px); top:calc(50% - 3.4px); transform:translate(-50%,-50%) rotate(90deg); }
+    /* glass cards — border/radius/padding/blur from Figma card specs */
+    .hcard { position:absolute; box-sizing:border-box; border:0.9px solid #fff; color:#fff;
+             background:radial-gradient(120% 130% at 50% 49%, rgba(255,255,255,0) 0%, rgba(255,255,255,0.25) 100%);
+             backdrop-filter:blur(6.8px); -webkit-backdrop-filter:blur(6.8px); }
+    .iv-scroll .hcard { border-radius:21.8px; padding:14.53px; }
+    .iv-scroll .ivc2 { top:465.67px; width:309.25px; height:170.87px; }
+    .iv-scroll .ivc3 { top:656.91px; width:304px; height:313.78px; }
+    .es-scroll .hcard { border-radius:20.38px; padding:13.58px; overflow:hidden; }
+    .es-scroll .esc1 { left:0; top:0; width:302px; height:418px; }
+    .es-scroll .esc2 { left:322.38px; top:0; width:309.9px; height:418px; }
+    .es-scroll .esc3 { left:652.65px; top:0; width:309.9px; height:418px; }
+    .es-scroll .esc4 { left:982.92px; top:0; width:309.9px; height:418px; }
+    .hc-title { font-weight:400; font-size:13.58px; line-height:20.4px; letter-spacing:0.14px; }
+    .hc-sub { font-weight:300; font-size:13.58px; line-height:17px; letter-spacing:0.14px; color:rgba(255,255,255,0.5); margin-top:7.27px; }
+    .hc-sep { height:13.58px; position:relative; }
+    .hc-sep::after { content:""; position:absolute; left:0; right:0; top:6.4px; border-top:0.9px solid rgba(255,255,255,0.2); }
+    /* interview card 2 — centered dual slider */
+    .hs-box { position:relative; height:64px; margin-top:14.53px; }
+    .hs-track { position:absolute; top:29.27px; height:17px; border-radius:99px; }
+    .hs-track.l { left:0; width:49%; background:linear-gradient(to right,#e5c07b,#8a7bff); }
+    .hs-track.r { left:51%; width:49%; background:linear-gradient(to right,#8a7bff,#2b2452); }
+    .hs-pill { position:absolute; left:43.5%; top:0; width:35.4px; height:22px; border-radius:10.9px;
+               background:rgba(255,255,255,0.15); display:flex; align-items:center; justify-content:center;
+               font-size:10px; color:#f4f1e8; }
+    .hs-tick { position:absolute; left:49.95%; top:22px; width:1.4px; height:24.27px; border-radius:99px; background:rgba(255,255,255,0.15); }
+    .hs-vals { position:absolute; left:0; right:0; top:48.9px; display:flex; justify-content:space-between;
+               font-size:10.9px; line-height:14.53px; color:#f4f1e8; }
+    /* interview card 3 — multi-line field + action */
+    .hf-input { box-sizing:border-box; height:128.08px; margin-top:14.53px; padding:10.9px; border-radius:10.9px;
+                background:rgba(255,255,255,0.15); border:0.45px solid rgba(255,255,255,0.5);
+                font-weight:300; font-size:14.53px; line-height:21.8px; letter-spacing:0.15px; }
+    .hf-helper { font-size:10.9px; line-height:14.53px; color:rgba(255,255,255,0.5); margin-top:7.3px; }
+    .hc-btn { display:inline-flex; align-items:center; justify-content:center; height:36.33px; padding:0 11px;
+              border:0.9px solid rgba(255,255,255,0.5); border-radius:99px; background:none; color:#fff;
+              font-family:'Lato',sans-serif; font-size:12.72px; letter-spacing:0.13px; margin-top:3.6px; }
+    /* event-summary — property rows + simple lists */
+    .hp-row { display:flex; align-items:center; gap:6.79px; min-height:33.96px; }
+    .hp-row .k { flex:0 0 84.9px; font-weight:300; font-size:11.89px; letter-spacing:0.12px; }
+    .hp-row .v { padding:0 10.19px; font-weight:400; font-size:11.53px; line-height:17.3px; letter-spacing:0.12px; }
+    .hl-row { padding:3.4px 10.19px; }
+    .hl-row .t { font-weight:300; font-size:13.58px; line-height:20.38px; letter-spacing:0.14px; }
+    .hl-row .d { font-weight:400; font-size:10.19px; line-height:13.58px; color:rgba(255,255,255,0.5); margin-top:2px; }
+    .es-list { margin-top:13.58px; }
+    .esc3 .es-list, .esc4 .es-list { margin-top:20.38px; }
+    .hc-fade { position:absolute; left:0; right:0; bottom:0; width:100%; z-index:1; transform:rotate(180deg); }
+    .cs-annot { position:relative; flex:0 0 180px; }
+    .cs-annot-k { position:absolute; left:0; right:0; font-size:12px; font-weight:500; text-transform:uppercase; color:rgba(0,0,0,0.5); line-height:1.358; }
+    .cs-annot-v { display:block; font-size:16px; font-weight:500; text-transform:uppercase; line-height:1.358; margin-top:1px; }
+    .cs-annot-v.fixed { color:#000; }
+    .cs-annot-v.flex  { color:#297000; }
+
+    /* numbered steps (section 04) */
+    .cs-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:0; margin-top:72px; }
+    .cs-step { padding:0 26px; border-left:1px solid rgba(255,255,255,0.14); }
+    .cs-step:first-child { padding-left:0; border-left:0; }
+    .cs-step-n { font-family:var(--cs-serif); font-weight:400; font-size:24px; letter-spacing:0.02em; color:#6a6a6a; margin-bottom:22px; }
+    .cs-step-h { font-size:20px; font-weight:600; color:#f4efe6; margin-bottom:14px; }
+    .cs-step-p { font-size:14px; line-height:1.55; color:rgba(255,249,233,0.6); }
+
+    /* image gallery collage (section 04) — staggered tile heights like the comp */
+    .cs-gallery { display:flex; gap:47px; padding:64px var(--cs-pad); overflow-x:hidden; align-items:center; scrollbar-width:none; -ms-overflow-style:none; }
+    .cs-gallery::-webkit-scrollbar { display:none; }
+    .cs-ds-tile { flex:0 0 auto; border-radius:10px; overflow:hidden; background:#0d0d0d; }
+    .cs-ds-tile.t-sq   { width:470px; height:470px; }
+    .cs-ds-tile.t-tall { width:450px; height:610px; }
+    .cs-ds-tile.t-port { width:415px; height:470px; }
+    .cs-ds-tile > img, .cs-ds-tile > video { width:100%; height:100%; object-fit:cover; display:block; }
+
+    /* asset reveal on scroll — hard-edge clip-mask unveil (MetaLab-style): the
+       media is clipped to a zero-height line at its TOP, then the clip sweeps
+       DOWNWARD to reveal it behind a crisp horizontal edge while the block settles
+       down a few px (top-to-bottom reveal). --clip-round (set in JS from the
+       element's own border-radius) keeps rounded frames rounded through the wipe. */
+    #hatcha-view .cs-clip {
+      clip-path: inset(0px 0px 100% 0px round var(--clip-round, 0px));
+      transform: translateY(-44px);
+      transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+      transition-delay: var(--reveal-delay, 0s);
+      /* no will-change — one-shot clip reveal, browser promotes the running transition itself */
+    }
+    #hatcha-view .cs-clip.is-visible {
+      clip-path: inset(0px 0px 0% 0px round var(--clip-round, 0px));
+      transform: none;
+    }
+    /* the phones assembly overflows sideways (annotation bands sit at left:-7.1%),
+       so give the clip horizontal breathing room — clip only the bottom edge, never
+       the sides — otherwise the bands get shaved at rest. */
+    #hatcha-view .cs-clip-wide { clip-path: inset(0px -8% 100% -8% round 0px); }
+    #hatcha-view .cs-clip-wide.is-visible { clip-path: inset(0px -8% 0% -8% round 0px); }
+    @media (prefers-reduced-motion: reduce) {
+      #hatcha-view .cs-clip, #hatcha-view .cs-clip-wide {
+        clip-path: none; transform: none; transition: none;
+      }
+    }
+
+    /* theme system (section 05) */
+    .cs-theme-grid { display:grid; grid-template-columns:340px minmax(0,1fr); gap:60px; margin-top:64px; align-items:center; max-width:none; }
+    .cs-theme-txt-h { font-size:13px; font-weight:400; letter-spacing:0.06em; text-transform:uppercase; color:#8f8a80; margin-bottom:20px; }
+    .cs-mini { margin-top:26px; border:0; }
+    .cs-mini-head { background:none; color:var(--lg-faint,#a79c89); padding:0 0 11px; border-bottom:1px solid var(--lg-line2,rgba(255,255,255,.22));
+      font-family:var(--cs-sans); font-size:12px; font-weight:500; letter-spacing:0.16em; text-transform:uppercase; }
+    .cs-mini-row { padding:10px 0; font-family:var(--cs-sans); font-size:15px; color:var(--lg-mut,#8a8271); border-bottom:1px solid var(--lg-line,rgba(255,255,255,.14)); border-top:0; }
+    .cs-mini-row:last-child { border-bottom:0; }
+    @media (max-width:900px){
+      .cs-mini-pair { display:flex; gap:12px; }
+      .cs-mini-pair .cs-mini { flex:1 1 0; margin-top:34px; }
+      .cs-mini-pair .cs-mini-head { padding:10px 12px; font-size:11px; }
+      .cs-mini-pair .cs-mini-row { padding:10px 12px; font-size:13px; }
+    }
+    .cs-palette { position:relative; width:100%; aspect-ratio:var(--cs-palette-ar); justify-self:stretch; overflow:hidden; border-radius:8px; }
+    .cs-palette-art { position:relative; display:flex; align-items:flex-end; padding:52px;
+      background:radial-gradient(120% 90% at 30% 15%,#6f63e8 0%,#2b7fd4 35%,#1fd4d4 62%,#0a2224 100%); }
+    .cs-palette-art h3 { font-family:var(--cs-serif); font-weight:400; font-size:48px; line-height:1.2; letter-spacing:0.02em; color:#fff; position:relative; z-index:1; }
+    .cs-palette-art h3 i { font-style:italic; }
+    .cs-palette-vid { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+    .cs-guardrail-img { display:block; width:100%; height:auto; aspect-ratio:var(--cs-guardrail-ar); justify-self:stretch; object-fit:cover; border-radius:8px; }
+    .cs-swatches { display:flex; flex-direction:column; }
+    .cs-swatch { flex:1; display:flex; align-items:center; justify-content:center; writing-mode:vertical-rl; transform:rotate(180deg);
+                 font-size:11px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:#0a0a0a; }
+    .cs-theme-lower { display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:56px; margin-top:110px; align-items:center; max-width:none; }
+
+    /* outcome stats (section 06) — separate hairline boxes with a small gap */
+    .cs-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin-top:104px; }
+    .cs-stat { padding:48px 30px 58px; border:1px solid #d8d2c4; }
+    .cs-stat-h { font-family:var(--cs-serif); font-weight:400; font-size:38px; letter-spacing:0.02em; margin-bottom:22px; }
+    .cs-stat-p { font-size:14px; line-height:1.55; color:rgba(11,11,11,0.72); }
+
+    /* closing + read next */
+    .cs-closing { padding:230px 0; text-align:center; }
+    .cs-closing-h { font-family:var(--cs-serif); font-weight:400; font-size:60px; line-height:1.18; letter-spacing:0.02em; }
+    .cs-closing-h i { font-style:italic; }
+    .cs-closing-p { max-width:640px; margin:44px auto 0; font-size:16.5px; line-height:1.65; color:rgba(11,11,11,0.78); }
+    /* ── READ NEXT — full-bleed 100vh slide (Figma 702:2688). Copy on the rail at
+       left; the NEXT case study's live hero mock as a rounded card bleeding 13px
+       past the right edge. The hairline under the copy fills over 8s and then
+       hands the reader on (see the read-next auto-advance script).
+       Both children are absolute against the 100vh slide box so the geometry maps
+       straight off the comp instead of fighting the panel's own flex centring —
+       the deck translates .cs-slide-inner, which makes it the containing block,
+       and its padding box is exactly the full frame. */
+    /* min-height matters on the reduced-motion path: the deck bails there, so there's
+       no .cs-slide-inner to give the absolute children a box and the section would
+       otherwise collapse to 0. In the deck it's a no-op (the section is inset:0). */
+    .cs-readnext { position:relative; padding:0; overflow:hidden; min-height:100vh; }
+    /* the footer's .ft-wavy crest (z-index 12) bleeds ~95px above the footer box, and
+       the deck stage was z-index:auto — so the cream wave sliced across this panel's
+       black field. The stage already isolates its own sections, so lifting the whole
+       stage over the footer keeps the crest for the real footer reveal (once the
+       sticky stage has released) and off the slides. */
+    .cs-slide-stage { z-index:13; }
+
+    /* ── SECTION PAGER — shared case-study chrome ─────────────────────────────
+       A scale drawing of the deck pinned to the bottom of the viewport: one tick
+       per chapter, each tick's WIDTH proportional to how many 100vh panels that
+       chapter holds. So the bar shows page length and chapter weight at a glance,
+       and doubles as the progress bar — ticks fill left-to-right as you read, the
+       active one filling panel by panel.
+       Built by csPager() (see the script block with the deck IIFEs); appended to
+       the routed view, which is display:contents with [hidden]{display:none}, so
+       it inherits --cs-* and disappears on route change with no per-route JS.
+       z-index 80: over the deck stage (13) and footer (12), under .rt-hero (90)
+       so a route-open transition still sweeps across it, and under #nav (100). */
+    /* The bar floats over whatever the panel happens to be painting — a cream band, a
+       black band, or a full-bleed photo (the Hatcha hero is cream up top and a dark
+       sofa shot exactly where the bar sits). Nothing derived from the band class can be
+       right in all three, so the bar carries its own surface, the same way the site's
+       nav floats in a translucent .nav-pill instead of matching what's behind it. That
+       makes the polarity a single decision — day or night — with no per-panel sensing. */
+    /* No container treatment — the ticks sit bare on the panel. Polarity is therefore
+       per-panel: csPager sets .on-dark / .on-light from the ACTIVE band, and since night
+       mode inverts what .dark paints (body.night .cs-band.dark) the test is the band
+       class XOR the theme. The soft halo on each line is what keeps them legible where a
+       panel is a full-bleed photo rather than a flat band. */
+    .cs-pager {
+      box-sizing:border-box; position:fixed; z-index:80; bottom:30px; left:50%;
+      /* wide enough that even the longest case study (Hatcha, 10 chapters) reaches the
+         per-rectangle cap, so a rectangle is the same length on every case study */
+      width:min(620px, 44vw); transform:translateX(-50%);
+      display:flex; align-items:center; justify-content:center; gap:6px;
+      --pg-line:rgba(11,11,11,0.24); --pg-live:#0b0b0b; --pg-halo:rgba(255,249,234,0.5);
+      --pg-pill:#0b0b0b; --pg-pill-ink:#fff9ea; --pg-pill-rule:rgba(255,249,234,0.28);
+    }
+    .cs-pager.on-dark {
+      --pg-line:rgba(255,249,234,0.30); --pg-live:#fff9ea; --pg-halo:rgba(0,0,0,0.45);
+      --pg-pill:#fff9ea; --pg-pill-ink:#0b0b0b; --pg-pill-rule:rgba(11,11,11,0.2);
+    }
+    /* the tick is a hit target several times taller than the line it draws, so the bar
+       stays hairline-thin without being fiddly to click.
+       One rectangle per chapter, all the same width — a chapter is one unit of the page
+       whether it runs for one slide or four. flex 1 1 0 (not a % width) because
+       percentages resolve against the content box and the gaps are then ADDED on top,
+       which made the row overflow by 9 gaps; growing from a 0 basis divides what is
+       left AFTER the gaps. */
+    /* max-width caps how long a single rectangle can get, so a short case study doesn't
+       stretch its few chapters across the whole bar — Existence has 4 chapters and they
+       were ~125px each. Capped, the rectangle reads at roughly the same length on every
+       case study and the ROW's total length is what signals how long the page is; the
+       row centres itself in the (transparent) full-width box. */
+    .cs-pg-t {
+      box-sizing:border-box; position:relative; flex:1 1 0; max-width:56px; height:16px;
+      appearance:none; -webkit-appearance:none; border:0; padding:0; background:none;
+      cursor:pointer; display:flex; align-items:center;
+    }
+    .cs-pg-t::before {
+      content:''; display:block; width:100%; height:2px; border-radius:2px; background:var(--pg-line);
+      box-shadow:0 0 7px var(--pg-halo);
+      transition:height 0.34s cubic-bezier(0.22,1,0.36,1);
+    }
+    /* the read-so-far fill, scaled in place — the active tick fills panel by panel, so
+       the bar is a progress bar and a map at the same time.
+       top/bottom:0 + margin:auto keeps it centred as its height grows on hover */
+    .cs-pg-f {
+      position:absolute; left:0; right:0; top:0; bottom:0; margin:auto 0;
+      height:2px; border-radius:2px; box-shadow:0 0 7px var(--pg-halo);
+      background:var(--pg-live); transform:scaleX(var(--f,0)); transform-origin:0 50%;
+      transition:transform 0.5s cubic-bezier(0.22,1,0.36,1), height 0.34s cubic-bezier(0.22,1,0.36,1);
+    }
+    /* the whole bar wakes together — hovering any tick thickens every line, so it reads
+       as one object rather than a row of independent buttons */
+    .cs-pager:hover .cs-pg-t::before, .cs-pager:hover .cs-pg-f,
+    .cs-pager:focus-within .cs-pg-t::before, .cs-pager:focus-within .cs-pg-f { height:5px; }
+    .cs-pg-t:hover::before { background:var(--pg-live); opacity:0.4; }
+    .cs-pg-t:focus-visible { outline:2px solid var(--pg-live); outline-offset:5px; border-radius:1px; }
+    .cs-pg-t:active .cs-pg-f { opacity:0.6; }
+
+    /* one shared pill, translated to the hovered tick — a per-tick pill would be
+       clipped by its own 22px box and couldn't glide between ticks */
+    .cs-pg-pill {
+      position:absolute; left:0; bottom:calc(100% + 8px); transform:translateX(var(--px,0px));
+      display:flex; align-items:center; gap:11px; white-space:nowrap; pointer-events:none;
+      padding:9px 15px; border-radius:100px; background:var(--pg-pill); color:var(--pg-pill-ink);
+      font-family:var(--cs-sans); font-size:13px; line-height:1; letter-spacing:0.01em;
+      box-shadow:0 10px 26px -12px rgba(11,11,11,0.55), 0 2px 6px -2px rgba(11,11,11,0.3);
+      opacity:0; visibility:hidden;
+      transition:opacity 0.24s cubic-bezier(0.22,1,0.36,1),
+                 transform 0.42s cubic-bezier(0.22,1,0.36,1),
+                 visibility 0s linear 0.24s;
+    }
+    .cs-pg-pill.on { opacity:1; visibility:visible; transition-delay:0s, 0s, 0s; }
+    .cs-pg-num { font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; opacity:0.62; }
+    .cs-pg-rule { width:1px; height:11px; background:var(--pg-pill-rule); }
+    /* an unnumbered chapter (Overview / Closing / Read next) drops the number and rule */
+    .cs-pg-pill.bare .cs-pg-num, .cs-pg-pill.bare .cs-pg-rule { display:none; }
+
+    /* touch + mobile: the deck doesn't run under html.cs-static and there's no hover
+       to raise the pill, so the bar has no job. csPager bails on the same conditions —
+       belt and braces, so CSS and JS can never disagree (same pattern as the deck). */
+    @media (max-width:820px), (hover:none) { .cs-pager { display:none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .cs-pg-t::before, .cs-pg-t .cs-pg-f, .cs-pg-pill { transition-duration:0.01ms; }
+    }
+
+    .rn-copy { position:absolute; top:48.4%; transform:translateY(-50%); z-index:2;
+               left:max(var(--cs-pad), calc((100% - var(--cs-max)) / 2 + var(--cs-pad)));
+               width:min(520px, calc(50% - var(--cs-pad) - 48px)); }
+    .rn-kicker { font-family:var(--cs-sans); font-size:16px; line-height:24px;
+                 letter-spacing:0.06em; text-transform:uppercase; color:#fff; }
+    /* comp sets Lato 60px; this site has no Lato and every case-study title is
+       serif, so the name takes --cs-serif at the same 60px step as .cs-closing-h */
+    .rn-title-link { display:inline-block; margin-top:23px; text-decoration:none; color:inherit;
+                     transition:opacity 0.3s cubic-bezier(0.22,1,0.36,1); }
+    .rn-title { margin:0; font-family:var(--cs-serif); font-weight:400;
+                font-size:clamp(38px,4.17vw,60px); line-height:1.06; letter-spacing:0.01em; color:#fff; }
+    .rn-title-link:hover .rn-title { opacity:0.72; }
+    .rn-title-link:focus-visible { outline:2px solid currentColor; outline-offset:6px; border-radius:2px; }
+    .rn-desc { margin:28px 0 0; font-family:var(--cs-sans); font-weight:400;
+               font-size:clamp(17px,1.53vw,22px); line-height:1.45; letter-spacing:0.01em;
+               color:rgba(255,255,255,0.75); }
+
+    /* 8s progress hairline — driven by rAF, NOT a transition, so it can be reset
+       mid-flight and so a backgrounded tab stalls it for free */
+    .rn-bar { margin-top:44px; height:1px; width:100%; background:rgba(255,255,255,0.22); overflow:hidden; }
+    .rn-bar-fill { display:block; height:100%; width:100%; background:#fff;
+                   transform:scaleX(0); transform-origin:0 50%; will-change:transform; }
+
+    .rn-asset { position:absolute; top:16%; bottom:16%; left:50%; right:-13px; z-index:1;
+                display:block; border-radius:16px; overflow:hidden; isolation:isolate;
+                text-decoration:none; background:#0e0e0e;
+                box-shadow:0 34px 90px -34px rgba(0,0,0,0.72), 0 2px 12px rgba(0,0,0,0.38);
+                transition:transform 0.55s cubic-bezier(0.22,1,0.36,1); }
+    /* same fill contract the home tiles give the mock (see .project-tile .tile-mock) */
+    .rn-asset .tile-mock { position:absolute; inset:0; width:100%; height:100%;
+                           aspect-ratio:auto; margin:0; isolation:isolate; }
+    .rn-asset:hover { transform:scale(1.012); }
+    .rn-asset:active { transform:scale(0.997); }
+    .rn-asset:focus-visible { outline:2px solid #fff; outline-offset:5px; }
+
+    /* mobile (html.cs-static, <=820px) — no deck here, just vertical scroll, so the
+       absolute geometry above would collapse the section to nothing. Unwind it into a
+       stack: card on top (still bleeding into the right gutter), copy under it. */
+    html.cs-static .cs-readnext { display:flex; flex-direction:column; justify-content:center;
+      gap:30px; min-height:100svh;
+      padding:var(--cs-navpad) 0 var(--cs-pad) var(--cs-pad); }
+    html.cs-static .rn-asset { order:1; position:relative; inset:auto;
+      flex:1 1 auto; min-height:240px; max-height:52svh;
+      border-radius:16px 0 0 16px; box-shadow:none; }
+    html.cs-static .rn-asset:hover, html.cs-static .rn-asset:active { transform:none; }
+    html.cs-static .rn-copy { order:2; position:static; transform:none;
+      left:auto; width:auto; padding-right:var(--cs-pad); }
+    html.cs-static .rn-title-link { margin-top:14px; }
+    html.cs-static .rn-desc { margin-top:16px; font-size:17px; line-height:1.5; }
+    html.cs-static .rn-bar { margin-top:26px; }
+
+    /* ── NIGHT THEME — re-point the case-study tokens (pairs with body.night
+       in css/site.css; cream bands go night-dark, ink goes cream) ── */
+    body.night #hatcha-view { --cs-cream:var(--c-night); --cs-ink:var(--c-cream-2); }
+    body.night #hatcha-view .cs-band.cream .cs-p { color:rgba(255,249,233,0.85); }
+    body.night #hatcha-view .cs-hero-intro { color:rgba(255,249,233,0.88); }
+    #hatcha-view .cs-hero-tagline { margin:16px 0 0; font-family:var(--cs-serif);
+      font-style:normal; font-weight:400; font-size:34px; line-height:1.2;
+      letter-spacing:0.01em; color:rgba(11,11,11,0.6); }
+    body.night #hatcha-view .cs-hero-tagline { color:rgba(255,249,233,0.7); }
+    body.night #hatcha-view .cs-num { color:#43434b; }
+    body.night #hatcha-view .cs-ph:not(.dark) {
+      background:repeating-linear-gradient(45deg,#14141a,#14141a 14px,#1b1b22 14px,#1b1b22 28px);
+      color:#6b6b6b; }
+    body.night #hatcha-view .cs-hgp { background:#15151c; }
+    body.night #hatcha-view .cs-hgp-v { color:#e9e5dc; }
+    body.night #hatcha-view .cs-hgp:nth-child(1) .cs-hgp-tab { background:#000; box-shadow:inset -1px 0 0 #23232b; }
+    body.night #hatcha-view .cs-fx,
+    body.night #hatcha-view .cs-fx-cell,
+    body.night #hatcha-view .cs-fx-cell:nth-child(2n+1) { border-color:rgba(255,249,233,0.22); }
+    body.night #hatcha-view .cs-fx-cell:nth-child(2n) { box-shadow:inset 0 0 0 1px rgba(255,249,233,0.08); }
+    body.night #hatcha-view .cs-stat { border-color:rgba(255,249,233,0.22); }
+    body.night #hatcha-view .cs-stat-p { color:rgba(255,249,233,0.7); }
+    body.night #hatcha-view .cs-closing-p { color:rgba(255,249,233,0.78); }
+    body.night #hatcha-view .cs-annot-k { color:rgba(255,249,233,0.5); }
+    body.night #hatcha-view .cs-annot-v.fixed { color:var(--c-cream-2); }
+    body.night #hatcha-view .cs-annot-v.flex { color:#7dc36a; }
+    body.night #hatcha-view .cs-band-hl { border-color:rgba(255,249,233,0.7); }
+
+    /* night: dark bands INVERT to day-cream with ink text (cream bands already went
+       night-dark via the token re-point above — the two swap roles). Literal day
+       values here, since --cs-cream/--cs-ink now hold night colors. */
+    body.night #hatcha-view .cs-band.dark { background:#fff9f1; color:#0b0b0b; }
+    body.night #hatcha-view .cs-band.dark .cs-num { color:#c9c4ba; }
+    body.night #hatcha-view .cs-band.dark .cs-p { color:rgba(11,11,11,0.9); }
+    body.night #hatcha-view .cs-band.dark .cs-quote-line { border-top-color:rgba(0,0,0,0.1); }
+    body.night #hatcha-view .cs-band.dark .cs-shift-eye { color:rgba(0,0,0,0.5); }
+    /* comparison table — before/after swap chrome for the cream ground */
+    body.night #hatcha-view .cs-cmp { border-color:rgba(0,0,0,0.25); }
+    body.night #hatcha-view .cs-cmp .before { color:#141414; }
+    body.night #hatcha-view .cs-cmp .after { background:#000; color:#fdf1e1; }
+    body.night #hatcha-view .cs-cmp-arrow { color:#141414; border-left-color:rgba(0,0,0,0.25); border-right-color:rgba(0,0,0,0.25); }
+    body.night #hatcha-view .cs-cmp-row:not(:last-child) .before,
+    body.night #hatcha-view .cs-cmp-row:not(:last-child) .cs-cmp-arrow { border-bottom-color:rgba(0,0,0,0.25); }
+    body.night #hatcha-view .cs-cmp-row:not(:last-child) .after { border-bottom-color:rgba(255,255,255,0.25); }
+    body.night #hatcha-view .cs-cmp-head .before { background:rgba(0,0,0,0.08); }
+    body.night #hatcha-view .cs-cmp-head .cs-cmp-arrow { background:rgba(0,0,0,0.08); }
+    body.night #hatcha-view .cs-cmp-head .after { background:#141414; color:#fdf1e1; }
+    /* criteria labels (section 02) */
+    body.night #hatcha-view .cs-crit-eye { color:#0b0b0b; }
+    body.night #hatcha-view .cs-crit-num { color:rgba(0,0,0,0.5); }
+    body.night #hatcha-view .cs-crit-lbl { color:rgba(0,0,0,0.75); }
+    /* numbered steps (section 04) */
+    body.night #hatcha-view .cs-step { border-left-color:rgba(0,0,0,0.16); }
+    body.night #hatcha-view .cs-step-h { color:#141414; }
+    body.night #hatcha-view .cs-step-p { color:rgba(11,11,11,0.65); }
+    /* mini spec tables (section 05) — day/night handled by scoped --lg-* tokens */
+    /* read next — the panel rides .cs-band.dark, which INVERTS to cream at night
+       (see the swap above), so the whole block flips to ink. Written unscoped so
+       all four case studies share it. */
+    body.night .cs-readnext .rn-kicker,
+    body.night .cs-readnext .rn-title { color:#0b0b0b; }
+    body.night .cs-readnext .rn-desc { color:rgba(11,11,11,0.72); }
+    body.night .cs-readnext .rn-bar { background:rgba(11,11,11,0.2); }
+    body.night .cs-readnext .rn-bar-fill { background:#0b0b0b; }
+    body.night .rn-asset:focus-visible { outline-color:#0b0b0b; }
+    body.night #hatcha-view .cs-band.dark .cs-ph.dark {
+      background:repeating-linear-gradient(45deg,#e7e0d2,#e7e0d2 14px,#ddd5c5 14px,#ddd5c5 28px);
+      color:#8a8474; }
+
+    /* responsive */
+    @media (max-width:1100px){
+      #hatcha-view { --cs-pad:28px; --cs-rail:180px; }
+      .cs-rail { padding-left:0; }
+      .cs-hero-grid, .cs-showcase-grid, .cs-theme-grid, .cs-theme-lower { grid-template-columns:1fr; gap:40px; }
+      .cs-palette { height:auto; width:100%; justify-self:stretch; }
+      .cs-guardrail-img { height:auto; width:100%; }
+      .cs-hero-h { font-size:44px; }
+      #hatcha-view .cs-hero-tagline { font-size:26px; }
+      .cs-meta { margin-top:8px; }
+      .cs-hero-img { height:520px; }
+      .cs-sec-h, .cs-showcase-h { font-size:34px; }
+      .cs-steps, .cs-stats, .cs-phones { grid-template-columns:1fr; }  /* .cs-crit governed by its panel's auto-fit rule */
+      .cs-crit-eye { margin-left:0; }
+      .cs-ds-tile.t-sq   { width:280px; height:280px; }
+      .cs-ds-tile.t-tall { width:268px; height:363px; }
+      .cs-ds-tile.t-port { width:247px; height:280px; }
+      .cs-palette { margin-right:0; }
+      .cs-theme-lower > .cs-ph:first-child { margin-left:0; }
+      .cs-phones { margin-left:0; }
+      .cs-cmp-row { grid-template-columns:1fr 56px 1fr; }
+      .cs-cmp-cell { padding:16px; font-size:16px; }
+      .cs-step { border-left:0; padding:0 0 30px; }
+      .cs-stat { border-left:0; border-top:1px solid #d8d2c4; }
+      .cs-stat:first-child { border-top:0; }
+      .cs-quote p { font-size:30px; }
+      .cs-closing-h { font-size:40px; }
+      .cs-num { font-size:64px; }
+      .cs-logoband { min-height:70vh; }
+    }
+    @media (max-width:900px){
+      .cs-guardrail-txt { order:1; }
+      .cs-guardrail-img { order:2; }
+    }
+    @media (max-width:720px){
+      .cs-phones { margin-left:calc(-1 * var(--cs-rail)); }  /* re-escape the rail column */
+      .cs-phone-row { gap:16px; }
+      .cs-phone-fig { flex:0 1 55%; }
+      .cs-annot { flex:1 1 auto; }  /* absorb remaining width instead of a fixed 180px (avoids sideways scroll) */
+      .cs-annot-k { font-size:9px; }
+      .cs-annot-v { font-size:11px; }
+    }
+    /* keep a min 16px side gutter once the centered max-width stops providing one */
+    @media (max-width:1320px){
+      #hatcha-view .cs-numbered { padding-left:16px !important; padding-right:16px !important; }
+      #hatcha-view .cs-quote-inner { padding-left:16px; padding-right:16px; }
+    }
+
+    /* ═══ Case-study hero meta · mobile static flow (all four views) ═══
+       The 232px + 1fr pair leaves each value ~150px, so anything longer than
+       two words ("Beta – 8k+ signups, releasing 2026") wraps to three lines
+       against a half-empty neighbour. One row per item reads cleanly instead. */
+    html.cs-static .cs-meta { grid-template-columns:1fr; gap:26px 0; }
+  
