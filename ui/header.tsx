@@ -87,12 +87,6 @@ export function Header() {
           <Link href="/services" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">
             Services
           </Link>
-          <Link href="/work" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">
-            Work
-          </Link>
-          <Link href="/waitlist" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">Components</Link>
-          <Link href="/waitlist" className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">Careers</Link>
-
           <Link href="/contact" onClick={() => track("contact_nav_click", { location: "header_desktop" })} className="text-sm font-medium text-foreground/70 hover:text-foreground transition-colors duration-200">
             Contact
           </Link>
@@ -141,18 +135,6 @@ export function Header() {
                 </Link>
                 <Link href="/services" className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
                   <span>Services</span>
-                  <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </Link>
-                <Link href="/work" className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
-                  <span>Work</span>
-                  <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </Link>
-                <Link href="/waitlist" className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
-                  <span>Components</span>
-                  <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </Link>
-                <Link href="/waitlist" className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">
-                  <span>Careers</span>
                   <svg className="h-5 w-5 text-foreground/40 group-hover:text-foreground/70 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
                 </Link>
                 <Link href="/contact" onClick={() => track("contact_nav_click", { location: "header_mobile" })} className="group flex items-center justify-between rounded-2xl px-4 py-3 bg-card/0 hover:bg-card/60 border border-transparent hover:border-border/60 text-foreground/90 hover:text-foreground shadow-sm hover:shadow-md transition-all">

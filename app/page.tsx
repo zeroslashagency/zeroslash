@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/ui/scroll-reveal"
 import { ScrollFloat } from "@/ui/scroll-float"
-import { ArrowRight, Sparkles, Box, Layers, Sparkle, Search, Cog, Rocket, Star, Diamond, Check } from "lucide-react"
+import { ArrowRight, Sparkles, Box, Layers, Sparkle, Search, Cog, Rocket, Star, Diamond, Check, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import CountUpOnView from "../components/CountUpOnView"
 import SectionPill from "@/components/SectionPill"
@@ -30,83 +30,73 @@ export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
   return (
     <div className="w-full bg-background">
-      {/* Full-screen Hero Section (contain background, no crop) */}
-      <section id="hero" className="relative w-[100vw] h-[100svh] overflow-hidden bg-background">
-        {/* Background underlay optimized for LCP - CSS gradient instead of heavy image */}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-muted/30" />
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent" />
-
-        {/* Masthead meta */}
-        <div className="absolute top-6 left-4 md:left-6 z-10">
-          <div className="flex items-center gap-3 text-[11px] md:text-xs tracking-widest uppercase text-foreground/60">
-            <span>Vol. 01</span>
-            <span className="h-px w-6 bg-foreground/20" />
-            <span>2025</span>
-            <span className="h-px w-6 bg-foreground/20" />
-            <span>Design Studio & Editorial</span>
-          </div>
-        </div>
-
-        <div className="container mx-auto px-4 md:px-6 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end min-h-[100svh] py-20">
-            {/* Left: Kicker + Headline */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-              <div className="inline-flex items-center px-4 py-2 rounded-full bg-card/70 backdrop-blur border border-border text-foreground/80 text-sm font-medium w-fit">
-                <Image src="/images/zero-agency-logo.png" alt="ZeroSlash Agency" width={20} height={20} className="mr-2 block dark:hidden" />
-                <Image src="/images/zero-agency-logo.png" alt="ZeroSlash Agency" width={20} height={20} className="mr-2 hidden dark:block invert" />
-                <ShinyText text="Studio & Editorial" speed={3} />
-                 </div>
-
-              <h1 className="font-black leading-[0.95] tracking-tight text-foreground" style={{ fontFamily: "var(--font-display-serif)" }}>
-                <ScrollReveal delay={40}>
-                  <span className="block text-5xl md:text-7xl lg:text-8xl">Timeless Craft.</span>
-                </ScrollReveal>
-                <ScrollReveal delay={140}>
-                  <span className="block text-5xl md:text-7xl lg:text-8xl">Cutting‑Edge Delivery.</span>
-                </ScrollReveal>
-              </h1>
-
-              <ScrollReveal>
-                <p className="max-w-xl text-lg md:text-xl text-foreground/70">
-                  Bespoke brands and digital experiences with editorial precision. Built to perform.
-                </p>
-              </ScrollReveal>
-
-              <div className="flex flex-wrap items-center gap-3">
-                <Button onClick={() => setWizardOpen(true)} className="px-8 py-3 rounded-full text-base md:text-lg font-semibold bg-primary text-foreground hover:brightness-105 transition shadow-sm ring-1 ring-primary/30" aria-label="Start a project">
-                  Start a project
-                </Button>
-                <Button asChild variant="ghost" className="px-8 py-3 rounded-full text-base md:text-lg text-foreground hover:bg-foreground/5 border border-border/60" aria-label="View selected work">
-                  <Link href="/work">View selected work</Link>
-                </Button>
+      {/* Floral Editorial Hero — FULLSCREEN 46/54 — edge-to-edge like below sections */}
+      <section id="hero" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] overflow-hidden">
+        <div className="w-full bg-[rgb(251,250,248)] relative">
+            {/* Grid 46 / 54 */}
+            <div className="grid grid-cols-1 lg:grid-cols-[46%_54%] relative">
+              {/* Vertical label desktop */}
+              <div className="hidden lg:flex absolute -left-2 top-[42%] -rotate-90 origin-left z-10">
+                <span className="text-[10px] tracking-[0.2em] uppercase text-black/30 font-medium">Work <span className="mx-1">→</span> Studio</span>
               </div>
-            </div>
-
-            {/* Right: Editorial cover lines */}
-            <div className="lg:col-span-5">
-              <div className="space-y-4 lg:space-y-5">
-                {["Brand Identity Systems","High-Performance Websites","Custom Design Systems"].map((line, i) => (
-                  <ScrollReveal key={line} delay={120 * i} direction="up">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-6 border-b border-border/60 py-3">
-                      <span className="flex items-center gap-2 text-[10px] sm:text-xs tracking-widest uppercase text-foreground/70">
-                        <span className="w-1.5 h-1.5 rounded-full bg-primary/70" /> Feature
-                      </span>
-                      <span className="text-base sm:text-lg md:text-xl font-medium text-foreground">{line}</span>
+              {/* LEFT 46% — Zeroslash */}
+              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-6 md:py-8 lg:py-10 flex flex-col justify-center bg-[rgb(251,250,248)]">
+                <div className="flex items-center gap-2 mb-4 md:mb-6">
+                  <span className="w-3 h-3 rounded-full border border-black grid place-items-center"><span className="w-1 h-1 rounded-full bg-black" /></span>
+                  <span className="text-[11px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
                 </div>
-                  </ScrollReveal>
-                ))}
+                <h1 className="font-bold leading-[0.98] tracking-[-0.02em] text-black" style={{ fontFamily: "var(--font-display-serif)" }}>
+                  <span className="block text-[28px] md:text-[32px] lg:text-[36px]">Bespoke digital</span>
+                  <span className="block text-[28px] md:text-[32px] lg:text-[36px]">experiences</span>
+                  <span className="block text-[28px] md:text-[32px] lg:text-[36px] mt-1">ZeroSlash <span className="font-light text-[#C8C8C8]">Agency</span></span>
+                </h1>
+                <div className="flex flex-wrap items-center gap-4 mt-5 md:mt-7 text-[11px]">
+                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2 group">
+                    <span className="w-5 h-5 rounded-full border border-black/10 grid place-items-center group-hover:bg-black group-hover:text-white transition-colors"><ArrowRight className="w-3 h-3" /></span>
+                    <span className="font-semibold tracking-wide text-black">Start a project</span>
+                  </button>
+                  <span className="flex items-center gap-1.5 text-black/40"><Calendar className="w-3 h-3" />3+ Years</span>
+                  <span className="flex items-center gap-1.5 text-black/40"><Eye className="w-3 h-3" />30+ Projects</span>
+                </div>
+                <div className="mt-10 md:mt-14 lg:mt-16">
+                  <div className="flex items-center gap-2 mb-4">
+                    <span className="w-3 h-3 rounded-sm bg-black grid place-items-center"><Calendar className="w-2 h-2 text-white" /></span>
+                    <span className="text-[11px] font-semibold tracking-wide text-black">Todays drops</span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-3 md:gap-4">
+                    {[
+                      { img: "/images/decs-cafe.png", title: "Dec's Cafe — Premium coffee experience" },
+                      { img: "/images/fresh-bread.png", title: "The Perfect Bread — Artisanal bakery" },
+                      { img: "/images/yoga-studio.jpeg", title: "Flow Yoga — Wellness & bookings" },
+                    ].map((item, i) => (
+                      <div key={i} className="group cursor-pointer">
+                        <div className="flex gap-2 items-start">
+                          <div className="w-8 h-8 md:w-9 md:h-9 rounded-lg overflow-hidden bg-[#F3F3F0] shrink-0 border border-black/5">
+                            <img src={item.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          </div>
+                          <p className="text-[10px] md:text-[11px] leading-[1.35] font-medium text-black/70 line-clamp-3">{item.title}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              {/* RIGHT 54% — Bouquet locked — fullscreen bleed */}
+              <div className="relative h-[420px] md:h-[520px] lg:h-auto lg:min-h-[640px] lg:aspect-auto bg-[rgb(251,250,248)] overflow-visible lg:self-stretch">
+                <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-top lg:object-[center_top] scale-[1.06] lg:scale-[1.12] lg:translate-x-6 lg:-translate-y-2 bg-[rgb(251,250,248)]" sizes="(max-width: 1024px) 100vw, 54vw" />
+                <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
+                  <button aria-label="Up" className="w-7 h-7 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowUp className="w-3 h-3" /></button>
+                  <button aria-label="Down" className="w-7 h-7 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowDown className="w-3 h-3" /></button>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Bottom credits and scroll cue */}
-        <div className="hidden md:block absolute bottom-6 left-4 md:left-6 z-10 text-[11px] md:text-xs text-foreground/60">
-          Cover: Studio shot — © ZeroSlash
-        </div>
-        <div className="hidden md:flex absolute bottom-6 right-1/2 translate-x-1/2 z-10 flex-col items-center gap-2 text-foreground/60">
-          <span className="text-[11px] md:text-xs tracking-widest uppercase">Scroll</span>
-          <span className="h-8 w-px bg-foreground/30" />
+            {/* Pagination dots left bottom */}
+            <div className="hidden lg:flex absolute left-5 bottom-8 flex-col gap-1.5">
+              <span className="w-1 h-1 rounded-full bg-black" />
+              <span className="w-1 h-1 rounded-full bg-black/15" />
+              <span className="w-1 h-1 rounded-full bg-black/15" />
+              <span className="w-1 h-1 rounded-full bg-black/15" />
+            </div>
         </div>
       </section>
 
@@ -677,15 +667,7 @@ export default function Home() {
               <div className="pointer-events-none absolute inset-x-0 -top-3 h-10 md:h-12 bg-gradient-to-b from-transparent via-background/70 to-background backdrop-blur-sm"></div>
             </div>
 
-            {/* Reviews CTA below Featured Work */}
-            <div className="mt-4 md:mt-6 text-center">
-              <Link href="/work">
-                <Button className="inline-flex items-center justify-center gap-2 h-9 has-[>svg]:px-3 bg-card text-foreground border-2 border-border hover:bg-muted px-6 md:px-8 py-3 md:py-4 rounded-full text-base md:text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm">
-                  Recent projects Works
-                  <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
-                </Button>
-              </Link>
-            </div>
+
           </div>
         </div>
       </section>

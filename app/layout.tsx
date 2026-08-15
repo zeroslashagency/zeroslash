@@ -297,18 +297,12 @@ export default function RootLayout({
                   {
                     "@type": "ListItem",
                     position: 3,
-                    name: "Work",
-                    item: `${SITE_URL}/work`,
-                  },
-                  {
-                    "@type": "ListItem",
-                    position: 4,
                     name: "About",
                     item: `${SITE_URL}/about`,
                   },
                   {
                     "@type": "ListItem",
-                    position: 5,
+                    position: 4,
                     name: "Contact",
                     item: `${SITE_URL}/contact`,
                   },

@@ -8,17 +8,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/about",
     "/services",
-    "/careers",
     "/contact",
     "/reviews",
-    "/work",
     "/waitlist",
   ]
 
   return pages.map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
-    changeFrequency: path === "" || path === "/work" ? "daily" : "weekly",
-    priority: path === "" ? 1 : path === "/work" || path === "/services" ? 0.9 : 0.7,
+    changeFrequency: path === "" ? "daily" : "weekly",
+    priority: path === "" ? 1 : path === "/services" ? 0.9 : 0.7,
   }))
 }

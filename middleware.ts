@@ -11,18 +11,10 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(url, 308)
     }
   }
-
-  // Redirect /careers -> /waitlist
-  const { pathname } = req.nextUrl
-  if (pathname === '/careers') {
-    const url = req.nextUrl.clone()
-    url.pathname = '/waitlist'
-    return NextResponse.redirect(url, 308)
-  }
   return NextResponse.next()
 }
 
 // Exclude static assets and well-known files
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|\.well-known).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml|\\.well-known).*)'],
 }
