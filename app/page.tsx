@@ -252,7 +252,7 @@ export default function Home() {
 
       {/* GAP B — Text Slider + Flower Overlay — like ref 2 (SCHERP TIJD) */}
       <section className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[#F5F0E8] overflow-hidden" aria-hidden>
-        <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center overflow-hidden">
+        <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center overflow-hidden bg-[rgb(251,250,248)]">
           {/* Marquee text — extra-bold inset shadow like your section[3] */}
           <svg width="0" height="0" className="absolute"><filter id="gap-inset-shadow"><feOffset dx="0" dy="0" /><feGaussianBlur stdDeviation="4" result="offset-blur" /><feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" /><feFlood floodColor="#7C5CFF" floodOpacity="1" result="color" /><feComposite operator="in" in="color" in2="inverse" result="shadow" /><feComposite operator="over" in="shadow" in2="SourceGraphic" /></filter></svg>
           <div className="flex w-full whitespace-nowrap will-change-transform" style={{ transform: "translate3d(-12%,0,0)" }}>

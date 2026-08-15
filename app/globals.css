@@ -348,6 +348,8 @@
 #hero img[alt="Floral bouquet"] { background-color: rgb(251, 250, 248); }
 /* container hint — scoped to hero wrapper only to avoid broad page impact */
 #hero div[class*="container"] { background-color: rgb(251, 250, 248); }
+/* VisBug #06 — scope: changed — gap slider inner */
+#gap-slider div.relative.w-full.h-\[22vh\] { background-color: rgb(251, 250, 248); }
 
 /* Exceptions: Keep contact panel colors identical in light and dark
    We scope by [data-contact-panel] to avoid impacting the rest of the app. */
