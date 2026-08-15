@@ -36,24 +36,36 @@ export default function Home() {
     const f = gapFlowerRef.current as unknown as HTMLElement
     const s = gapSliderRef.current
     if (!t || !f || !s) return
-    let last = window.scrollY
-    let rot = 0
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      t.style.transform = "translate3d(-7.4%,0,0)"
+      f.style.transform = "rotate(32deg)"
+      return
+    }
+    let lastY = window.scrollY
+    let rot = 32.7 // match initial rendered state — no pop on load
+    let tx = -7.4
+    let targetTx = tx
     let raf = 0
+    let visible = true
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting }, { threshold: 0 })
+    io.observe(s)
     const tick = () => {
-      const y = window.scrollY
-      const dy = y - last
-      last = y
-      const r = s.getBoundingClientRect()
-      const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height)))
-      const tx = -18 + p * 24
-      t.style.transform = `translate3d(${tx}%,0,0)`
-      // signed dy: down = clockwise, up = counter-clockwise
-      rot += dy * 0.45
-      f.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`
+      if (visible) {
+        const y = window.scrollY
+        const dy = Math.max(-40, Math.min(40, y - lastY))
+        lastY = y
+        const r = s.getBoundingClientRect()
+        const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height)))
+        targetTx = -18 + p * 24
+        tx += (targetTx - tx) * 0.08 // lerp — smooth, not jumpy
+        t.style.transform = `translate3d(${tx}%,0,0)`
+        rot = (rot + dy * 0.35) % 360
+        f.style.transform = `rotate(${rot}deg)`
+      }
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    return () => { cancelAnimationFrame(raf); io.disconnect() }
   }, [])
   return (
     <div className="w-full bg-background">
@@ -277,21 +289,20 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
-      {/* GAP B — Two layers: 1) text bg 2) full flower center — no crop, no circle, no wrapper div */}
+      {/* Gap slider — single layer: text bg + flower centered on text */}
       <section ref={gapSliderRef} id="gap-slider" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] overflow-visible" suppressHydrationWarning>
-        {/* Layer 1 — infinite text, clipped */}
         <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center justify-center overflow-hidden bg-[rgb(251,250,248)]">
-          <svg width="0" height="0" className="absolute"><filter id="gap-inset-shadow"><feOffset dx="0" dy="0" /><feGaussianBlur stdDeviation="4" result="offset-blur" /><feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" /><feFlood floodColor="#7C5CFF" floodOpacity="1" result="color" /><feComposite operator="in" in="color" in2="inverse" result="shadow" /><feComposite operator="over" in="shadow" in2="SourceGraphic" /></filter></svg>
+          <svg width="0" height="0" className="absolute" aria-hidden><filter id="gap-inset-shadow"><feOffset dx="0" dy="0" /><feGaussianBlur stdDeviation="3" result="offset-blur" /><feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" /><feFlood floodColor="#7C5CFF" floodOpacity="1" result="color" /><feComposite operator="in" in="color" in2="inverse" result="shadow" /><feComposite operator="over" in="shadow" in2="SourceGraphic" /></filter></svg>
           <div className="absolute inset-0 flex items-center overflow-hidden">
-            <div ref={gapTextRef} id="gap-text" className="flex w-max whitespace-nowrap will-change-transform gap-0">
+            <div ref={gapTextRef} id="gap-text" className="flex w-max whitespace-nowrap will-change-transform gap-0" style={{ transform: "translate3d(-7.4%,0,0)" }}>
               <span className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
               <span aria-hidden className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
               <span aria-hidden className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
             </div>
           </div>
         </div>
-        {/* Layer 2 — full transparent PNG directly, centered over text, not clipped */}
-        <Image ref={gapFlowerRef as any} id="gap-flower" src="/images/gap/3.avif" alt="" width={340} height={340} className="absolute top-1/2 left-1/2 w-[132px] h-[132px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] xl:w-[340px] xl:h-[340px] -translate-x-1/2 -translate-y-1/2 will-change-transform pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)] z-10" priority />
+        {/* Flower — absolutely centered on the text band (not in h-0 hack layer) */}
+        <Image ref={gapFlowerRef as any} id="gap-flower" src="/images/gap/3.avif" alt="" width={340} height={340} sizes="(max-width: 768px) 132px, (max-width: 1024px) 200px, (max-width: 1280px) 280px, 340px" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[132px] h-[132px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] xl:w-[340px] xl:h-[340px] will-change-transform pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)] z-10 select-none" priority aria-hidden />
       </section>
 
       {/* Premium About Us Section - <span className="animate-shine">How We Work</span> */}
