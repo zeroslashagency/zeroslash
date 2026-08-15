@@ -19,7 +19,7 @@ import ContactButton from "@/components/ContactButton"
 import ProjectWizard from "@/components/ProjectWizard"
 import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/ui/lazy-on-view"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 const ServicesSection = nextDynamic(() => import("@/components/sections/Services"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
@@ -28,6 +28,33 @@ const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/Curved
 
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
+  const gapSliderRef = useRef<HTMLElement>(null)
+  const gapTextRef = useRef<HTMLDivElement>(null)
+  const gapFlowerRef = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    const t = gapTextRef.current
+    const f = gapFlowerRef.current as unknown as HTMLElement
+    const s = gapSliderRef.current
+    if (!t || !f || !s) return
+    let last = window.scrollY
+    let rot = 0
+    let raf = 0
+    const tick = () => {
+      const y = window.scrollY
+      const dy = y - last
+      last = y
+      const r = s.getBoundingClientRect()
+      const p = Math.max(0, Math.min(1, (window.innerHeight - r.top) / (window.innerHeight + r.height)))
+      const tx = -18 + p * 24
+      t.style.transform = `translate3d(${tx}%,0,0)`
+      // signed dy: down = clockwise, up = counter-clockwise
+      rot += dy * 0.45
+      f.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [])
   return (
     <div className="w-full bg-background">
       {/* Floral Editorial Hero — COVER HOME SCREEN — big type + big bouquet */}
@@ -250,21 +277,21 @@ export default function Home() {
         </section>
       </ScrollReveal>
 
-      {/* GAP B — Text Slider + Flower Overlay — like ref 2 (SCHERP TIJD) */}
-      <section className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[#F5F0E8] overflow-hidden" aria-hidden>
-        <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center overflow-hidden bg-[rgb(251,250,248)]">
-          {/* Marquee text — extra-bold inset shadow like your section[3] */}
+      {/* GAP B — Two layers: 1) text bg 2) full flower center — no crop, no circle, no wrapper div */}
+      <section ref={gapSliderRef} id="gap-slider" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] overflow-visible" suppressHydrationWarning>
+        {/* Layer 1 — infinite text, clipped */}
+        <div className="relative w-full h-[22vh] md:h-[28vh] lg:h-[34vh] xl:h-[38vh] flex items-center justify-center overflow-hidden bg-[rgb(251,250,248)]">
           <svg width="0" height="0" className="absolute"><filter id="gap-inset-shadow"><feOffset dx="0" dy="0" /><feGaussianBlur stdDeviation="4" result="offset-blur" /><feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" /><feFlood floodColor="#7C5CFF" floodOpacity="1" result="color" /><feComposite operator="in" in="color" in2="inverse" result="shadow" /><feComposite operator="over" in="shadow" in2="SourceGraphic" /></filter></svg>
-          <div className="flex w-full whitespace-nowrap will-change-transform" style={{ transform: "translate3d(-12%,0,0)" }}>
-            <span className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF]" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>
-              &nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;
-            </span>
-          </div>
-          {/* Center flower — sits ON TOP of text, like ref */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[132px] md:size-[200px] lg:size-[280px] xl:size-[340px] drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)]">
-            <Image src="/images/gap/3.avif" alt="" fill className="object-contain" sizes="340px" />
+          <div className="absolute inset-0 flex items-center overflow-hidden">
+            <div ref={gapTextRef} id="gap-text" className="flex w-max whitespace-nowrap will-change-transform gap-0">
+              <span className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>&nbsp;ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
+              <span aria-hidden className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
+              <span aria-hidden className="font-black uppercase tracking-[-0.03em] leading-none text-[52px] md:text-[88px] lg:text-[120px] xl:text-[148px] text-[#7C5CFF] shrink-0" style={{ filter: "url(#gap-inset-shadow)", textShadow: "0 1px 0 rgba(124,92,255,0.9), 0 6px 20px rgba(124,92,255,0.15)" }}>ALTIJD SCHERP, ALTIJD OP TIJD&nbsp;·&nbsp;</span>
+            </div>
           </div>
         </div>
+        {/* Layer 2 — full transparent PNG directly, centered over text, not clipped */}
+        <Image ref={gapFlowerRef as any} id="gap-flower" src="/images/gap/3.avif" alt="" width={340} height={340} className="absolute top-1/2 left-1/2 w-[132px] h-[132px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] xl:w-[340px] xl:h-[340px] -translate-x-1/2 -translate-y-1/2 will-change-transform pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)] z-10" priority />
       </section>
 
       {/* Premium About Us Section - <span className="animate-shine">How We Work</span> */}
