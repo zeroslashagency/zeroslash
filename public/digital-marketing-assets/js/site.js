@@ -22,7 +22,7 @@ const NAV_HTML = `
         </svg>
         <span>Back</span>
       </a>
-      <img class="pin" src="assets/imgVector.svg" alt="" width="14" height="20">
+      <img class="pin" src="/digital-marketing-assets/assets/imgVector.svg" alt="" width="14" height="20">
       <span class="nav-loc">CHENNAI, INDIA</span>
     </div>
 
@@ -41,7 +41,7 @@ const NAV_HTML = `
         <a href="/about" class="nav-link">About</a>
         <a href="/playground" class="nav-link">Playground</a>
         <a href="/#contact" class="nav-cta" data-contact-open>
-          <img src="assets/imgEmail.svg" alt="" width="24" height="24">
+          <img src="/digital-marketing-assets/assets/imgEmail.svg" alt="" width="24" height="24">
           Work with me
         </a>
         <button class="nav-burger" id="nav-burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu-overlay">
@@ -100,7 +100,7 @@ const FOOTER_HTML = `
     <div class="ft-wavy" aria-hidden="true"></div>
     <!-- the land bleeds wider than the footer; clip it in its OWN wrapper so the footer
          itself can keep overflow:visible (needed so the crest poke isn't cut on iOS) -->
-    <div class="ft-land-clip" aria-hidden="true"><img class="ft-land" src="assets/footer-land.png" alt=""></div>
+    <div class="ft-land-clip" aria-hidden="true"><img class="ft-land" src="/digital-marketing-assets/assets/footer-land.png" alt=""></div>
     <div class="ft-garden" aria-hidden="true"></div>
 
     <div class="ft-inner">
@@ -108,11 +108,11 @@ const FOOTER_HTML = `
       <h2 class="ft-head"><button class="ft-head-btn" type="button" data-contact-open>Grow together?</button></h2>
     </div>
 
-    <p class="ft-credit">Designed by ZeroSlash Agency · Chennai, India @2026</p>
+    <p class="ft-credit">Crafted by ZeroSlash Agency · India @2026</p>
     <nav class="ft-social" aria-label="Social links">
       <a href="https://www.linkedin.com/company/zeroslash" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://zeroslash.in" target="_blank" rel="noopener">GitHub</a>
-      <a href="https://zeroslash.in/contact" target="_blank" rel="noopener">Behance</a>
+      <a href="https://zeroslash.in" target="_blank" rel="noopener">Website</a>
+      <a href="/contact" target="_blank" rel="noopener">Contact</a>
     </nav>
   </footer>
 `;
@@ -183,7 +183,7 @@ const CONTACT_HTML = `
         </div>
         <button class="cd-send" type="submit">
           <span class="cd-send-label">Send it over</span>
-          <img src="assets/imgEmail.svg" alt="" width="20" height="20">
+          <img src="/digital-marketing-assets/assets/imgEmail.svg" alt="" width="20" height="20">
         </button>
         <p class="cd-error" hidden>Hmm, that didn't send. Email me directly at <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
       </form>
@@ -711,7 +711,7 @@ function initGarden() {
         nightImgStarted = true;
         const nightImg = new Image();
         nightImg.addEventListener('load', () => { nightProf = buildRidge(nightImg, false); reroot(); });
-        nightImg.src = (window.ASSET_BASE||'') + 'assets/land-meadow-night.png';
+        nightImg.src = (window.ASSET_BASE || '/digital-marketing-assets/') + 'assets/land-meadow-night.png';
       }
       if (document.body.classList.contains('night')) ensureNightProf();
       else {
@@ -847,7 +847,7 @@ function initGarden() {
         if (cursor) cursor.style.transform = `translate(${e.clientX - tipX}px, ${e.clientY - tipY}px)`;
         if (reduce) return;
         const now = performance.now();
-        if (now - lastSpray > 120) {                 // subtle continuous mist while moving
+        if (now - lastSpray > 800) {                 // subtle continuous mist while moving
           lastSpray = now;
           const p = toFooter(e);
           if (p.y < soilY(p.x / p.r.width)) emit(p.x, p.y + 6, 1, 0.5, 0.4);

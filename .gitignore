@@ -28,3 +28,6 @@ next-env.d.ts
 
 # ds store
 .DS_Store
+
+# throwaway verification harness for the digital-marketing refactor
+/.mobile-audit/
