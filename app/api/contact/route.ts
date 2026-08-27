@@ -59,7 +59,7 @@ export async function POST(req: Request) {
 
       const text = await upstream.text();
       // Try to parse JSON for better diagnostics if available
-      let parsed: any = null;
+      let parsed: unknown = null;
       try { parsed = JSON.parse(text); } catch {}
 
       if (!upstream.ok) {
@@ -84,8 +84,8 @@ export async function POST(req: Request) {
     } finally {
       clearTimeout(timeout);
     }
-  } catch (err: any) {
-    const isAbort = err?.name === "AbortError";
+  } catch (err: unknown) {
+    const isAbort = err instanceof Error && err.name === "AbortError";
     return NextResponse.json(
       { ok: false, error: isAbort ? "Upstream timeout" : "Server error", detail: String(err) },
       { status: 500 }

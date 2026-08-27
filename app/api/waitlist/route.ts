@@ -92,8 +92,8 @@ export async function POST(req: Request) {
           }
         }
         errors.push({ label, status: res.status, statusText: res.statusText, text });
-      } catch (e: any) {
-        errors.push({ label: "network/timeout", status: 0, statusText: e?.name || "Error", text: e?.message || String(e) });
+      } catch (e: unknown) {
+        errors.push({ label: "network/timeout", status: 0, statusText: e instanceof Error ? e.name : "Error", text: e instanceof Error ? e.message : String(e) });
       }
     }
 
@@ -108,7 +108,7 @@ export async function POST(req: Request) {
       },
       { status: 502 }
     );
-  } catch (err) {
+  } catch {
     return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
   }
 }

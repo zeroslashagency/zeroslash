@@ -6,12 +6,10 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   // Enforce linting and type-checking during builds to catch issues early
   eslint: {
-    // Allow production builds to succeed even if there are ESLint errors
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
-    // Allow production builds to succeed even if there are type errors
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
   images: {
     unoptimized: false,

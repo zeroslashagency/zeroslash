@@ -59,7 +59,7 @@ export async function POST(req: Request) {
     } finally {
       clearTimeout(timeout);
     }
-  } catch (err) {
+  } catch {
     return NextResponse.json({ ok: false, error: "Server error" }, { status: 500 });
   }
 }

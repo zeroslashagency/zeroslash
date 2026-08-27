@@ -123,8 +123,8 @@ export default function WaitlistPage() {
                 setBgScroll(true)
                 // bring the animated background into view
                 scrollerRef.current?.scrollIntoView({ behavior: "smooth", block: "end" })
-              } catch (err: any) {
-                setError(err?.message || "Something went wrong")
+              } catch (err: unknown) {
+                setError(err instanceof Error ? err.message : "Something went wrong")
               } finally {
                 setSubmitting(false)
               }

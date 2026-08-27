@@ -37,7 +37,7 @@ export const CircularTextClient = dynamic(
 
 // FlipLink (client)
 export const FlipLinkClient = dynamic(
-  () => import("@/ui/text-effect-flipper"),
+  () => import("@/components/text-effect-flipper"),
   {
     ssr: false,
     loading: () => <span className="opacity-70">Loading…</span>,

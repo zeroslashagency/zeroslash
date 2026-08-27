@@ -895,7 +895,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background-image: url(/digital-marketing-assets/assets/imgNoiseTexture.png");
+      background-image: url(/digital-marketing-assets/assets/imgNoiseTexture.png);
       background-size: 1024px 1024px;
       opacity: 0.08;
       pointer-events: none;
@@ -1476,7 +1476,6 @@
          label so all three fit. Back keeps its aria-label for screen readers. */
 #zk-scope.route-hatcha .nav-back span, #zk-scope.route-fireflut .nav-back span, #zk-scope.route-existence .nav-back span, #zk-scope.route-jumpable .nav-back span { display: none; }
 #zk-scope.route-hatcha .nav-back, #zk-scope.route-fireflut .nav-back, #zk-scope.route-existence .nav-back, #zk-scope.route-jumpable .nav-back { gap: 0; padding: 6px; }
-#zk-scope.route-hatcha #theme-label, #zk-scope.route-fireflut #theme-label, #zk-scope.route-existence #theme-label, #zk-scope.route-jumpable #theme-label { display: none; }
 /* ── footer mobile ── */
 /* bottom pad = ground band (~48vw) + garden headroom, so the centred text
          block sits in the upper-middle of the cream sky instead of drifting into
@@ -1647,41 +1646,14 @@
    loader). Sits above the nav (z 100) but below the cold-load loader (z 9999).
    Sequenced by the router IIFE in index.html. transform/opacity only.
    ════════════════════════════════════════════════════════════════════════ */
-#zk-scope #route-curtain {
-  position: fixed;
-  inset: 0;
-  z-index: 9000;
-  pointer-events: none;
-  visibility: hidden;      /* inert until a transition activates it */
-}
 #zk-scope #route-curtain.is-active { visibility: visible; }
 /* Full-viewport scrim that fades the incoming page 0→100% as the panes open.
    Doing the content fade here (a bg-coloured layer above the page, below the panes)
    keeps it route-agnostic and avoids ever touching a view's own scroll-reveal /
    display:contents wrappers. Opaque while covered, fades out on open. */
-#zk-scope .rc-scrim {
-  position: absolute;
-  inset: 0;
-  background: var(--bg-base);
-  opacity: 0;                                                  /* resting: invisible */
-  transition: opacity 900ms cubic-bezier(0.22, 1, 0.36, 1);   /* open: matches panes */
-}
 #zk-scope #route-curtain.is-closed .rc-scrim { opacity: 1; }
 /* covered */
 #zk-scope #route-curtain.is-closing .rc-scrim { transition: opacity 550ms cubic-bezier(0.7, 0, 0.84, 0); }
-#zk-scope .rc-pane {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 50vh;
-  z-index: 1;           /* stack above the scrim */
-  background: var(--bg-base);
-  will-change: transform;
-  /* resting (open) state — panes parked off-screen */
-  transition: transform 900ms cubic-bezier(0.22, 1, 0.36, 1);   /* open: slow expressive decelerate */
-}
-#zk-scope .rc-pane--top { top: 0;    transform: translateY(-100%); }
-#zk-scope .rc-pane--bottom { bottom: 0; transform: translateY(100%); }
 /* closed — the two panes meet and fully cover the viewport */
 #zk-scope #route-curtain.is-closed .rc-pane { transform: translateY(0); }
 /* closing uses a slightly quicker accelerate-in curve */
@@ -1691,41 +1663,12 @@
 /* The incoming-content fade (opacity 0 → 1 over the open phase) is applied via
    inline styles in the router JS, so it never leaves a permanent opacity
    transition on the landing sections (they have their own scroll-reveal). */
-@media (prefers-reduced-motion: reduce) {#zk-scope #route-curtain { display: none; }
-}
 /* Fixed-width stage, grid-centred in the viewport. Pac-Man stays put on the left,
    chomping in place; the dots stream leftward into its mouth on an endless
    conveyor and vanish behind it (pac paints on top). Matches the reference GIF. */
-#zk-scope .pl-stage {
-  position: relative;
-  width: 220px;
-  height: 44px;
-  overflow: hidden;             /* clip the trailing dots; pac sits fully inside at left */
-}
 /* ── dot conveyor: a long row sliding left one dot-pitch per chomp. Identical,
    evenly spaced dots make the loop seamless; the right end fades out via a mask,
    the left end disappears behind the opaque pac (= eaten). pitch = 13 + 19 = 32. */
-#zk-scope .pl-dots {
-  position: absolute;
-  top: 0;
-  left: 8px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  gap: 19px;
-  z-index: 1;
-  will-change: transform;
-  animation: plStream 0.5s linear infinite;
-  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 60%, transparent 100%);
-          mask-image: linear-gradient(90deg, #000 0, #000 60%, transparent 100%);
-}
-#zk-scope .pl-dots i {
-  flex: 0 0 auto;
-  width: 13px;
-  height: 13px;
-  border-radius: 50%;
-  background: var(--c-sand);
-}
 /* slide left exactly one dot-pitch (32px) then loop — visually continuous flow */
 @keyframes plStream {
   from { transform: translateX(0); }
@@ -1733,34 +1676,6 @@
 }
 /* ── Pac-Man: 44px disc (two rotating lips), fixed at the left, mouth chomping
    right so the incoming dots disappear into it. Paints above the dots. ── */
-#zk-scope .pl-pac {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 44px;
-  height: 44px;
-  z-index: 2;
-}
-#zk-scope .pl-lip {
-  position: absolute;
-  left: 0;
-  width: 44px;
-  height: 22px;
-  background: var(--c-gold);
-  will-change: transform;
-}
-#zk-scope .pl-top {
-  top: 0;
-  border-radius: 44px 44px 0 0;
-  transform-origin: 50% 100%;   /* pivot on the disc centre */
-  animation: plChompTop 0.5s ease-in-out infinite;
-}
-#zk-scope .pl-bottom {
-  bottom: 0;
-  border-radius: 0 0 44px 44px;
-  transform-origin: 50% 0;
-  animation: plChompBottom 0.5s ease-in-out infinite;
-}
 /* mouth opens LEFT */
 @keyframes plChompTop {
   0%, 100% { transform: rotate(0deg); }
@@ -1792,11 +1707,7 @@
 /* ── reduced motion: no stream/chomp — hold a static frame (pac at left with a
    still row of dots trailing right, mouth open right toward them) ── */
 @media (prefers-reduced-motion: reduce) {#zk-scope #page-loader { transition: none; }
-#zk-scope .pl-dots { animation: none; }
-#zk-scope .pl-top, #zk-scope .pl-bottom { animation: none; }
-#zk-scope .pl-top { transform: rotate(-20deg); }
 /* frozen slightly-open mouth, facing left */
-#zk-scope .pl-bottom { transform: rotate(20deg); }
 #zk-scope .pl-line { transition: none; }
 }
 /* ════ ROUTE HERO TRANSITION — opening a case study (from a home project tile or
@@ -1916,7 +1827,7 @@
          horizontally, and a full-bleed layer would drag a bare edge into view.
          .hero is overflow:hidden, so the spill costs nothing. */
       inset: 0 -10%;
-      background-image: url(/digital-marketing-assets/assets/hero-sky-day.webp");
+      background-image: url(/digital-marketing-assets/assets/hero-sky-day.webp);
       background-size: cover;
       /* bias up: the densest wisps are in the photo's lower half, and the hero's
          own bottom is where the headline and recorder sit */
@@ -1939,7 +1850,7 @@
 #zk-scope .hero-noise {
       position: absolute;
       inset: 0;
-      background-image: url(/digital-marketing-assets/assets/imgNoiseTexture.png");
+      background-image: url(/digital-marketing-assets/assets/imgNoiseTexture.png);
       background-size: 2048px 2048px;
       opacity: 0.1;
       pointer-events: none;
@@ -2261,7 +2172,7 @@
          resolves to top:-271px — the design value (correct, do not change).
          height = 32.71vw; bottom = top + height = 200px. */
       top: calc(200px - 32.71vw);
-      background-image: url(/digital-marketing-assets/assets/sky-band.svg");
+      background-image: url(/digital-marketing-assets/assets/sky-band.svg);
       background-size: 100% 100%;
       background-repeat: no-repeat;
       background-position: top;
@@ -2554,7 +2465,7 @@
     }
 #zk-scope .t-willow-skin {
       inset: 0;
-      background: url(/digital-marketing-assets/assets/testimonials-willow-tile.jpg") top center / auto 100% repeat-x;
+      background: url(/digital-marketing-assets/assets/testimonials-willow-tile.jpg) top center / auto 100% repeat-x;
       animation: willow-breeze 7.5s ease-in-out infinite alternate;
     }
 #zk-scope .t-willow-sway {
@@ -2771,7 +2682,7 @@
            the pinned willow section covers this; on phones the sticky can slip, leaving
            the crest over cream (invisible) — this guarantees willow is there either way.
            Same tile as the testimonials, so no seam when the section covers it. */
-        background: url(/digital-marketing-assets/assets/testimonials-willow-tile.jpg") center bottom / cover no-repeat;
+        background: url(/digital-marketing-assets/assets/testimonials-willow-tile.jpg) center bottom / cover no-repeat;
       }
 }
 /* ════ RESPONSIVE — below 1100px the absolute 1440 canvas reflows ════ */
@@ -3138,7 +3049,7 @@
        Toggled by body.night (nav switch; persisted in localStorage). */
 /* hero geometry is identical day/night; only the gradient stops (tokens) change.
        night aurora shader export (node 256:1865) */
-#zk-scope.night .hero-shader { content: url(/digital-marketing-assets/assets/hero-shader-night.webp"); }
+#zk-scope.night .hero-shader { content: url(/digital-marketing-assets/assets/hero-shader-night.webp); }
 /* finer noise grain at night (day tiles at 2048px) */
 #zk-scope.night .hero-noise { background-size: 1024px 1024px; }
 /* starfield overlay — night only, screen blend so only the stars show */
@@ -3147,7 +3058,7 @@
       position: absolute;
       inset: 0;
       /* seamless mirrored 2×2 tile built from the starfield (edges mirror → no seam) */
-      background-image: url(/digital-marketing-assets/assets/hero-stars-tile.webp");
+      background-image: url(/digital-marketing-assets/assets/hero-stars-tile.webp);
       background-size: 700px auto;
       background-repeat: repeat;
       background-position: center;
@@ -3246,7 +3157,7 @@
        site.css (#nav.nav-on-dark / .nav-on-light, set by initNavContrast), so the
        pin stays legible over any section regardless of theme. No night override. — */
 /* — sky band: same vectors recolored (Vector 27 #0a0a0f, wisps #0f0f2d) — */
-#zk-scope.night .sky-band { background-image: url(/digital-marketing-assets/assets/sky-band-night.svg"); }
+#zk-scope.night .sky-band { background-image: url(/digital-marketing-assets/assets/sky-band-night.svg); }
 /* projects/featured bg + intro/heading text + tile-overlay (256:1927/1945) all
        flip via tokens (--bg-base, --text-heading, --overlay-scrim, --text-contrast). */
 /* logos row (256:1930): opacity 70%; svg logos go light (#fff9f1 / white variants),
@@ -3259,25 +3170,25 @@
        Keep these filenames free of "+" — Vercel decodes a literal + in a path back to a
        space, so /assets/vibes+logic-night mode.png 404s in the browser (curl with %2B
        hides it). Spaces are fine; the plus is not. */
-#zk-scope.night .client-logo.logo-jumpable { content: url(/digital-marketing-assets/assets/jumpable-night-mode.png"); }
-#zk-scope.night .client-logo.logo-vibes { content: url(/digital-marketing-assets/assets/logo-vibes-night.png"); }
+#zk-scope.night .client-logo.logo-jumpable { content: url(/digital-marketing-assets/assets/jumpable-night-mode.png); }
+#zk-scope.night .client-logo.logo-vibes { content: url(/digital-marketing-assets/assets/logo-vibes-night.png); }
 /* marquee edge-fades track --bg-base; plane trail tracks --trail-stroke — no night rule needed */
 /* — testimonials night art: purple willow watercolour on the
        willow layer (seamless horizontal mirror-tile, same repeat-x/sway as day) and the
        purple night meadow on the land layer; green day crest hidden for the dark one — */
 /* section bg + eyebrow/heading text flip via tokens; only art swaps stay here */
-#zk-scope.night .t-willow-skin { background-image: url(/digital-marketing-assets/assets/testimonials-willow-night-tile.png"); }
+#zk-scope.night .t-willow-skin { background-image: url(/digital-marketing-assets/assets/testimonials-willow-night-tile.png); }
 /* night meadow art has a thin transparent left column + tapered bottom corners;
        bleed it a few % past both edges (section clips overflow-x) so opaque meadow
        reaches edge-to-edge, matching the day land strip */
-#zk-scope.night .t-land { content: url(/digital-marketing-assets/assets/land-meadow-night.png"); width: 106%; left: -3%; }
+#zk-scope.night .t-land { content: url(/digital-marketing-assets/assets/land-meadow-night.png); width: 106%; left: -3%; }
 #zk-scope.night .t-wavy { visibility: hidden; }
 #zk-scope .t-wavy-night {
       display: none;
       background: var(--surface-raised);   /* night-only crest; token resolves to navy */
-      -webkit-mask-image: url(/digital-marketing-assets/assets/testimonials-grass-cream.png");
+      -webkit-mask-image: url(/digital-marketing-assets/assets/testimonials-grass-cream.png);
       -webkit-mask-size: 100% 100%;
-      mask-image: url(/digital-marketing-assets/assets/testimonials-grass-cream.png");
+      mask-image: url(/digital-marketing-assets/assets/testimonials-grass-cream.png);
       mask-size: 100% 100%;
       /* .t-wavy gives position/top/width; height:auto has no box on a div, so match the img ratio */
       aspect-ratio: 2880 / 395;
@@ -3289,7 +3200,7 @@
 /* footer meadow: swap in the purple night meadow (same asset as testimonials night
        land); bleed a few vw past both edges (footer clips overflow-x) so the art's thin
        transparent edges fall off-screen and the meadow spans full viewport width */
-#zk-scope.night .ft-land { content: url(/digital-marketing-assets/assets/land-meadow-night.png"); width: 106vw; }
+#zk-scope.night .ft-land { content: url(/digital-marketing-assets/assets/land-meadow-night.png); width: 106vw; }
 /* menu-overlay gradient stops follow the night sky via --hero-from/--hero-to (no rule needed) */
 /* ════════════════════════════════════════════════════════════════════
        ABOUT PAGE — in-page view (Figma node 1:452). Phase A: content only.
@@ -3298,8 +3209,6 @@
        position:sticky is confined to the page (not this wrapper) — this lets
        fun-facts stay pinned while the (body-level) footer scrolls up over it.
        The [hidden] rule is more specific, so routing still hides the view. */
-#zk-scope #about-view { display: contents; }
-#zk-scope #about-view[hidden] { display: none; }
 /* — Intro / hero (node 1:453, 1440×1024) — */
 #zk-scope .about-intro {
       position: sticky;                  /* pin the hero so the next section scrolls up over it */
@@ -3331,77 +3240,9 @@
 /* scene wrapper (holds art + content): shrinks from its centre as the page
        scrolls, mirroring the home page's .hero-content (1 → 0.88). Kept separate
        from the stage so the fit-scale / centring offset stay independent. */
-#zk-scope .ai-scene {
-      position: absolute;
-      inset: 0;
-      transform-origin: center center;
-      transform: scale(var(--intro-scroll, 1));
-      will-change: transform;
-    }
 /* decorative art (behind content) */
-#zk-scope .ai-sun-clouds { position: absolute; pointer-events: none; }
-#zk-scope .ai-sun-clouds { left: 713px;  top: 93.6px;   width: 697px;  height: auto;  z-index: 1; }
 /* content row (node 1:563): 1320px centred, cols vertically centred */
-#zk-scope .ai-content {
-      position: absolute;
-      left: 50%;
-      top: 233.75px;
-      transform: translateX(-50%);
-      width: 1320px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 3;
-    }
-#zk-scope .ai-copy {
-      width: 720px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
-#zk-scope .ai-heading {
-      font-family: 'DM Serif Display', serif;
-      font-weight: 400;
-      font-size: 40px;
-      line-height: 1.358;
-      color: var(--text-heading);
-    }
-#zk-scope .ai-body {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 400;
-      font-size: 24px;
-      line-height: 1.68;
-      letter-spacing: -0.96px;
-      color: var(--about-ink);
-      display: flex;
-      flex-direction: column;
-      gap: 20px;                          /* visible break between paragraphs */
-    }
-#zk-scope .ai-body p { margin: 0; }
-#zk-scope .ai-body strong { font-weight: 700; }
 /* polaroid stack (node 1:568, 516×588.695) */
-#zk-scope .ai-photos { position: relative; width: 516px; height: 588.695px; flex-shrink: 0; }
-#zk-scope .ai-polaroid {
-      position: absolute;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-#zk-scope .ai-polaroid .ai-card {
-      background: #fff;
-      border: 0.723px solid rgba(0,0,0,0.2);
-      border-radius: 2.89px;
-      padding: 11.561px 11.561px 26.012px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    }
-#zk-scope .ai-polaroid .ai-photo {
-      display: block;
-      width: 212.431px;
-      height: 299.137px;
-      border-radius: 2.89px;
-      overflow: hidden;
-    }
-#zk-scope .ai-polaroid .ai-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
 #zk-scope .ai-polaroid.p1 { left: 170.7px;  top: 49.43px;  width: 247.505px; height: 344.96px;  }
 #zk-scope .ai-polaroid.p1 .ai-card { transform: rotate(-2.06deg); }
 #zk-scope .ai-polaroid.p2 { left: 43.32px;  top: 133.79px; width: 283.772px; height: 368.465px; }
@@ -3418,13 +3259,6 @@
     }
 #zk-scope .ai-polaroid.p4 .ai-photo { width: 244.63px; height: 344.479px; border-radius: 3.328px; }
 /* — drag interaction — pick up & move polaroids one by one — */
-#zk-scope .ai-polaroid {
-      cursor: grab;
-      touch-action: none;                 /* let pointer drag beat page scroll */
-      will-change: transform;
-      transform: translate3d(0, 0, 0);
-    }
-#zk-scope .ai-polaroid .ai-card { pointer-events: none; }
 /* drag the whole tile, not the image */
 #zk-scope .ai-polaroid.is-dragging { cursor: grabbing; }
 #zk-scope .ai-polaroid.is-dragging .ai-card { box-shadow: 0 22px 48px rgba(0,0,0,0.24); }
@@ -3439,44 +3273,10 @@
 @media (prefers-reduced-motion: reduce) {#zk-scope .ai-polaroid.is-settling, #zk-scope .ai-polaroid.is-dropping { transition: none; }
 }
 /* restart / reset button (bottom-right of the photo stage) */
-#zk-scope .ai-photos-reset {
-      position: absolute;
-      right: 2px;
-      bottom: 6px;
-      z-index: 10;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 46px;
-      height: 46px;
-      padding: 0;
-      border: 0.9px solid rgba(43,43,43,0.18);
-      border-radius: 999px;
-      background: rgba(255,255,255,0.72);
-      backdrop-filter: blur(6px);
-      color: var(--about-ink);
-      cursor: pointer;
-      opacity: 0;
-      transform: translateY(6px) scale(0.9);
-      transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
-                  background-color 0.2s ease, box-shadow 0.2s ease;
-      box-shadow: 0 6px 18px rgba(43,43,43,0.14);
-    }
 #zk-scope .ai-photos.has-moved .ai-photos-reset {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
-#zk-scope .ai-photos-reset svg { width: 22px; height: 22px; display: block; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
-#zk-scope .ai-photos-reset:hover { background: rgba(255,255,255,0.95); box-shadow: 0 10px 24px rgba(43,43,43,0.2); }
-#zk-scope .ai-photos-reset:hover svg { transform: rotate(-160deg); }
-#zk-scope .ai-photos-reset:active { transform: translateY(1px) scale(0.96); }
-#zk-scope .ai-photos-reset:focus-visible { outline: 2px solid var(--about-ink); outline-offset: 3px; }
-#zk-scope.night .ai-photos-reset {
-      background: rgba(20,20,26,0.6);
-      border-color: rgba(255,249,233,0.24);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-    }
-#zk-scope.night .ai-photos-reset:hover { background: rgba(30,30,38,0.85); }
 /* — Intro night treatment (Figma node 339:3219) — */
 /* deep charcoal→navy sky (#0a0a0f → #152f5d), light #eee ink, and the
        night-painted sun+clouds / land art swapped in. */
@@ -3485,9 +3285,6 @@
       --about-ink: #eee;
       --text-heading: #eee;
     }
-#zk-scope.night .ai-sun-clouds { content: url(/digital-marketing-assets/assets/about-sun-clouds-night.png"); }
-#zk-scope.night .ai-land { content: url(/digital-marketing-assets/assets/about-land-night.png"); }
-#zk-scope.night .ai-polaroid .ai-card { box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
 /* — Professional Experience (node 1:707, 1440×1024) — */
 #zk-scope .about-exp {
       position: sticky;                  /* pin it too, so fun-facts scrolls up over it */
@@ -3664,7 +3461,7 @@
       top: -94px;                        /* rise 94px above the section top (the crest poke) */
       bottom: 0;
       z-index: 0;
-      background: url(/digital-marketing-assets/assets/fun-facts-background.webp") center bottom / cover no-repeat;
+      background: url(/digital-marketing-assets/assets/fun-facts-background.webp) center bottom / cover no-repeat;
       --aff-wave: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%201440%20116'%20preserveAspectRatio='none'%3E%3Cpath%20fill='%23fff'%20d='M0,116%20L0,50%20Q%2090,24%20180,50%20T%20360,50%20T%20540,50%20T%20720,50%20T%20900,50%20T%201080,50%20T%201260,50%20T%201440,50%20L1440,116%20Z'/%3E%3C/svg%3E");
       /* wave silhouette across the top 116px + fully-opaque below → union: the photo's
          visible top edge follows the wave, everything below shows the full photo */
@@ -3691,25 +3488,6 @@
 /* trailing flow space after the pinned fun-facts section: keeps it pinned (grid held
        on screen) for this much extra scroll before the footer rises over it */
 #zk-scope .aff-hold { height: 900px; pointer-events: none; }
-#zk-scope .ff-card {
-      position: absolute;
-      width: 305px; height: 300px;
-      /* --ff-open (set on the stage, scroll-driven): 1 = grid, 0 = stacked pile.
-         --dx/--dy/--rot are each card's stacked-pile offset from its grid spot (set by JS).
-         At open=1 this collapses to the original translateX(-50%) grid layout. */
-      transform:
-        translateX(-50%)
-        translate(calc(var(--dx, 0px) * (1 - var(--ff-open, 1))),
-                  calc(var(--dy, 0px) * (1 - var(--ff-open, 1))))
-        rotate(calc(var(--rot, 0deg) * (1 - var(--ff-open, 1))))
-        scale(calc(1 - 0.06 * (1 - var(--ff-open, 1))));
-      transform-origin: center center;
-      will-change: transform;
-      border-radius: 32px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 10px 10px 20px rgba(0,0,0,0.15);
-    }
 #zk-scope .ff-card.b1 { border: 1px solid rgba(0,0,0,0.15); }
 #zk-scope .pos-lt { left: 345px;  top: 203.5px; }
 #zk-scope .pos-ct { left: 720px;  top: 203.5px; }
@@ -3718,40 +3496,24 @@
 #zk-scope .pos-cb { left: 720px;  top: 584.5px; }
 #zk-scope .pos-rb { left: 1098px; top: 584.5px; }
 /* hikes 2025 (node 1:838) */
-#zk-scope .ff-hikes-label { position: absolute; left: 27.78px; top: 29.61px; display: flex; flex-direction: column; gap: 8px; z-index: 2; }
 #zk-scope .ff-hikes-label .k { font-family: 'Space Grotesk', sans-serif; font-size: 16px; text-transform: uppercase; color: #6d6d6d; }
 #zk-scope .ff-hikes-label .y { font-family: 'DM Serif Display', serif; font-size: 60px; letter-spacing: -2.4px; color: #2b2b2b; line-height: 1; }
-#zk-scope .ff-photo { position: absolute; width: 211px; height: 253px; border: 6px solid #fff; border-radius: 27px; box-shadow: 0 0 16px 8px rgba(0,0,0,0.15); overflow: hidden; box-sizing: border-box; }
-#zk-scope .ff-photo img { width: 100%; height: 100%; object-fit: cover; }
 #zk-scope .ff-photo.h1 { left: 140.6px; top: 370.8px; transform: translate(-50%,-50%) rotate(-8.86deg); }
 #zk-scope .ff-photo.h2 { left: 218.2px; top: 299px;   transform: translate(-50%,-50%) rotate(-5.54deg); z-index: 1; }
 #zk-scope .ff-photo.h3 { left: 295.9px; top: 235.3px; transform: translate(-50%,-50%) rotate(-1.56deg); z-index: 2; }
 /* hikes card hover: grow 1.3x + tilt right; photos slide up to reveal more.
        Uses the independent scale/rotate/translate longhands so it composes with the
        scroll-driven `transform` on .ff-card without transitioning that transform. */
-#zk-scope .ff-card.ff-hikes { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-hikes:hover { scale: 1.12; rotate: 5deg; z-index: 5; box-shadow: 20px 24px 44px rgba(0,0,0,0.26); }
-#zk-scope .ff-hikes .ff-photo { transition: translate 0.45s cubic-bezier(0.22,1,0.36,1); }
 #zk-scope .ff-hikes:hover .ff-photo.h1 { translate: 0 -56px; }
 #zk-scope .ff-hikes:hover .ff-photo.h2 { translate: 0 -46px; }
 #zk-scope .ff-hikes:hover .ff-photo.h3 { translate: 0 -36px; }
 /* weekend to do (node 1:845) */
-#zk-scope .ff-wk { background: #f4cd44; }
-#zk-scope .ff-wk-friday { position: absolute; left: 19px; top: 19px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; text-transform: uppercase; color: #6d6d6d; }
-#zk-scope .ff-wk-dots { position: absolute; left: 256px; top: 24px; display: flex; gap: 4px; }
-#zk-scope .ff-wk-dots i { width: 5px; height: 5px; border-radius: 50%; background: #6d6d6d; }
-#zk-scope .ff-wk-panel { position: absolute; left: -1px; top: 55.94px; width: 305px; height: 243px; background: #fff; border-radius: 22px; overflow: hidden; }
-#zk-scope .ff-wk-inner { position: absolute; left: 20px; top: 20px; width: 264px; display: flex; flex-direction: column; gap: 16px; }
-#zk-scope .ff-wk-title { font-family: 'DM Serif Display', serif; font-size: 32px; letter-spacing: -1.28px; color: #00315c; line-height: 0.97; }
-#zk-scope .ff-wk-list { display: flex; flex-direction: column; gap: 16px; }
 #zk-scope .ff-wk-list .r { display: flex; gap: 8px; align-items: center; }
 #zk-scope .ff-wk-list .cb { width: 16px; height: 16px; border: 1px solid rgba(0,0,0,0.25); border-radius: 4px; flex-shrink: 0; }
 #zk-scope .ff-wk-list .t { font-family: 'Space Grotesk', sans-serif; font-size: 16px; line-height: 1.15; color: #6d6d6d; text-transform: capitalize; position: relative; transition: color 0.3s cubic-bezier(0.22,1,0.36,1); }
 /* weekend card hover: grow + tilt (independent scale/rotate longhands so it composes
        with the scroll-driven `transform` on .ff-card). Alternate rows (1,3,5) animate to a
        "completed" state — checkbox fills + ticks, label greys and strikes through. */
-#zk-scope .ff-card.ff-wk { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-wk:hover { scale: 1.07; rotate: -4deg; z-index: 5; box-shadow: -16px 24px 44px rgba(0,0,0,0.24); }
 #zk-scope .ff-wk-list .cb { position: relative; transition: background 0.3s cubic-bezier(0.22,1,0.36,1), border-color 0.3s cubic-bezier(0.22,1,0.36,1); }
 #zk-scope .ff-wk-list .cb::after { content: ""; position: absolute; left: 5px; top: 1.5px; width: 4px; height: 8px; border: solid #fff; border-width: 0 2px 2px 0; transform: rotate(45deg) scale(0); transform-origin: center; transition: transform 0.3s cubic-bezier(0.22,1,0.36,1); }
 #zk-scope .ff-wk-list .t::after { content: ""; position: absolute; left: 0; top: 52%; width: 100%; height: 1.5px; background: currentColor; transform: scaleX(0); transform-origin: left center; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1); }
@@ -3760,105 +3522,45 @@
 #zk-scope .ff-wk:hover .ff-wk-list .r:nth-child(odd) .t { color: #a2a2a2; }
 #zk-scope .ff-wk:hover .ff-wk-list .r:nth-child(odd) .t::after { transform: scaleX(1); }
 /* gully boy music (node 1:885) */
-#zk-scope .ff-gully { background: #111; }
 /* white frame drawn as an overlay (not a layout border) so the image fills the whole
        card — corners included — with the frame sitting on top of it. */
-#zk-scope .ff-gully::after { content: ""; position: absolute; inset: 0; border: 11px solid #fff; border-radius: 32px; pointer-events: none; z-index: 6; }
 /* clip-path (geometric) reliably contains the zoomed/composited image to the rounded
        frame even while the card is transformed on hover — plain overflow+border-radius
        drops the rounded clip on transformed children in WebKit/Blink. */
-#zk-scope .ff-media { position: absolute; inset: 0; overflow: hidden; border-radius: 32px; clip-path: inset(0 round 32px); }
 /* image starts slightly zoomed in and eases out on hover to add motion */
-#zk-scope .ff-media img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); transform-origin: center; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-gully:hover .ff-media img { transform: scale(1); }
-#zk-scope .ff-gully-grad { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(50,50,50,0.52) 78%); border-radius: 32px; clip-path: inset(0 round 32px); }
-#zk-scope .ff-gully-pill { position: absolute; left: 20px; top: 22px; display: flex; gap: 6px; align-items: center; background: rgba(0,0,0,0.45); border-radius: 999px; padding: 4px 12px 4px 4px; backdrop-filter: blur(2px); }
-#zk-scope .ff-vinyl { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; position: relative;
-      background: repeating-radial-gradient(circle at 50% 50%, #121212 0 2px, #2a2a2a 2px 3px); border: 0.64px solid #373535; box-shadow: 0 0 0 0.5px #62615e; }
-#zk-scope .ff-vinyl::after { content: ""; position: absolute; left: 50%; top: 50%; width: 7px; height: 7px; border-radius: 50%; background: #8a8a8a; transform: translate(-50%,-50%); }
 #zk-scope .ff-gully-pill .meta { display: flex; flex-direction: column; gap: 3px; }
 #zk-scope .ff-gully-pill .meta .a { font-family: 'Inter', sans-serif; font-size: 12px; color: #fff; white-space: nowrap; }
 #zk-scope .ff-gully-pill .meta .a em { font-style: italic; }
 #zk-scope .ff-gully-pill .meta .b { font-family: 'Inter', sans-serif; font-size: 8px; color: rgba(255,255,255,0.7); }
-#zk-scope .ff-gully-player { position: absolute; left: 28px; top: 207px; width: 241px; display: flex; flex-direction: column; gap: 12px; align-items: center; }
-#zk-scope .ff-gully-prog { display: flex; flex-direction: column; gap: 8px; width: 100%; }
-#zk-scope .ff-gully-time { display: flex; justify-content: space-between; font-family: 'Inter', sans-serif; font-size: 10px; color: #fff; }
-#zk-scope .ff-gully-bar { height: 4px; border-radius: 99px; background: rgba(137,137,137,0.28); position: relative; overflow: hidden; }
-#zk-scope .ff-gully-bar span { position: absolute; left: 0; top: 0; height: 4px; width: 0; background: #fff; border-radius: 99px; }
-#zk-scope .ff-gully-ctrls { display: flex; gap: 32px; align-items: center; }
-#zk-scope .ff-gully-ctrls svg { width: 30px; height: 30px; display: block; fill: #fff; }
 /* gully card hover: grow + tilt right (independent scale/rotate longhands so it composes
        with the scroll-driven `transform` on .ff-card). Whole card links out to YouTube. */
-#zk-scope .ff-card.ff-gully { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-gully:hover { scale: 1.07; rotate: 5deg; z-index: 6; box-shadow: 20px 24px 44px rgba(0,0,0,0.3); }
-#zk-scope .ff-gully-link { position: absolute; inset: 0; z-index: 5; display: block; }
 /* quote (node 1:778) — graph-paper note */
-#zk-scope .ff-quote-grid { position: absolute; inset: 0; pointer-events: none;
-      background-image: linear-gradient(#cfe0f0 1px, transparent 1px), linear-gradient(90deg, #cfe0f0 1px, transparent 1px);
-      background-size: 18px 18px; opacity: 0.7; }
 /* format-quote icon (node 1:783) — inset from the top-left with padding, rotated 180° */
-#zk-scope .ff-quote-mark { position: absolute; left: 16px; top: 16px; width: 84px; height: 84px; transform: rotate(180deg); pointer-events: none; }
-#zk-scope .ff-quote-mark img { width: 100%; height: 100%; display: block; }
 /* quote text + citation — Figma spec (nodes 1:785 / 1:786), left-aligned */
-#zk-scope .ff-quote-text { position: absolute; left: 15px; top: 102px; width: 264px; font-family: 'DM Serif Display', serif; color: #00315c; letter-spacing: -2.4px; line-height: 0.97; }
 #zk-scope .ff-quote-text .a { font-size: 60px; }
 #zk-scope .ff-quote-text .b { font-size: 52px; }
 #zk-scope .ff-quote-text .c { font-size: 60px; font-style: italic; }
-#zk-scope .ff-quote-cite { position: absolute; left: 108px; top: 245px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; color: #5b5b5b; text-transform: uppercase; white-space: nowrap; }
 /* scale flush to the right edge — translucent column + tick ruler + numbers (nodes 1:787–1:837) */
-#zk-scope .ff-quote-spine { position: absolute; right: 1px; top: 0; width: 25px; height: 100%; display: flex; flex-direction: column; align-items: flex-start; padding-top: 22px; padding-left: 2px; gap: 22px; background: rgba(255,255,255,0.45); }
-#zk-scope .ff-quote-spine i { font-family: 'Inter', sans-serif; font-size: 10px; color: #939393; font-style: normal; letter-spacing: -0.4px; line-height: 1; }
-#zk-scope .ff-quote-ruler { position: absolute; right: 0; top: -1px; width: 16px; height: 328px; pointer-events: none; }
-#zk-scope .ff-quote-ruler img { width: 100%; height: 100%; display: block; }
 /* quote card hover: grow + tilt (independent scale/rotate longhands so it composes with
        the scroll-driven `transform` on .ff-card). "details." shifts to the quote-mark yellow. */
-#zk-scope .ff-card.ff-quote { transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-quote:hover { scale: 1.07; rotate: 4deg; z-index: 5; box-shadow: 20px 24px 44px rgba(0,0,0,0.22); }
 #zk-scope .ff-quote-text .c { background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 3px; transition: background-size 0.35s cubic-bezier(0.22,1,0.36,1); }
 #zk-scope .ff-quote:hover .ff-quote-text .c { background-size: 100% 3px; }
 /* blog (node 342:5315) */
-#zk-scope .ff-blog-img { position: absolute; left: 9.5px; top: 9.79px; width: 284px; height: 178px; border-radius: 22px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.16); }
 /* resting zoom via width/height (keeps the image crisp); transform is used only for the
        hover zoom-out motion. own border-radius keeps it clipped while transformed on hover. */
-#zk-scope .ff-blog-img img { position: absolute; top: -4%; left: -4%; width: 108%; height: 108%; object-fit: cover; border-radius: 22px; transform-origin: center; transition: transform 0.6s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-blog:hover .ff-blog-img img { transform: scale(0.93); }
-#zk-scope .ff-blog-title { position: absolute; left: 14.45px; top: 201.79px; width: 279px; font-family: 'DM Serif Display', serif; font-size: 22px; line-height: 1.16; color: #00315c; }
-#zk-scope .ff-blog-foot { position: absolute; left: 14.5px; top: 259.79px; width: 272px; display: flex; align-items: center; justify-content: space-between; }
 #zk-scope .ff-blog-foot .rl { font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: #6d6d6d; text-transform: uppercase; }
-#zk-scope .ff-play-btn svg, #zk-scope .ff-play-btn .pl-icon { width: 20px; height: 20px; display: block; }
 /* icon via CSS mask so its colour can change on hover (an <img> SVG can't be recoloured) */
-#zk-scope .ff-blog-foot .rl-icon { width: 20px; height: 20px; display: block; background-color: #6d6d6d;
-      -webkit-mask: url(/digital-marketing-assets/assets/about-blog-extlink.svg) center / contain no-repeat; mask: url(/digital-marketing-assets/assets/about-blog-extlink.svg) center / contain no-repeat; }
-#zk-scope .ff-bookmark { position: absolute; right: -1px; top: 1.79px; width: 63px; height: 63px; }
 /* blog card hover: grow + tilt (matches the checklist card's hover) */
-#zk-scope .ff-card.ff-blog { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-blog:hover { scale: 1.07; rotate: -4deg; z-index: 5; box-shadow: -16px 24px 44px rgba(0,0,0,0.24); }
 /* on hover the CTA (READ BLOG + link-out icon) grows for emphasis */
 #zk-scope .ff-blog-foot .rl { transform-origin: left center; background-image: linear-gradient(currentColor, currentColor); background-repeat: no-repeat; background-position: 0 100%; background-size: 0% 1.5px; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), background-size 0.35s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-blog-foot .rl-icon { transform-origin: right center; transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), background-color 0.35s cubic-bezier(0.22,1,0.36,1); }
 #zk-scope .ff-blog:hover .ff-blog-foot .rl { transform: scale(1.18); background-size: 100% 1.5px; }
-#zk-scope .ff-blog:hover .ff-blog-foot .rl-icon { transform: scale(1.22); background-color: #00315c; }
-#zk-scope .ff-blog-link { position: absolute; inset: 0; z-index: 5; display: block; }
 /* starry night game (node 342:5417) */
-#zk-scope .ff-starry { border: 9px solid #fff; }
 /* white panel is a shaped SVG (Vector 214) — rounded body with a raised tab on the top-left */
-#zk-scope .ff-starry-panel { position: absolute; left: 0; right: 0; bottom: 0; top: 118px; background: url(/digital-marketing-assets/assets/about-starry-panel.svg) no-repeat; background-size: 100% 100%; }
 #zk-scope .ff-starry-panel .k { position: absolute; left: 12px; top: 22px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; text-transform: uppercase; color: #6d6d6d; }
 #zk-scope .ff-starry-panel .t { position: absolute; left: 12px; top: 42px; font-family: 'Space Grotesk', sans-serif; font-size: 19px; color: #101010; }
-#zk-scope .ff-starry-row { position: absolute; left: 12px; right: 12px; bottom: 18px; display: flex; align-items: center; justify-content: space-between; }
-#zk-scope .ff-avatars { display: flex; align-items: center; }
 #zk-scope .ff-avatars .av { width: 32px; height: 32px; border-radius: 50%; border: 2px solid #fff; margin-right: -14px; overflow: hidden; background: #d9e0e6; }
 #zk-scope .ff-avatars .av img { width: 100%; height: 100%; object-fit: cover; display: block; }
-#zk-scope .ff-avatars .plus { margin-left: 22px; font-family: 'Space Grotesk', sans-serif; font-size: 14px; text-transform: uppercase; color: #6d6d6d; }
-#zk-scope .ff-play-btn { display: flex; gap: 8px; align-items: center; background: #f4cd44; border: 1px solid #000; border-radius: 16px; height: 40px; padding: 12px 16px; cursor: pointer; transition: transform 0.2s ease; }
-#zk-scope .ff-play-btn:hover { transform: translateY(-1px); }
-#zk-scope .ff-play-btn:active { transform: translateY(0); }
-#zk-scope .ff-play-btn span { font-family: 'Space Grotesk', sans-serif; font-weight: 500; font-size: 22px; line-height: 1.16; color: #00315c; }
 /* starry card hover: grow + tilt right + game image zoom-out (matches the gully card) */
-#zk-scope .ff-card.ff-starry { cursor: pointer; transition: scale 0.4s cubic-bezier(0.22,1,0.36,1), rotate 0.4s cubic-bezier(0.22,1,0.36,1), box-shadow 0.4s cubic-bezier(0.22,1,0.36,1); }
-#zk-scope .ff-card.ff-starry:hover { scale: 1.07; rotate: 5deg; z-index: 6; box-shadow: 20px 24px 44px rgba(0,0,0,0.3); }
-#zk-scope .ff-starry:hover .ff-media img { transform: scale(1); }
-#zk-scope .ff-starry-link { position: absolute; inset: 0; z-index: 5; display: block; }
 /* — Fun facts night treatment (photo dimmed a touch; cards stay light) — */
 #zk-scope.night .about-fun { background: #0f1830; }
 #zk-scope.night .about-fun > .aff-bg { filter: brightness(0.82) saturate(0.9); }
@@ -3881,54 +3583,11 @@
         height: auto;
         transform: none;
       }
-#zk-scope .ai-scene {
-        position: relative;
-        inset: auto;
-        transform: none;
-      }
-#zk-scope .ai-sun-clouds {
-        left: auto;
-        right: -28px;
-        top: -52px;               /* sit in the gap below the fixed nav, not behind it */
-        width: min(52vw, 280px);
-      }
-#zk-scope .ai-content {
-        position: relative;
-        left: auto;
-        top: auto;
-        transform: none;
-        width: 100%;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 48px;
-      }
 /* unwrap copy so heading / photos / body order independently:
          header → polaroids → description (mobile only) */
-#zk-scope .ai-copy { display: contents; }
-#zk-scope .ai-heading {
-        order: 1;
-        width: 100%;
-        font-size: clamp(28px, 5.4vw, 38px);
-        line-height: 1.28;
-      }
-#zk-scope .ai-body {
-        order: 3;
-        width: 100%;
-        font-size: clamp(16px, 4.4vw, 20px);
-        line-height: 1.65;
-        letter-spacing: -0.4px;
-        gap: 16px;
-      }
 /* polaroid stack scales as one unit — --pol-scale is set from JS
          (min(1, (vw − 48) / 516)); the negative margin returns the ghost
          space the transform leaves under the scaled box */
-#zk-scope .ai-photos {
-        order: 2;
-        align-self: center;
-        transform: scale(var(--pol-scale, 1));
-        transform-origin: top center;
-        margin-bottom: calc(-588px * (1 - var(--pol-scale, 1)));
-      }
 /* — experience: static flow, horizontal section heading — */
 #zk-scope .about-exp {
         position: relative;
@@ -4004,13 +3663,6 @@
         align-items: center;
         gap: 28px;
       }
-#zk-scope .ff-card {
-        position: relative;
-        left: auto;
-        top: auto;
-        transform: none;
-        flex-shrink: 0;
-      }
 #zk-scope .aff-hold { display: none; }
 }
 @media (max-width: 640px) {/* generous bottom buffer: the experience section slides up through this empty
@@ -4032,20 +3684,12 @@
 #zk-scope #playground-view[hidden] { display: none; }
 /* — Work / Hatcha case study: routed via #hatcha, hides landing sections — */
 #zk-scope.route-hatcha .hero, #zk-scope.route-hatcha .projects, #zk-scope.route-hatcha .featured-work, #zk-scope.route-hatcha .testimonials, #zk-scope.route-hatcha .t-scrub { display: none !important; }
-#zk-scope #hatcha-view { display: contents; }
-#zk-scope #hatcha-view[hidden] { display: none; }
 /* — Work / Fireflut case study: routed via #fireflut, hides landing sections — */
 #zk-scope.route-fireflut .hero, #zk-scope.route-fireflut .projects, #zk-scope.route-fireflut .featured-work, #zk-scope.route-fireflut .testimonials, #zk-scope.route-fireflut .t-scrub { display: none !important; }
-#zk-scope #fireflut-view { display: contents; }
-#zk-scope #fireflut-view[hidden] { display: none; }
 /* — Work / Existence case study: routed via #existence, hides landing sections — */
 #zk-scope.route-existence .hero, #zk-scope.route-existence .projects, #zk-scope.route-existence .featured-work, #zk-scope.route-existence .testimonials, #zk-scope.route-existence .t-scrub { display: none !important; }
-#zk-scope #existence-view { display: contents; }
-#zk-scope #existence-view[hidden] { display: none; }
 /* — Work / Jumpable case study: routed via #jumpable, hides landing sections — */
 #zk-scope.route-jumpable .hero, #zk-scope.route-jumpable .projects, #zk-scope.route-jumpable .featured-work, #zk-scope.route-jumpable .testimonials, #zk-scope.route-jumpable .t-scrub { display: none !important; }
-#zk-scope #jumpable-view { display: contents; }
-#zk-scope #jumpable-view[hidden] { display: none; }
 /* first project tile is a link to the case study */
 #zk-scope a.project-tile { display: block; text-decoration: none; color: inherit; }
 /* frame: tiles start at y141 on the 1440 design; content column is
@@ -4057,35 +3701,7 @@
       z-index: 1;                         /* below the footer (z-index 12) so it laps over */
       overflow-x: clip;                   /* contains the full-bleed immersive gallery; no page scroll */
     }
-#zk-scope .pg-grid {
-      max-width: 1720px;                   /* wider cap → larger tiles on roomy screens */
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;                           /* more breathing room between tiles */
-    }
 /* intro band above the staggered field — header and paragraph side by side */
-#zk-scope .pg-intro {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);  /* mirror the tile columns */
-      gap: 32px;                              /* match tile gutters so edges line up */
-      align-items: start;
-      margin-bottom: 8px;
-      font-size: 16px;
-      line-height: 30px;
-      color: var(--text-heading);
-    }
-#zk-scope .pg-intro h2 {
-      grid-column: 1;                      /* sits over the first tile column */
-      font-family: 'DM Serif Display', serif;
-      font-weight: 400;
-      font-size: 40px;                     /* matches About's .ai-heading */
-      line-height: 1.358;
-      margin: 0;
-      color: var(--text-heading);
-    }
-#zk-scope .pg-intro p { grid-column: 2 / 4; margin: 0; }
 /* aligns with tile columns 2 & 3 */
 #zk-scope .pg-tile {
       /* --pg-offset = the running-bond stagger (per column, below).
@@ -4106,60 +3722,14 @@
       box-shadow: inset 0 0 0 0 #323131;   /* hover ring grows in (matches home) */
       transition: box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-#zk-scope .pg-tile:hover { box-shadow: inset 0 0 0 1px #323131; }
-#zk-scope .pg-tile video, #zk-scope .pg-tile img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
 /* hover overlay — blurred scrim + label, fades in (mirrors home .tile-overlay) */
-#zk-scope .pg-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 1;                          /* above the video so the ring/label show */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 24px;
-      text-align: center;
-      backdrop-filter: blur(7.7px);
-      -webkit-backdrop-filter: blur(7.7px);
-      background: var(--overlay-scrim);
-      opacity: 0;
-      transition: opacity 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-#zk-scope .pg-tile:hover .pg-overlay { opacity: 1; }
-#zk-scope .pg-overlay-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 400;
-      font-size: 28px;
-      letter-spacing: -1.12px;
-      line-height: 1.2;
-      text-transform: uppercase;
-      color: var(--text-contrast);
-      margin: 0;
-    }
-#zk-scope .pg-overlay-sub {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 400;
-      font-size: 16px;
-      letter-spacing: -0.4px;
-      color: var(--text-contrast);
-      margin: 0;
-    }
 /* the stagger: push the 2nd and 3rd columns down so the rows interlock
        (running-bond brick). nth-of-type counts only the <figure> tiles, so
        the full-width intro band above doesn't shift the column cycle. */
 #zk-scope .pg-tile:nth-of-type(3n+2) { --pg-offset: 136px; }
 #zk-scope .pg-tile:nth-of-type(3n+3) { --pg-offset: 68px; }
 @media (max-width: 900px) {#zk-scope .playground { padding: 112px 20px 140px; }
-#zk-scope .pg-grid { grid-template-columns: repeat(2, 1fr); }
-#zk-scope .pg-intro { grid-template-columns: 1fr; gap: 16px; }
 /* stack header over para */
-#zk-scope .pg-intro h2, #zk-scope .pg-intro p { grid-column: auto; }
 /* full width once stacked */
 #zk-scope .pg-tile:nth-of-type(3n+2), #zk-scope .pg-tile:nth-of-type(3n+3) { --pg-offset: 0px; }
 /* reset 3-col stagger */
@@ -4167,7 +3737,6 @@
 /* offset the right column */
 }
 @media (max-width: 560px) {#zk-scope .playground { padding: 112px 20px 96px; }
-#zk-scope .pg-grid { grid-template-columns: 1fr; }
 #zk-scope .pg-tile:nth-of-type(2n) { --pg-offset: 0px; }
 /* no stagger in one column */
 }
@@ -4178,9 +3747,7 @@
        ← → to rotate. Click the centre card (or "Open full screen") to
        expand into a lightbox. Page scroll is locked while #playground is
        active (fully immersive, footer hidden). ════════════════════════ */
-#zk-scope.route-playground { overflow: hidden; }
 /* lock page scroll on this route */
-#zk-scope.route-playground site-footer { display: none; }
 /* fully immersive — no footer */
 /* .pg-flow (below) owns the section's box on this route — padding clears the nav */
 #zk-scope .pg-flow {
@@ -4195,23 +3762,6 @@
 #zk-scope.night .pg-flow { --pgf-accent: #fff; }
 /* …white in dark mode */
 /* head */
-#zk-scope .pgf-head { text-align: center; padding: 0 20px; }
-#zk-scope .pgf-eyebrow {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;
-      letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
-    }
-#zk-scope .pgf-title {
-      font-family: 'DM Serif Display', serif; font-weight: 400; letter-spacing: -0.02em;
-      font-size: clamp(30px, 5vw, 52px); line-height: 1; color: var(--text-heading);
-    }
-#zk-scope .pgf-lead {
-      font-family: 'Space Grotesk', sans-serif; font-size: 15px; line-height: 1.55;
-      color: var(--text-heading); opacity: .78; max-width: 56ch; margin: 12px auto 0;
-    }
-#zk-scope .pgf-hint {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .08em;
-      color: var(--text-heading); opacity: .5; margin-top: 10px;
-    }
 /* stage / coverflow */
 #zk-scope .pgf-stage {
       position: relative; width: 100%;
@@ -4262,14 +3812,11 @@
 #zk-scope:not(.night) .pgf-arrow { background: rgba(255,255,255,.6); border-color: rgba(0,0,0,.12); }
 #zk-scope .pgf-arrow:hover { border-color: var(--pgf-accent); color: var(--pgf-accent); }
 #zk-scope .pgf-arrow:active { transform: translateY(-50%) scale(.94); }
-#zk-scope .pgf-arrow--prev { left: clamp(10px, 3vw, 40px); }
-#zk-scope .pgf-arrow--next { right: clamp(10px, 3vw, 40px); }
 /* caption */
 /* fixed min-height fits the tallest caption (2-line description), so the caption
        never changes size between assets — that keeps the flex stage, the card, and the
        prev/next arrows at a constant vertical position while rotating. */
 #zk-scope .pgf-caption { max-width: 640px; text-align: center; padding: 0 20px; min-height: 152px; }
-#zk-scope .pgf-cap-meta { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 10px; }
 #zk-scope .pgf-cap-index { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; color: var(--pgf-accent); }
 #zk-scope .pgf-cap-tags { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-heading); opacity: .55; }
 #zk-scope .pgf-cap-title { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(24px, 4vw, 40px); line-height: 1.05; color: var(--text-heading); margin-bottom: 10px; }
@@ -4298,7 +3845,6 @@
 #zk-scope .pgf-lb-stage video, #zk-scope .pgf-lb-stage img {
       width: 100%; height: 100%; object-fit: contain; display: block;
     }
-#zk-scope .pgf-lb-info { text-align: center; max-width: 60ch; color: #fff; }
 #zk-scope .pgf-lb-index { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: .2em; color: #fff; }
 #zk-scope .pgf-lb-title { font-family: 'DM Serif Display', serif; font-weight: 400; font-size: clamp(22px, 4vw, 34px); line-height: 1.05; margin: 6px 0 8px; }
 #zk-scope .pgf-lb-desc { font-family: 'Space Grotesk', sans-serif; font-weight: 400; font-size: 15px; line-height: 1.55; color: #9a9a9a; margin-bottom: 8px; }
@@ -4310,15 +3856,6 @@
       font-size: 16px; cursor: pointer; transition: border-color .25s ease, color .25s ease, transform .25s ease;
     }
 #zk-scope .pgf-lb-close:hover { border-color: #fff; color: #fff; transform: rotate(90deg); }
-#zk-scope .pgf-lb-nav {
-      position: absolute; top: 50%; transform: translateY(-50%); z-index: 5;
-      width: 50px; height: 50px; border-radius: 50%; display: grid; place-items: center;
-      background: rgba(20,22,26,.7); border: 1px solid rgba(255,255,255,.2); color: #fff;
-      font-size: 26px; cursor: pointer; transition: border-color .25s ease, color .25s ease;
-    }
-#zk-scope .pgf-lb-nav:hover { border-color: #fff; color: #fff; }
-#zk-scope .pgf-lb-nav--prev { left: clamp(10px, 3vw, 32px); }
-#zk-scope .pgf-lb-nav--next { right: clamp(10px, 3vw, 32px); }
 @media (max-width: 620px) {#zk-scope .pgf-card { width: 84vw; height: auto; max-width: none; }
 /* width-driven on phones */
 #zk-scope .pgf-arrow { width: 44px; height: 44px; font-size: 22px; }
@@ -4346,10 +3883,6 @@
 /* fix custom element display — site-footer is inline by default, so its 938px footer overflows */
 #zk-scope site-footer { display: block; }
 #zk-scope .footer { overflow: visible; }
-
-/* fix footer land overflow gap on right */
-#zk-scope .ft-land { width: 100% !important; left: 0 !important; transform: none !important; }
-#zk-scope .ft-land-clip { overflow: hidden !important; }
 
 /* scope container */
 #zk-scope { background: var(--bg-base); color: var(--dark); overflow: visible; display: block; position: relative; }

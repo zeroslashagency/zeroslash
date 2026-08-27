@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Stepper, { Step } from "@/src/blocks/Components/Stepper/Stepper";
 import { Confetti, type ConfettiRef } from "@/src/components/magicui/confetti";
 import { track } from "@/lib/gtag";
@@ -55,7 +55,6 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
   const [error, setError] = useState<string | null>(null);
   const confettiRef = useRef<ConfettiRef>(null);
 
-  const steps = 6; // Name/Email + 4 selection steps + Add-ons
 
   const stepName = (n: number) =>
     (
@@ -119,11 +118,11 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
         style: data.style || "",
         addons_count: (data.addons || []).length,
       });
-    } catch (e: any) {
-      setError(e?.message || "Something went wrong");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Something went wrong");
       track("project_wizard_submit_error", {
         duration_ms: Date.now() - submitStartRef.current,
-        error_message: String(e?.message || "unknown_error"),
+        error_message: e instanceof Error ? e.message : "unknown_error",
       });
     } finally {
       const elapsed = Date.now() - submitStartRef.current;
@@ -148,7 +147,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
   useEffect(() => {
     if (!submitting) return;
     let cancelled = false;
-    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"] as const;
+    const colors: string[] = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
     let last = 0;
 
     const start = () => {
@@ -163,7 +162,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
             startVelocity: 60,
             origin: { x: 0, y: 0.5 },
             colors: [...colors],
-          } as any);
+          });
           confettiRef.current?.fire?.({
             particleCount: 6,
             angle: 120,
@@ -171,7 +170,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
             startVelocity: 60,
             origin: { x: 1, y: 0.5 },
             colors: [...colors],
-          } as any);
+          });
           last = t;
         }
         requestAnimationFrame(frame);
@@ -193,14 +192,14 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
         startVelocity: 50,
         origin: { x: 0.2, y: 0.6 },
         colors: [...colors],
-      } as any);
+      });
       confettiRef.current.fire?.({
         particleCount: 80,
         spread: 80,
         startVelocity: 50,
         origin: { x: 0.8, y: 0.6 },
         colors: [...colors],
-      } as any);
+      });
       start();
     };
     const raf = requestAnimationFrame(ensureReady);

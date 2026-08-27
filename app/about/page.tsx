@@ -4,7 +4,7 @@ import { Star, Sparkles } from "lucide-react"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import {
-} from "@/ui/dialog"
+} from "@/components/ui/dialog"
 import ProjectWizard from "@/components/ProjectWizard"
 import {
   CardSwipeClient,

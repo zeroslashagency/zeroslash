@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import SectionPill from "@/components/SectionPill"
-import { ScrollReveal } from "@/ui/scroll-reveal"
-import { ScrollFloat } from "@/ui/scroll-float"
+import { ScrollReveal } from "@/components/scroll-reveal"
+import { ScrollFloat } from "@/components/scroll-float"
 import { Star, ArrowRight } from "lucide-react"
 
 export default function TestimonialsSection() {

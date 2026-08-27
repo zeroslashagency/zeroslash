@@ -4,7 +4,7 @@ import Script from "next/script"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
-import { Header } from "@/ui/header"
+import { Header } from "@/components/header"
 import { ThemeProvider } from "@/components/theme-provider"
 import { faqSchema } from "./faq-schema"
 // AnalyticsListener removed temporarily

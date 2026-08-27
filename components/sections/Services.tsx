@@ -1,6 +1,6 @@
 "use client"
 
-import { ScrollFloat } from "@/ui/scroll-float"
+import { ScrollFloat } from "@/components/scroll-float"
 import SectionPill from "@/components/SectionPill"
 import ShineBorder from "@/components/magicui/shine-border"
 

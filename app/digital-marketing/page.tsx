@@ -12,8 +12,8 @@ export const metadata: Metadata = {
 export default function DigitalMarketingPage() {
   return (
     <div className="w-full overflow-hidden bg-[rgb(251,250,248)] -mt-[72px] pt-[72px]">
-      {/* B — direct mount under #zk-scope. Scoped CSS isolates tokens so ZeroSlash chrome never bleeds.
-          Content + images are content-only: edit app/digital-marketing/content.ts and keep same filenames to rebrand to 0/ */}
+      {/* Direct mount under #zk-scope. Scoped CSS isolates tokens so ZeroSlash chrome never bleeds.
+          Copy and image paths live in ./zkHtml.ts; the engines it drives are in public/digital-marketing-assets/js. */}
       <ZkView />
 
       {/* Slot for your other project — isolated, outside #zk-scope so it never inherits marketing tokens.

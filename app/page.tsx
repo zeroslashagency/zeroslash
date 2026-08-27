@@ -7,8 +7,8 @@ import Image from "next/image"
 import ShinyText from "../components/ShinyText"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ScrollReveal } from "@/ui/scroll-reveal"
-import { ScrollFloat } from "@/ui/scroll-float"
+import { ScrollReveal } from "@/components/scroll-reveal"
+import { ScrollFloat } from "@/components/scroll-float"
 import { ArrowRight, Sparkles, Box, Layers, Sparkle, Search, Cog, Rocket, Star, Diamond, Check, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import CountUpOnView from "../components/CountUpOnView"
@@ -18,7 +18,7 @@ import FlowConnector from "@/components/FlowConnector"
 import ContactButton from "@/components/ContactButton"
 import ProjectWizard from "@/components/ProjectWizard"
 import { VelocityScroll } from "@/components/VelocityScroll"
-import { LazyOnView } from "@/ui/lazy-on-view"
+import { LazyOnView } from "@/components/lazy-on-view"
 import { useState, useEffect, useRef } from "react"
 const ServicesSection = nextDynamic(() => import("@/components/sections/Services"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
@@ -33,7 +33,7 @@ export default function Home() {
   const gapFlowerRef = useRef<HTMLImageElement>(null)
   useEffect(() => {
     const t = gapTextRef.current
-    const f = gapFlowerRef.current as unknown as HTMLElement
+    const f = gapFlowerRef.current
     const s = gapSliderRef.current
     if (!t || !f || !s) return
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -96,28 +96,6 @@ export default function Home() {
                   </button>
                   <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Calendar className="w-3.5 h-3.5" />3+ Years</span>
                   <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Eye className="w-3.5 h-3.5" />30+ Projects</span>
-                </div>
-                <div className="mt-10 md:mt-12 lg:mt-14">
-                  <div className="flex items-center gap-2 mb-4">
-                    <span className="w-3.5 h-3.5 rounded-sm bg-black grid place-items-center"><Calendar className="w-2.5 h-2.5 text-white" /></span>
-                    <span className="text-[13px] font-semibold tracking-wide text-black">Todays drops</span>
-                  </div>
-                  <div className="grid grid-cols-3 gap-4 md:gap-5">
-                    {[
-                      { img: "/images/decs-cafe.png", title: "Dec's Cafe — Premium coffee experience" },
-                      { img: "/images/fresh-bread.png", title: "The Perfect Bread — Artisanal bakery" },
-                      { img: "/images/yoga-studio.jpeg", title: "Flow Yoga — Wellness & bookings" },
-                    ].map((item, i) => (
-                      <div key={i} className="group cursor-pointer">
-                        <div className="flex gap-3 items-start">
-                          <div className="w-12 h-12 md:w-[52px] md:h-[52px] rounded-xl overflow-hidden bg-[#F3F3F0] shrink-0 border border-black/5">
-                            <img src={item.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                          </div>
-                          <p className="text-[13px] leading-[1.35] font-medium text-black/70 line-clamp-3">{item.title}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               </div>
               {/* RIGHT 54% — Bouquet — COVER */}
@@ -302,7 +280,7 @@ export default function Home() {
           </div>
         </div>
         {/* Flower — absolutely centered on the text band (not in h-0 hack layer) */}
-        <Image ref={gapFlowerRef as any} id="gap-flower" src="/images/gap/3.avif" alt="" width={340} height={340} sizes="(max-width: 768px) 132px, (max-width: 1024px) 200px, (max-width: 1280px) 280px, 340px" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[132px] h-[132px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] xl:w-[340px] xl:h-[340px] will-change-transform pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)] z-10 select-none" priority aria-hidden />
+        <Image ref={gapFlowerRef} id="gap-flower" src="/images/gap/3.avif" alt="" width={340} height={340} sizes="(max-width: 768px) 132px, (max-width: 1024px) 200px, (max-width: 1280px) 280px, 340px" className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[132px] h-[132px] md:w-[200px] md:h-[200px] lg:w-[280px] lg:h-[280px] xl:w-[340px] xl:h-[340px] will-change-transform pointer-events-none drop-shadow-[0_20px_50px_rgba(0,0,0,0.18)] z-10 select-none" priority aria-hidden />
       </section>
 
       {/* Premium About Us Section - <span className="animate-shine">How We Work</span> */}
