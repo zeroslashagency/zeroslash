@@ -12,6 +12,8 @@ export function ScrollFloat({ children, delay = 0, className = "" }: ScrollFloat
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // `delay` is expressed in seconds by every call site, so convert to ms.
+    const delayMs = delay * 1000;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -21,7 +23,7 @@ export function ScrollFloat({ children, delay = 0, className = "" }: ScrollFloat
               ref.current.style.transform = 'translateY(0)';
               ref.current.style.filter = 'blur(0px)';
             }
-          }, delay);
+          }, delayMs);
         }
       },
       { threshold: 0.1 }

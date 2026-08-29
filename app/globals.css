@@ -38,6 +38,11 @@
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+
+  /* Approach swatch fields — token-derived, no image payload */
+  --swatch-1: oklch(0.82 0.08 85);   /* muted gold */
+  --swatch-2: oklch(0.44 0.045 50);  /* warm ink brown */
+  --swatch-3: oklch(0.74 0.045 150); /* muted sage */
 }
 
 /* Animated connector line (wavy dash motion) */
@@ -85,6 +90,11 @@
   --sidebar-accent-foreground: var(--background);
   --sidebar-border: var(--border);
   --sidebar-ring: var(--ring);
+
+  /* Approach swatch fields — deepened so the fields read as surfaces, not glows */
+  --swatch-1: oklch(0.62 0.08 85);
+  --swatch-2: oklch(0.34 0.04 50);
+  --swatch-3: oklch(0.48 0.045 150);
 }
 
 @theme inline {
@@ -358,4 +368,110 @@
   .dark [data-contact-panel] .text-white { color: #fff !important; }
   .dark [data-contact-button] .text-black { color: #000 !important; }
   .dark [data-contact-button] .text-white { color: #fff !important; }
+}
+
+/* Exception: approach swatch copy sits over a photograph behind a dark scrim,
+   so it stays light in both themes. Without this the generic
+   `.dark .text-white` override above would flip it to the dark foreground. */
+@layer utilities {
+  .dark .swatch-field .text-white { color: #fff !important; }
+}
+
+/* ── Approach swatches ─────────────────────────────────────────────────────
+   Photographic tiles over a token-derived colour field. The token shows while
+   the image decodes and tints the edges, and a light grain plus a directional
+   sheen sit on top so the three photos read as one printed swatch board. */
+.swatch-field {
+  position: relative;
+  background-color: var(--swatch-tone, var(--muted));
+  isolation: isolate;
+}
+
+.swatch-field::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='0.42'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+  opacity: 0.16;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Legibility scrim: the label sits over the photo, so the bottom half needs a
+   predictable floor no matter how bright the petals underneath happen to be. */
+.swatch-field::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(
+    to top,
+    color-mix(in oklab, #000 78%, transparent) 0%,
+    color-mix(in oklab, #000 46%, transparent) 34%,
+    transparent 66%
+  );
+  pointer-events: none;
+  z-index: 2;
+}
+
+.dark .swatch-field::before { mix-blend-mode: soft-light; opacity: 0.22; }
+
+/* ── Full-bleed band feather ───────────────────────────────────────────────
+   The statement band is a photograph sitting flush against two normal
+   sections. Without help its top and bottom read as hard horizontal seams —
+   obviously a pasted picture. These two strips wash the page background over
+   those edges so the image emerges from the page instead of being cut into it.
+   Multi-stop with eased alpha: a plain two-stop ramp leaves a visible knee
+   where the gradient meets the photo. */
+.band-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 26%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.band-fade-top {
+  top: 0;
+  background-image: linear-gradient(
+    to bottom,
+    var(--background) 0%,
+    color-mix(in oklab, var(--background) 92%, transparent) 14%,
+    color-mix(in oklab, var(--background) 70%, transparent) 34%,
+    color-mix(in oklab, var(--background) 38%, transparent) 60%,
+    color-mix(in oklab, var(--background) 12%, transparent) 82%,
+    transparent 100%
+  );
+}
+
+.band-fade-bottom {
+  bottom: 0;
+  background-image: linear-gradient(
+    to top,
+    var(--background) 0%,
+    color-mix(in oklab, var(--background) 92%, transparent) 14%,
+    color-mix(in oklab, var(--background) 70%, transparent) 34%,
+    color-mix(in oklab, var(--background) 38%, transparent) 60%,
+    color-mix(in oklab, var(--background) 12%, transparent) 82%,
+    transparent 100%
+  );
+}
+
+/* Narrow viewports crop the band to a short strip, so a 26% feather would eat
+   most of the artwork. Pull it back and let the image carry more of the frame. */
+@media (max-width: 640px) {
+  .band-fade { height: 20%; }
+}
+
+/* Motion: the tile breathes on hover, the label plate stays perfectly still. */
+.swatch-media {
+  transition: transform 600ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+.group:hover .swatch-media { transform: scale(1.035); }
+
+@media (prefers-reduced-motion: reduce) {
+  .swatch-media { transition: none; }
+  .group:hover .swatch-media { transform: none; }
 }

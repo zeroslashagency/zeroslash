@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
-import { ArrowRight, Sparkles, Box, Layers, Sparkle, Search, Cog, Rocket, Star, Diamond, Check, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
+import { ArrowRight, Sparkles, Search, Cog, Rocket, Star, Diamond, Check, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import CountUpOnView from "../components/CountUpOnView"
 import SectionPill from "@/components/SectionPill"
@@ -25,6 +25,36 @@ const TestimonialsSection = nextDynamic(() => import("@/components/sections/Test
 
 const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
 // (removed unused DynamicFlowConnector)
+
+/* How We Work — three equal tiles. Each carries a macro floral photograph; the
+   `tone` token still backs the tile so it holds its colour while the image
+   loads and in dark mode. */
+const APPROACH_SWATCHES = [
+  {
+    index: "01",
+    title: "Investigate Deeply",
+    body: "We dig beneath the surface — industry insights, user interviews, and real data drive every solution we create.",
+    tone: "var(--swatch-1)",
+    image: "/images/approach/investigate.webp",
+    alt: "Macro photograph of teal and leopard-spotted daisy petals",
+  },
+  {
+    index: "02",
+    title: "Build Reliably",
+    body: "Development with purpose. We engineer scalable, high-performance systems that evolve with your growth.",
+    tone: "var(--swatch-2)",
+    image: "/images/approach/build.webp",
+    alt: "Macro photograph of purple and cream leopard-spotted daisy petals",
+  },
+  {
+    index: "03",
+    title: "Create Boldly",
+    body: "From branding to user experience, we craft digital identities that demand attention and deliver impact.",
+    tone: "var(--swatch-3)",
+    image: "/images/approach/create.webp",
+    alt: "Macro photograph of a blue and white spotted gerbera daisy",
+  },
+] as const
 
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
@@ -288,90 +318,67 @@ export default function Home() {
         <section className="w-full py-8 md:py-12 lg:py-16 bg-background relative overflow-hidden">
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
-              {/* Section Header */}
-              <div className="text-center mb-12 md:mb-16">
-                <div className="inline-flex items-center px-4 py-2 rounded-full bg-card border border-border text-foreground/70 text-sm font-medium mb-6 shadow-sm">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  How We Work
-                </div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
-                  Our Approach to
-                  <br />
-                  <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
-                    Digital Excellence
+              {/* Section Header — flush left, eyebrow + rule, body offset right */}
+              <div className="mb-12 md:mb-16">
+                <div className="flex items-center gap-4 mb-6">
+                  <span
+                    className="text-[11px] uppercase tracking-[0.18em] text-foreground/50 whitespace-nowrap"
+                    style={{ fontFamily: "var(--font-geist-mono)" }}
+                  >
+                    How We Work
                   </span>
-                </h2>
-                <p className="text-lg md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
-                  At ZeroSlash Agency, we fuse deep research, reliable development, and bold creativity to deliver results that move your business forward.
-                </p>
+                  <span className="h-px flex-1 bg-border" aria-hidden />
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-16 items-end">
+                  <h2
+                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[0.95] tracking-[-0.02em]"
+                    style={{ fontFamily: "var(--font-display-serif)" }}
+                  >
+                    Our approach to
+                    <br />
+                    digital excellence
+                  </h2>
+                  <p className="text-base md:text-lg text-foreground/60 leading-relaxed max-w-[42ch] lg:pb-2">
+                    Deep research, reliable engineering, and bold creative — the three passes every ZeroSlash build goes through.
+                  </p>
+                </div>
               </div>
 
-              {/* Premium Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 md:mb-16">
-                {/* Investigate deeply */}
-                <ScrollFloat delay={0.1}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/12 to-transparent rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
-                      <div className="mb-6">
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-foreground text-background rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Box className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 tracking-tight">
-                          Investigate Deeply
+              {/* Approach swatch board — three equal tiles, label set over the image */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-12 md:mb-16">
+                {APPROACH_SWATCHES.map((item, i) => (
+                  <ScrollFloat key={item.index} delay={[0.1, 0.22, 0.34][i]}>
+                    <div
+                      className="swatch-field group relative aspect-[4/5] overflow-hidden rounded-[2px]"
+                      style={{ ["--swatch-tone" as string]: item.tone }}
+                    >
+                      <div className="swatch-media absolute inset-0 z-0">
+                        <Image
+                          src={item.image}
+                          alt={item.alt}
+                          fill
+                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover"
+                          priority={i === 0}
+                        />
+                      </div>
+                      <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-7">
+                        <span
+                          className="block text-[11px] tracking-[0.18em] text-white/60 mb-3"
+                          style={{ fontFamily: "var(--font-geist-mono)" }}
+                        >
+                          {item.index}
+                        </span>
+                        <h3 className="text-lg md:text-xl font-semibold text-white mb-2 tracking-[-0.01em]">
+                          {item.title}
                         </h3>
+                        <p className="text-white/75 leading-relaxed text-sm md:text-base">
+                          {item.body}
+                        </p>
                       </div>
-                      <p className="text-foreground/70 leading-relaxed text-base md:text-lg">
-                        We dig beneath the surface — industry insights, user interviews, and real data drive every solution we create.
-                      </p>
-
-                      {/* Decorative element */}
-                      <div className="absolute top-6 right-6 w-2 h-2 bg-foreground/30 rounded-full opacity-50"></div>
                     </div>
-                  </div>
-                </ScrollFloat>
-
-                {/* Build reliably */}
-                <ScrollFloat delay={0.2}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/10 to-transparent rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
-                      <div className="mb-6">
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-foreground text-background rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Layers className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 tracking-tight">Build Reliably</h3>
-                      </div>
-                      <p className="text-foreground/70 leading-relaxed text-base md:text-lg">
-                        Development with purpose. We engineer scalable, high-performance systems that evolve with your growth.
-                      </p>
-
-                      {/* Decorative element */}
-                      <div className="absolute top-6 right-6 w-2 h-2 bg-gray-300 rounded-full opacity-50"></div>
-                    </div>
-                  </div>
-                </ScrollFloat>
-
-                {/* Create boldly */}
-                <ScrollFloat delay={0.3}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/10 to-transparent rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
-                      <div className="mb-6">
-                        <div className="w-16 h-16 md:w-20 md:h-20 bg-foreground text-background rounded-3xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Sparkle className="w-8 h-8 md:w-10 md:h-10" strokeWidth={1.5} />
-                        </div>
-                        <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 tracking-tight">Create Boldly</h3>
-                      </div>
-                      <p className="text-foreground/70 leading-relaxed text-base md:text-lg">
-                        From branding to user experience, we craft digital identities and designs that demand attention and deliver impact.
-                      </p>
-
-                      {/* Decorative element */}
-                      <div className="absolute top-6 right-6 w-2 h-2 bg-gray-300 rounded-full opacity-50"></div>
-                    </div>
-                  </div>
-                </ScrollFloat>
+                  </ScrollFloat>
+                ))}
               </div>
 
               {/* Premium Minimal Stats Section: dominant numbers, clean layout */}
@@ -716,6 +723,26 @@ export default function Home() {
       <LazyOnView>
         <TestimonialsSection />
       </LazyOnView>
+
+      {/* Full-bleed statement band — sits in the seam between the reviews and
+          the Transform & Grow section. Native 3:2 is kept at every width so the
+          two reaching hands stay in frame; a tall crop would cut them off. */}
+      <section
+        className="relative w-screen max-w-none mx-[calc(50%-50vw)] aspect-[3/2] overflow-hidden"
+        aria-label="ZeroSlash — where craft meets creation"
+      >
+        <Image
+          src="/images/band/creation.webp"
+          alt="Two hands reaching toward the ZeroSlash mark, echoing Michelangelo's Creation of Adam"
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
+        {/* Top and bottom feather so the band dissolves into the page instead of
+            reading as a pasted photo with hard horizontal edges. */}
+        <div className="band-fade band-fade-top" aria-hidden />
+        <div className="band-fade band-fade-bottom" aria-hidden />
+      </section>
 
       {/* Helping You Transform Your Business Section */}
       <ScrollReveal>
