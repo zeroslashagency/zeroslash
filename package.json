@@ -59,6 +59,7 @@
     "swiper": "^11.2.10",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "three": "0.185.1",
     "vaul": "latest"
   },
   "devDependencies": {
@@ -67,6 +68,7 @@
     "@types/node": "^22",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19",
+    "@types/three": "0.185.1",
     "eslint": "^9",
     "eslint-config-next": "15.4.6",
     "postcss": "^8.5",

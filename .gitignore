@@ -31,3 +31,7 @@ next-env.d.ts
 
 # throwaway verification harness for the digital-marketing refactor
 /.mobile-audit/
+
+# Agent-Native local plan bridge token (machine-local, do not commit)
+.plan-url
+**/.plan-url

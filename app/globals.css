@@ -352,12 +352,22 @@
   .dark .text-white { color: hsl(var(--foreground)) !important; }
 }
 
-/* VisBug hero match — #FBFAF8 rgb(251,250,248) scoped to hero only */
+/* VisBug hero match — #FBFAF8 rgb(251,250,248) scoped to hero only.
+   The section itself keeps the cream: it is the plate the root scene is lit
+   for, and it shows through the canvas's transparent clear colour. The inner
+   layers must NOT repaint it, or they would cover the scene — the bouquet rule
+   in particular used to paint cream across the whole right-hand column. */
 #hero { background-color: rgb(251, 250, 248); }
-#hero .px-5.md\:px-8.lg\:pl-16 { background-color: rgb(251, 250, 248); }
-#hero img[alt="Floral bouquet"] { background-color: rgb(251, 250, 248); }
-/* container hint — scoped to hero wrapper only to avoid broad page impact */
-#hero div[class*="container"] { background-color: rgb(251, 250, 248); }
+
+/* The canvas is decorative and inert; it must never take pointer input away
+   from the hero's controls. */
+#hero canvas { background-color: transparent; }
+
+/* Reduced motion: the scene paints a single frame and stops, so there is no
+   fade to animate. */
+@media (prefers-reduced-motion: reduce) {
+  #hero > div[aria-hidden="true"] { transition: none !important; }
+}
 /* VisBug #06 — scope: changed — gap slider inner */
 #gap-slider div.relative.w-full.h-\[22vh\] { background-color: rgb(251, 250, 248); }
 
@@ -474,4 +484,36 @@
 @media (prefers-reduced-motion: reduce) {
   .swatch-media { transition: none; }
   .group:hover .swatch-media { transform: none; }
+}
+
+/* ── Stacked service discs ─────────────────────────────────────────────────
+   Overlapping discs on the same cream plate as the hero, each one a service
+   category. Type inside a disc is sized in `cqw`, so the stage has to be the
+   container query root — otherwise `cqw` resolves against the viewport and
+   the lower bands blow out. */
+.sphere-section {
+  background-color: rgb(251, 250, 248);
+}
+
+/* The section keeps its cream plate in both themes, so its ink stays dark.
+   Set explicitly rather than via `text-black`, which the blanket
+   `.dark .text-black` override further up would otherwise flip. */
+.sphere-ink { color: oklch(0.22 0.008 60); }
+.dark .sphere-ink { color: oklch(0.22 0.008 60); }
+.sphere-ink-soft { color: oklch(0.46 0.014 60); }
+.dark .sphere-ink-soft { color: oklch(0.46 0.014 60); }
+
+.sphere-dome {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.sphere-stage {
+  container-type: inline-size;
+  container-name: sphere-stage;
+  isolation: isolate;
+}
+
+.sphere-dome:focus-visible {
+  --tw-ring-color: oklch(0.62 0.1 45);
+  --tw-ring-offset-color: rgb(251, 250, 248);
 }

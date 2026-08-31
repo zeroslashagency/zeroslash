@@ -1,0 +1,656 @@
+---
+title: Nested-Spheres Floral Services Section
+status: draft
+created: 2026-08-29
+---
+
+### Vision
+
+Redesign the "What we do / Premium services that grow your brand" section as a **layered, spherical composition** inspired by Netflix's "Our Living World" nested-spheres poster. Each concentric sphere represents a different service category that ZeroSlash offers, with its own macro floral photograph and text overlays creating a "nature-meets-niche taxonomy" visual philosophy.
+
+<Callout id="design-references" tone="info">
+
+**Reference Images:**
+- **Image #1**: Netflix "Our Living World" — nested spheres with outer layer (leopards/"DISCOVER"), middle layer (sharks/"THE SECRET"), inner core (lizard/insects/"THAT CONNECTS US ALL")
+- **Image #2**: "Gulaabi Sunday" chrysanthemum — dense purple flowers with scattered text labels ("POST", "STORY", "TYPO", "CHRYSANTHEMUM", etc.) overlaid directly on floral imagery
+
+</Callout>
+
+### Design Direction
+
+Create a fun, experimental, nature-inspired visual where each service category is represented by:
+- A **distinct macro floral photograph** (different flower species per layer)
+- **Text overlays** positioned on/within the flower imagery
+- **Nested circular composition** showing hierarchy (outer → inner spheres)
+- **Depth and layering** that reveals the full taxonomy on interaction
+
+Three decisions are now settled and reflected throughout: the photography is **stock** (Unsplash / Pexels), the layers carry a **subtle scroll parallax**, and mobile uses a **simplified two-layer nest** rather than falling back to cards. Full detail in Decisions Locked at the end.
+
+---
+
+### Layer Hierarchy & Service Taxonomy
+
+<DataModel
+  id="service-taxonomy"
+  entities={[
+    {
+      id: "web-development",
+      name: "Web Development (Outer Layer)",
+      fields: [
+        {
+          name: "portfolio",
+          type: "service",
+          description: "Portfolio websites"
+        },
+        {
+          name: "e-commerce",
+          type: "service",
+          description: "E-commerce platforms"
+        },
+        {
+          name: "landing-pages",
+          type: "service",
+          description: "Landing pages"
+        },
+        {
+          name: "web-apps",
+          type: "service",
+          description: "Web applications"
+        }
+      ]
+    },
+    {
+      id: "marketing",
+      name: "Marketing (Middle Layer)",
+      fields: [
+        {
+          name: "instagram-posting",
+          type: "service",
+          description: "Instagram content"
+        },
+        {
+          name: "content-strategy",
+          type: "service",
+          description: "Content strategy"
+        },
+        {
+          name: "social-media",
+          type: "service",
+          description: "Social media management"
+        },
+        {
+          name: "seo",
+          type: "service",
+          description: "SEO optimization"
+        }
+      ]
+    },
+    {
+      id: "branding",
+      name: "Branding (Inner Layer)",
+      fields: [
+        {
+          name: "brand-identity",
+          type: "service",
+          description: "Brand identity design"
+        },
+        {
+          name: "visual-systems",
+          type: "service",
+          description: "Visual design systems"
+        },
+        {
+          name: "brand-strategy",
+          type: "service",
+          description: "Brand strategy"
+        }
+      ]
+    },
+    {
+      id: "product-design",
+      name: "Product Design (Core)",
+      fields: [
+        {
+          name: "ui-ux",
+          type: "service",
+          description: "UI/UX design"
+        },
+        {
+          name: "prototyping",
+          type: "service",
+          description: "Interactive prototyping"
+        },
+        {
+          name: "user-research",
+          type: "service",
+          description: "User research"
+        }
+      ]
+    }
+  ]}
+  relations={[
+    {
+      from: "web-development",
+      to: "marketing",
+      kind: "contains"
+    },
+    {
+      from: "marketing",
+      to: "branding",
+      kind: "contains"
+    },
+    {
+      from: "branding",
+      to: "product-design",
+      kind: "contains"
+    }
+  ]}
+/>
+
+---
+
+### Floral Photography Strategy
+
+Each layer uses a **distinct flower species** shot in macro/close-up style, matching the botanical aesthetic from prior "approach swatches" work:
+
+<Table
+  id="floral-mapping"
+  columns={["Layer", "Flower Species", "Color Palette", "Visual Characteristics"]}
+  rows={[
+    ["Outer: Web Development", "Dahlia or Sunflower", "Warm oranges, yellows, golds", "Bold, architectural petals; repeating geometric patterns"],
+    ["Middle: Marketing", "Rose or Peony", "Deep pinks, magentas, reds", "Layered, lush petals; organic chaos meets structure"],
+    ["Inner: Branding", "Chrysanthemum (ref: Image #2)", "Purples, violets, deep burgundy", "Dense, intricate petal structures; complex texture"],
+    ["Core: Product Design", "Anemone or Ranunculus", "Deep blues, teals, blacks", "Delicate center detail; intimate scale; focused core"]
+  ]}
+/>
+
+<Callout id="photo-sourcing" tone="decision">
+
+**Decided: stock photography (Unsplash / Pexels).** No custom shoot, no AI generation. Both licenses allow commercial use without attribution, so the four hero images can ship straight into `public/images/services/`.
+
+Selection rules that keep the four spheres reading as one family:
+- Dark or near-black background so white overlay text stays legible and the circular mask has no visible seam
+- Single flower filling the frame, roughly centered — the crop is a circle, so anything important near the edges gets cut
+- Square or near-square source (crop to 1:1 before export); portrait shots lose the petal edges
+- Shallow depth of field, natural light. Skip anything with visible studio gradients, watermarks, or heavy Instagram-style color filters
+- Pull all four from a similar exposure range; if one is much brighter, correct it rather than swapping in a mismatched shot
+
+Search terms per layer: `macro dahlia dark background`, `peony macro dark`, `chrysanthemum macro purple`, `anemone flower dark macro`.
+
+</Callout>
+
+---
+
+### Text Overlay Strategy
+
+Inspired by the "Gulaabi Sunday" scattered-label approach, but organized by layer:
+
+<Checklist
+  id="text-overlay-rules"
+  items={[
+    {
+      id: "layer-titles",
+      label: "Layer titles (large, bold): Web Development, Marketing, Branding, Product Design",
+      checked: false
+    },
+    {
+      id: "service-labels",
+      label: "Service labels (medium, scattered): Portfolio, E-comm, Instagram, etc.",
+      note: "Positioned organically across the flower surface, following petal curves"
+    },
+    {
+      id: "typography",
+      label: "Typography: Playfair Display for layer titles, Inter for service labels",
+      checked: false
+    },
+    {
+      id: "contrast",
+      label: "Text contrast: White text with subtle dark shadow/glow for legibility over photo",
+      checked: false
+    },
+    {
+      id: "interactive-reveals",
+      label: "Interactive reveals: Hover/tap on a sphere to highlight its service labels",
+      note: "Dim other layers, brighten active layer, animate service text labels to full opacity"
+    }
+  ]}
+/>
+
+---
+
+### Technical Implementation
+
+<TabsBlock
+  id="implementation-files"
+  tabs={[
+    {
+      "id": "component-structure",
+      "label": "NestedSpheresServices.tsx",
+      "blocks": [
+        {
+          "id": "component-note",
+          "type": "rich-text",
+          "data": {
+            "markdown": "One component, two layer sets. `DESKTOP_LAYERS` renders the full four-sphere taxonomy; `MOBILE_LAYERS` collapses it to two spheres below 768px. Parallax comes from a single `useScroll` on the section, mapped per layer through `drift`."
+          }
+        },
+        {
+          "id": "component-code",
+          "type": "annotated-code",
+          "data": {
+            "filename": "app/components/NestedSpheresServices.tsx",
+            "language": "tsx",
+            "code": "'use client';\n\nimport {\n  motion,\n  useReducedMotion,\n  useScroll,\n  useTransform,\n  type MotionValue,\n} from 'framer-motion';\nimport Image from 'next/image';\nimport { useEffect, useRef, useState } from 'react';\n\ntype Layer = {\n  id: string;\n  title: string;\n  image: string;\n  services: string[];\n  radius: number; // % of the square container\n  color: string; // oklch, used for the focus ring\n  drift: number; // px of parallax travel across the scroll range\n};\n\n/** Desktop: four concentric spheres, outermost first. */\nconst DESKTOP_LAYERS: Layer[] = [\n  {\n    id: 'web',\n    title: 'Web Development',\n    image: '/images/services/dahlia.webp',\n    services: ['Portfolio', 'E-commerce', 'Landing Pages', 'Web Apps'],\n    radius: 100,\n    color: 'oklch(0.75 0.15 60)',\n    drift: -40,\n  },\n  {\n    id: 'marketing',\n    title: 'Marketing',\n    image: '/images/services/rose.webp',\n    services: ['Instagram', 'Content Strategy', 'Social Media', 'SEO'],\n    radius: 72,\n    color: 'oklch(0.65 0.2 350)',\n    drift: -14,\n  },\n  {\n    id: 'branding',\n    title: 'Branding',\n    image: '/images/services/chrysanthemum.webp',\n    services: ['Brand Identity', 'Visual Systems', 'Strategy'],\n    radius: 48,\n    color: 'oklch(0.55 0.18 300)',\n    drift: 18,\n  },\n  {\n    id: 'product',\n    title: 'Product Design',\n    image: '/images/services/anemone.webp',\n    services: ['UI/UX', 'Prototyping', 'User Research'],\n    radius: 26,\n    color: 'oklch(0.45 0.12 240)',\n    drift: 46,\n  },\n];\n\n/** Mobile: same taxonomy, collapsed to two spheres so labels stay legible. */\nconst MOBILE_LAYERS: Layer[] = [\n  {\n    id: 'build',\n    title: 'Build & Grow',\n    image: '/images/services/dahlia.webp',\n    services: ['Portfolio', 'E-comm', 'Web Apps', 'Instagram', 'Content', 'SEO'],\n    radius: 100,\n    color: 'oklch(0.75 0.15 60)',\n    drift: -22,\n  },\n  {\n    id: 'shape',\n    title: 'Brand & Product',\n    image: '/images/services/chrysanthemum.webp',\n    services: ['Identity', 'Visual Systems', 'UI/UX', 'Prototyping'],\n    radius: 56,\n    color: 'oklch(0.55 0.18 300)',\n    drift: 22,\n  },\n];\n\nfunction useIsMobile() {\n  const [isMobile, setIsMobile] = useState(false);\n  useEffect(() => {\n    const mq = window.matchMedia('(max-width: 767px)');\n    const sync = () => setIsMobile(mq.matches);\n    sync();\n    mq.addEventListener('change', sync);\n    return () => mq.removeEventListener('change', sync);\n  }, []);\n  return isMobile;\n}\n\ntype SphereProps = {\n  layer: Layer;\n  index: number;\n  depth: number;\n  progress: MotionValue<number>;\n  parallax: boolean;\n  active: string | null;\n  onActivate: (id: string | null) => void;\n};\n\nfunction Sphere({\n  layer,\n  index,\n  depth,\n  progress,\n  parallax,\n  active,\n  onActivate,\n}: SphereProps) {\n  const travel = parallax ? layer.drift : 0;\n  const y = useTransform(progress, [0, 1], [travel, -travel]);\n  const isActive = active === layer.id;\n  const isDimmed = active !== null && !isActive;\n\n  return (\n    <motion.button\n      type=\"button\"\n      aria-label={`${layer.title}: ${layer.services.join(', ')}`}\n      aria-pressed={isActive}\n      className=\"absolute inset-0 m-auto cursor-pointer rounded-full outline-none ring-offset-0 focus-visible:ring-2 focus-visible:ring-white/70\"\n      style={{\n        width: `${layer.radius}%`,\n        height: `${layer.radius}%`,\n        zIndex: depth - index,\n        y,\n      }}\n      initial={{ opacity: 0, scale: 0.82 }}\n      whileInView={{ opacity: 1, scale: 1 }}\n      viewport={{ once: true, margin: '-80px' }}\n      transition={{\n        delay: index * 0.15,\n        type: 'spring',\n        stiffness: 120,\n        damping: 18,\n      }}\n      animate={{ scale: isActive ? 1.04 : 1 }}\n      onPointerEnter={(event) => {\n        if (event.pointerType === 'mouse') onActivate(layer.id);\n      }}\n      onPointerLeave={(event) => {\n        if (event.pointerType === 'mouse') onActivate(null);\n      }}\n      onFocus={() => onActivate(layer.id)}\n      onBlur={() => onActivate(null)}\n      onClick={() => onActivate(isActive ? null : layer.id)}\n    >\n      <span className=\"absolute inset-0 overflow-hidden rounded-full\">\n        <Image\n          src={layer.image}\n          alt=\"\"\n          fill\n          sizes={`${layer.radius}vw`}\n          className=\"object-cover\"\n          priority={index === 0}\n        />\n        <span\n          aria-hidden\n          className=\"absolute inset-0 transition-opacity duration-500\"\n          style={{\n            backgroundColor: 'oklch(0 0 0 / 0.55)',\n            opacity: isDimmed ? 1 : 0,\n          }}\n        />\n      </span>\n\n      <span\n        aria-hidden\n        className=\"pointer-events-none absolute inset-0 rounded-full transition-opacity duration-500\"\n        style={{\n          boxShadow: `inset 0 0 0 1px ${layer.color}, 0 0 48px ${layer.color}`,\n          opacity: isActive ? 0.85 : 0,\n        }}\n      />\n\n      <span\n        aria-hidden\n        className=\"pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif text-white\"\n        style={{\n          fontSize: `clamp(0.95rem, ${layer.radius / 9}vw, 3.25rem)`,\n          textShadow: '0 2px 14px oklch(0 0 0 / 0.85)',\n        }}\n      >\n        {layer.title}\n      </span>\n\n      {layer.services.map((service, serviceIndex) => {\n        const angle =\n          (360 / layer.services.length) * serviceIndex - 90 + index * 12;\n        const distance = 36;\n        return (\n          <motion.span\n            key={service}\n            aria-hidden\n            className=\"pointer-events-none absolute font-sans text-white\"\n            style={{\n              left: `${50 + distance * Math.cos((angle * Math.PI) / 180)}%`,\n              top: `${50 + distance * Math.sin((angle * Math.PI) / 180)}%`,\n              x: '-50%',\n              y: '-50%',\n              fontSize: 'clamp(0.625rem, 0.85vw, 0.875rem)',\n              letterSpacing: '0.08em',\n              textTransform: 'uppercase',\n              textShadow: '0 1px 10px oklch(0 0 0 / 0.9)',\n            }}\n            animate={{ opacity: isActive ? 1 : 0.55 }}\n            transition={{ duration: 0.3 }}\n          >\n            {service}\n          </motion.span>\n        );\n      })}\n    </motion.button>\n  );\n}\n\nexport default function NestedSpheresServices() {\n  const sectionRef = useRef<HTMLElement>(null);\n  const [active, setActive] = useState<string | null>(null);\n  const isMobile = useIsMobile();\n  const prefersReducedMotion = useReducedMotion();\n\n  const { scrollYProgress } = useScroll({\n    target: sectionRef,\n    offset: ['start end', 'end start'],\n  });\n\n  const layers = isMobile ? MOBILE_LAYERS : DESKTOP_LAYERS;\n  const parallax = !prefersReducedMotion;\n\n  return (\n    <section\n      ref={sectionRef}\n      aria-label=\"What we do\"\n      className=\"relative mx-[calc(50%-50vw)] w-screen max-w-none overflow-hidden bg-black py-24 md:py-36\"\n    >\n      <header className=\"relative z-10 mx-auto mb-12 max-w-2xl px-6 text-center md:mb-20\">\n        <h2 className=\"font-serif text-4xl text-white md:text-6xl\">\n          What we do\n        </h2>\n        <p className=\"mt-4 text-base text-white/70 md:text-xl\">\n          Premium services that grow your brand\n        </p>\n      </header>\n\n      <div className=\"relative mx-auto aspect-square w-[88vw] max-w-[68rem] md:w-[76vw]\">\n        {layers.map((layer, index) => (\n          <Sphere\n            key={layer.id}\n            layer={layer}\n            index={index}\n            depth={layers.length}\n            progress={scrollYProgress}\n            parallax={parallax}\n            active={active}\n            onActivate={setActive}\n          />\n        ))}\n      </div>\n\n      <p className=\"relative z-10 mt-10 text-center text-xs uppercase tracking-[0.2em] text-white/40 md:hidden\">\n        Tap a layer to focus\n      </p>\n    </section>\n  );\n}\n",
+            "annotations": [
+              {
+                "lines": "24-62",
+                "label": "Desktop taxonomy — four spheres",
+                "note": "Each layer carries its flower image, its services, a radius (drives the nesting), a focus-ring color, and drift: how far it travels during parallax."
+              },
+              {
+                "lines": "64-83",
+                "label": "Mobile taxonomy — two spheres",
+                "note": "The hybrid answer. Web + Marketing collapse into \"Build & Grow\"; Branding + Product collapse into \"Brand & Product\". Same services, half the rings, so labels stay legible."
+              },
+              {
+                "lines": "85-96",
+                "label": "Breakpoint switch",
+                "note": "matchMedia at 767px picks the layer set. Starts false so SSR renders the desktop nest, then corrects on mount."
+              },
+              {
+                "lines": "116-117",
+                "label": "Parallax offset",
+                "note": "Outer layers get negative drift, inner layers positive, so the stack separates as it scrolls. useTransform reads the shared section progress — no per-sphere scroll listener."
+              },
+              {
+                "lines": "122-152",
+                "label": "Sphere is a real button",
+                "note": "Mouse hover, keyboard focus, and tap all route to the same activate handler. pointerType guards stop touch from firing hover, which is what leaves sticky states on mobile."
+              },
+              {
+                "lines": "162-171",
+                "label": "Dim and focus ring",
+                "note": "Non-active spheres dim to 55% black; the active one gets an inset hairline plus outer glow in its own oklch color."
+              },
+              {
+                "lines": "192-217",
+                "label": "Scattered service labels",
+                "note": "Labels sit on a circle at a fixed 36% radius with a per-layer angular offset, so adjacent rings do not line their text up into columns."
+              },
+              {
+                "lines": "228-234",
+                "label": "One scroll source",
+                "note": "A single useScroll over the section feeds every sphere. prefersReducedMotion zeroes the drift instead of unmounting anything."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "parallax-notes",
+      "label": "Parallax mechanics",
+      "blocks": [
+        {
+          "id": "parallax-note",
+          "type": "rich-text",
+          "data": {
+            "markdown": "The section is the scroll target, tracked from `start end` to `end start` — progress runs 0 to 1 across the whole time the section is on screen. Each sphere maps that to `y: [drift, -drift]`, so the four rings drift apart and back together rather than all sliding as one block.\n\nDrift values are deliberately small (-40px to +46px). Anything larger breaks the nesting illusion: the inner spheres start visibly escaping their parent circle. `overflow-hidden` on the section keeps the outermost ring from bleeding into neighbouring sections at the extremes.\n\nOnly `transform` and `opacity` animate, so the whole thing stays on the compositor. `useReducedMotion` sets drift to zero and the spheres simply hold still."
+          }
+        }
+      ]
+    },
+    {
+      "id": "page-integration",
+      "label": "Page integration",
+      "blocks": [
+        {
+          "id": "integration-note",
+          "type": "rich-text",
+          "data": {
+            "markdown": "Replace the existing services section in `app/page.tsx`. The component is already full-bleed, so it must not sit inside a padded container."
+          }
+        },
+        {
+          "id": "integration-code",
+          "type": "code",
+          "data": {
+            "filename": "app/page.tsx",
+            "language": "tsx",
+            "code": "import NestedSpheresServices from './components/NestedSpheresServices';\n\n// ...\n\n{/* after the Creation of Adam band */}\n<NestedSpheresServices />\n"
+          }
+        }
+      ]
+    }
+  ]}
+/>
+
+---
+
+### Motion Choreography
+
+Following `design-taste-frontend-v1` motion intensity (6/10): spring physics, staggered reveals, and now a subtle scroll parallax between layers.
+
+<Checklist
+  id="motion-checklist"
+  items={[
+    {
+      id: "staggered-entrance",
+      label: "Staggered entrance: each sphere springs in from scale 0.82, delayed 150ms per layer",
+      checked: false,
+      note: "Outermost first, then inward — the taxonomy assembles from the outside in"
+    },
+    {
+      id: "scroll-parallax",
+      label: "Scroll parallax: layers drift apart and back together across the section",
+      checked: false,
+      note: "DECIDED. Single useScroll on the section drives all spheres. Drift runs -40px (outer) through +46px (core), mapped y: [drift, -drift]. Small on purpose — larger values break the nesting illusion"
+    },
+    {
+      id: "hover-interactions",
+      label: "Focus state: active sphere scales to 1.04, the others dim to 55% black",
+      checked: false
+    },
+    {
+      id: "service-label-pulse",
+      label: "Service labels: 0.55 → 1.0 opacity on the active layer",
+      checked: false,
+      note: "Opacity only, no scale — scaling small uppercase type made it blur"
+    },
+    {
+      id: "glow-ring",
+      label: "Focus ring: inset hairline plus outer glow in the layer's own oklch color",
+      checked: false
+    },
+    {
+      id: "reduced-motion",
+      label: "prefers-reduced-motion: drift collapses to zero, spheres hold still",
+      checked: false,
+      note: "Entrance and focus states still work; only the scroll-linked movement is dropped"
+    },
+    {
+      id: "hardware-accelerated",
+      label: "Hardware-accelerated: transform and opacity only",
+      checked: true,
+      note: "Parallax runs through Framer Motion transforms, so no layout work per frame"
+    }
+  ]}
+/>
+
+---
+
+### Mobile: Simplified Two-Layer Nest
+
+<Callout id="mobile-decision" tone="decision">
+
+**Decided: hybrid.** Below 768px the four spheres collapse into two. The circular composition survives — which is the whole point of the section — but each ring gets roughly twice the area, so the service labels stay readable instead of stacking on top of each other.
+
+The merge preserves every service. Nothing is dropped, only regrouped:
+
+</Callout>
+
+<Table
+  id="mobile-merge-map"
+  columns={["Mobile sphere", "Merges", "Services shown"]}
+  rows={[
+    ["Build & Grow (outer, 100%)", "Web Development + Marketing", "Portfolio, E-comm, Web Apps, Instagram, Content, SEO"],
+    ["Brand & Product (inner, 56%)", "Branding + Product Design", "Identity, Visual Systems, UI/UX, Prototyping"]
+  ]}
+/>
+
+<Diagram id="layer-nesting" caption="Same taxonomy, two densities. Mobile merges adjacent pairs rather than abandoning the circles.">
+
+```html
+<div class="diagram-panel" data-rough>
+  <div class="nest-col">
+    <div class="nest-label diagram-muted">Desktop — 4 spheres</div>
+    <div class="ring r1"><span class="rt">Web Development</span>
+      <div class="ring r2"><span class="rt">Marketing</span>
+        <div class="ring r3"><span class="rt">Branding</span>
+          <div class="ring r4"><span class="rt">Product</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="nest-col">
+    <div class="nest-label diagram-muted">Mobile — 2 spheres</div>
+    <div class="ring m1"><span class="rt">Build &amp; Grow</span>
+      <div class="ring m2"><span class="rt">Brand &amp; Product</span></div>
+    </div>
+  </div>
+</div>
+```
+
+```css
+.diagram-panel { display: flex; gap: 48px; justify-content: center; align-items: flex-start; padding: 16px; }
+.nest-col { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.nest-label { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; }
+.ring { position: relative; border-radius: 50%; border: 1px solid var(--wf-border); display: flex; align-items: flex-start; justify-content: center; }
+.rt { position: absolute; top: 10px; font-size: 11px; white-space: nowrap; color: var(--wf-text); }
+.r1 { width: 240px; height: 240px; }
+.r2 { width: 176px; height: 176px; margin-top: 34px; }
+.r3 { width: 116px; height: 116px; margin-top: 30px; }
+.r4 { width: 62px; height: 62px; margin-top: 26px; }
+.r4 .rt { top: 24px; }
+.m1 { width: 240px; height: 240px; }
+.m2 { width: 136px; height: 136px; margin-top: 52px; }
+```
+
+</Diagram>
+
+<Columns id="mobile-responsive">
+<Column id="mobile-desktop-view" label="Desktop — four spheres">
+
+<WireframeBlock id="wf-desktop-spheres">
+  <Screen surface="desktop" caption="Full taxonomy. Hover focuses one ring and dims the rest.">
+    <Title text="What we do" />
+    <Lines n={1} />
+    <Card>
+      <Title text="Web Development" />
+      <Card>
+        <Title text="Marketing" />
+        <Card>
+          <Title text="Branding" />
+          <Card>
+            <Title text="Product Design" />
+          </Card>
+        </Card>
+      </Card>
+    </Card>
+  </Screen>
+</WireframeBlock>
+
+</Column>
+
+<Column id="mobile-mobile-view" label="Mobile — two spheres">
+
+<WireframeBlock id="wf-mobile-spheres">
+  <Screen surface="mobile" caption="Two rings, same services. Tap to focus; hint line sits below.">
+    <Title text="What we do" />
+    <Card>
+      <Title text="Build & Grow" />
+      <Card>
+        <Title text="Brand & Product" />
+      </Card>
+    </Card>
+    <Pill label="Tap a layer to focus" />
+  </Screen>
+</WireframeBlock>
+
+</Column>
+</Columns>
+
+<Checklist
+  id="mobile-solution-checklist"
+  items={[
+    {
+      id: "two-layer-nest",
+      label: "Below 768px: render MOBILE_LAYERS (two spheres) instead of the four-sphere set",
+      checked: false,
+      note: "matchMedia('(max-width: 767px)'), initial state false so SSR emits the desktop nest"
+    },
+    {
+      id: "tap-to-focus",
+      label: "Tap toggles focus on a sphere; tapping again releases it",
+      checked: false,
+      note: "pointerType guards keep touch out of the hover path, which is what causes stuck hover states"
+    },
+    {
+      id: "aspect-ratio",
+      label: "Keep the aspect-square container at 88vw on mobile",
+      checked: false,
+      note: "Square at every breakpoint — a stretched sphere reads as a bug"
+    },
+    {
+      id: "font-scaling",
+      label: "Fluid type via clamp() rather than breakpoint jumps",
+      checked: false,
+      note: "Titles clamp(0.95rem, radius/9 vw, 3.25rem); labels clamp(0.625rem, 0.85vw, 0.875rem)"
+    },
+    {
+      id: "reduced-parallax",
+      label: "Mobile drift is halved (-22px / +22px)",
+      checked: false,
+      note: "Shorter viewport means the same pixel drift reads as much larger movement"
+    },
+    {
+      id: "tap-hint",
+      label: "Show a 'Tap a layer to focus' hint below the composition on mobile only",
+      checked: false,
+      note: "Circles do not obviously read as interactive on touch"
+    }
+  ]}
+/>
+
+---
+
+### Asset Preparation Checklist
+
+<Checklist
+  id="asset-checklist"
+  items={[
+    {
+      id: "dahlia-photo",
+      label: "Download dahlia or sunflower macro (warm golds/oranges) → dahlia.webp",
+      checked: false,
+      note: "1920x1920 min, square crop, dark background. Also serves as the mobile 'Build & Grow' outer sphere"
+    },
+    {
+      id: "rose-photo",
+      label: "Download rose or peony macro (deep pinks/reds) → rose.webp",
+      checked: false,
+      note: "1536x1536 min, square crop, dark background. Desktop only"
+    },
+    {
+      id: "chrysanthemum-photo",
+      label: "Download chrysanthemum macro (purples/violets, ref: Image #2) → chrysanthemum.webp",
+      checked: false,
+      note: "1536x1536 min. Also serves as the mobile 'Brand & Product' inner sphere, so it needs to hold up larger than its desktop 48% ring"
+    },
+    {
+      id: "anemone-photo",
+      label: "Download anemone or ranunculus macro (deep blues/teals/black) → anemone.webp",
+      checked: false,
+      note: "1024x1024 min. Smallest ring at 26%, so resolution demand is lowest"
+    },
+    {
+      id: "license-record",
+      label: "Record source URL and photographer for each of the four images",
+      checked: false,
+      note: "Unsplash and Pexels do not require attribution, but keep provenance in a README next to the files in case a license changes"
+    },
+    {
+      id: "exposure-match",
+      label: "Colour-match the set: bring all four into a similar exposure and contrast range",
+      checked: false,
+      note: "The spheres sit adjacent, so one brighter photo makes the whole nest look assembled from mismatched parts"
+    },
+    {
+      id: "image-optimization",
+      label: "Convert to WebP and verify sharpness at the largest rendered size",
+      checked: false,
+      note: "The outer sphere renders near 68rem wide on desktop — check it does not go soft"
+    },
+    {
+      id: "circle-crop-check",
+      label: "Preview each photo under a circular mask before committing it",
+      checked: false,
+      note: "The interesting part of a macro shot is often off-centre and gets clipped by the round crop"
+    }
+  ]}
+/>
+
+---
+
+### Decisions Locked
+
+<Table
+  id="decisions-table"
+  columns={["Question", "Answer", "Effect on the build"]}
+  rows={[
+    ["Mobile approach", "Hybrid — simplified two-layer nest", "Second MOBILE_LAYERS set; four spheres merge into two below 768px, no services dropped"],
+    ["Scroll parallax", "Yes — subtle", "One useScroll on the section; per-layer drift from -40px to +46px, halved on mobile, zeroed under prefers-reduced-motion"],
+    ["Photography source", "Stock (Unsplash / Pexels)", "Four square macro shots on dark backgrounds; no shoot to schedule, no AI generation"],
+    ["Extra references / constraints", "None given", "Proceeding on the existing ZeroSlash visual language"]
+  ]}
+/>
+
+### Still Open
+
+<QuestionForm
+  id="open-questions-round-2"
+  questions={[
+    {
+      id: "mobile-merge-labels",
+      title: "Are \"Build & Grow\" and \"Brand & Product\" the right mobile sphere names?",
+      subtitle: "The merge needs labels that cover two categories each. These are placeholders.",
+      mode: "single",
+      options: [
+        {
+          id: "keep-proposed",
+          label: "Keep Build & Grow / Brand & Product",
+          detail: "Verb-led and plain; reads as outcomes rather than departments",
+          recommended: true
+        },
+        {
+          id: "slash-pairs",
+          label: "Web / Marketing and Branding / Product",
+          detail: "Keeps the desktop vocabulary exactly, at the cost of longer labels in a small circle"
+        },
+        {
+          id: "custom-labels",
+          label: "Something else",
+          detail: "Give the two mobile groupings your own names"
+        }
+      ],
+      required: false
+    },
+    {
+      id: "section-replace-or-add",
+      title: "Should this replace the current services section outright?",
+      subtitle: "Determines whether the existing markup in app/page.tsx gets deleted or kept alongside.",
+      mode: "single",
+      options: [
+        {
+          id: "replace",
+          label: "Replace it",
+          detail: "The spheres become the only What we do section",
+          recommended: true
+        },
+        {
+          id: "keep-both",
+          label: "Keep both",
+          detail: "Spheres as the visual lead, existing copy retained below as a text fallback"
+        }
+      ],
+      required: false
+    },
+    {
+      id: "build-go-ahead",
+      title: "Anything to settle before implementation starts?",
+      mode: "freeform",
+      placeholder: "Otherwise the next step is sourcing the four photos and building the component."
+    }
+  ]}
+  submitLabel="Send answers"
+/>

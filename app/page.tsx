@@ -17,13 +17,17 @@ import ShineBorder from "@/components/magicui/shine-border"
 import FlowConnector from "@/components/FlowConnector"
 import ContactButton from "@/components/ContactButton"
 import ProjectWizard from "@/components/ProjectWizard"
+import BouquetSway from "@/components/hero/BouquetSway"
 import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/components/lazy-on-view"
 import { useState, useEffect, useRef } from "react"
-const ServicesSection = nextDynamic(() => import("@/components/sections/Services"), { ssr: false, loading: () => null })
+const ServicesSection = nextDynamic(() => import("@/components/sections/ServicesSpheres"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
 const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
+/* Living-root hero background. Client-only so the hero copy still renders on the
+   server; the canvas fades in once the scene has painted. */
+const SylvaRootsBackground = nextDynamic(() => import("@/components/hero/sylva-roots/SylvaRootsBackground"), { ssr: false, loading: () => null })
 // (removed unused DynamicFlowConnector)
 
 /* How We Work — three equal tiles. Each carries a macro floral photograph; the
@@ -101,7 +105,10 @@ export default function Home() {
     <div className="w-full bg-background">
       {/* Floral Editorial Hero — COVER HOME SCREEN — big type + big bouquet */}
       <section id="hero" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] min-h-[100svh] flex flex-col overflow-hidden">
-        <div className="w-full bg-[rgb(251,250,248)] relative flex-1 flex flex-col">
+        {/* Living roots. First child so it sits behind everything; the hero's own
+            overflow-hidden clips it. */}
+        <SylvaRootsBackground />
+        <div className="w-full relative flex-1 flex flex-col z-10">
             {/* Grid 46 / 54 — full viewport */}
             <div className="grid grid-cols-1 lg:grid-cols-[46%_54%] relative flex-1 min-h-[calc(100svh-80px)] items-stretch">
               {/* Vertical label desktop */}
@@ -109,7 +116,7 @@ export default function Home() {
                 <span className="text-[10px] tracking-[0.2em] uppercase text-black/30 font-medium">Work <span className="mx-1">→</span> Studio</span>
               </div>
               {/* LEFT 46% — Zeroslash */}
-              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center bg-[rgb(251,250,248)]">
+              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center">
                 <div className="flex items-center gap-2 mb-5 md:mb-7">
                   <span className="w-3.5 h-3.5 rounded-full border border-black grid place-items-center"><span className="w-1.5 h-1.5 rounded-full bg-black" /></span>
                   <span className="text-[12px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
@@ -129,8 +136,14 @@ export default function Home() {
                 </div>
               </div>
               {/* RIGHT 54% — Bouquet — COVER */}
-              <div className="relative h-[520px] md:h-[640px] lg:h-auto lg:min-h-[calc(100svh-80px)] bg-[rgb(251,250,248)] overflow-visible lg:self-stretch">
-                <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-center lg:object-[center_center] scale-[1.18] md:scale-[1.22] lg:scale-[1.32] xl:scale-[1.38] lg:translate-x-4 xl:translate-x-6 bg-[rgb(251,250,248)]" sizes="(max-width: 1024px) 100vw, 54vw" />
+              <div className="relative h-[520px] md:h-[640px] lg:h-auto lg:min-h-[calc(100svh-80px)] overflow-visible lg:self-stretch">
+                {/* In front of the roots, so the bouquet stays the hero's subject
+                    and the scene reads through its transparent margin. BouquetSway
+                    puts it on the same wind as the roots, so the two lean together
+                    instead of the PNG sitting there like a sticker. */}
+                <BouquetSway>
+                  <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-center lg:object-[center_center] scale-[1.18] md:scale-[1.22] lg:scale-[1.32] xl:scale-[1.38] lg:translate-x-4 xl:translate-x-6" sizes="(max-width: 1024px) 100vw, 54vw" />
+                </BouquetSway>
                 <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
                   <button aria-label="Up" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowUp className="w-4 h-4" /></button>
                   <button aria-label="Down" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowDown className="w-4 h-4" /></button>
