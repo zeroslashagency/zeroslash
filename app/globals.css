@@ -680,7 +680,16 @@ body > svg.ft-cursor {
 }
 
 /* The header, intro and hero edge share one sky colour on this route. */
-body:has(.dig-topfade) { --marketing-sky-top: #86bdee; }
+body:has(.dig-topfade) {
+  --marketing-sky-top: #86bdee;
+  --marketing-sky-fade: linear-gradient(to bottom,
+    var(--marketing-sky-top) 0%,
+    color-mix(in srgb, var(--marketing-sky-top) 94%, transparent) 15%,
+    color-mix(in srgb, var(--marketing-sky-top) 68%, transparent) 40%,
+    color-mix(in srgb, var(--marketing-sky-top) 28%, transparent) 70%,
+    color-mix(in srgb, var(--marketing-sky-top) 6%, transparent) 90%,
+    transparent 100%);
+}
 body.night:has(.dig-topfade) { --marketing-sky-top: #1f3b6d; }
 
 header.dig-top,
@@ -699,20 +708,28 @@ header.dig-top {
 #marketing-scope .hero::after {
   position: absolute;
   inset: 0 0 auto;
-  z-index: 1;
   height: 260px;
-  background: linear-gradient(to bottom,
-    var(--marketing-sky-top) 0%,
-    color-mix(in srgb, var(--marketing-sky-top) 94%, transparent) 15%,
-    color-mix(in srgb, var(--marketing-sky-top) 68%, transparent) 40%,
-    color-mix(in srgb, var(--marketing-sky-top) 28%, transparent) 70%,
-    color-mix(in srgb, var(--marketing-sky-top) 6%, transparent) 90%,
-    transparent 100%);
+  background: var(--marketing-sky-fade);
   pointer-events: none;
   content: "";
 }
 
+#marketing-scope .hero::after { z-index: 1; }
 #marketing-scope .hero-content { z-index: 2; }
+/* Fade only decorative art; transparency stays clean as the content scales. */
+#marketing-scope .hero-sky-art {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, transparent 0px, rgba(0, 0, 0, 0.06) 40px, rgba(0, 0, 0, 0.32) 100px, rgba(0, 0, 0, 0.72) 180px, black 260px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0px, rgba(0, 0, 0, 0.06) 40px, rgba(0, 0, 0, 0.32) 100px, rgba(0, 0, 0, 0.72) 180px, black 260px);
+}
+#marketing-scope .hero-content > .hero-eyebrow,
+#marketing-scope .hero-content > h1,
+#marketing-scope .hero-vertical,
+#marketing-scope .h-line,
+#marketing-scope .hero-content > .recorder { z-index: 4; }
 
 /* ── Contact page: staggered editorial reveal ────────────────────────── */
 .contact-reveal {
