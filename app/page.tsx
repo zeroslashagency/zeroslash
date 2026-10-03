@@ -1043,22 +1043,17 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Left - Professional Image (place after content on mobile) */}
+                {/* Artwork follows content on mobile. */}
                 <div className="relative order-2 lg:order-1 mt-6 lg:mt-0 min-w-0">
-                  <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl overflow-hidden shadow-2xl">
-                    <Image
-                      src="/images/x2.jpeg"
-                      alt="Professional team member discussing digital strategy"
-                      width={800}
-                      height={600}
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                      loading="lazy"
-                      className="w-full h-auto max-w-full object-contain"
-                    />
-                  </div>
-                  {/* Decorative elements (hide on mobile to avoid overflow outside section) */}
-                  <div className="hidden sm:block absolute -top-4 -right-4 w-8 h-8 bg-black rounded-full opacity-20"></div>
-                  <div className="hidden sm:block absolute -bottom-4 -left-4 w-6 h-6 bg-black rounded-full opacity-30"></div>
+                  <Image
+                    src="/images/trusted-digital-partner.webp"
+                    alt="ZeroSlash Agency and Grow Together badges surrounded by greenery"
+                    width={1254}
+                    height={1254}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                    loading="lazy"
+                    className="w-full h-auto max-w-full object-contain"
+                  />
                 </div>
 
                 {/* Right - Content (show before image on mobile) */}

@@ -679,52 +679,40 @@ body > svg.ft-cursor {
   display: none !important;
 }
 
-/* ── Digital-marketing top fade: stitch the header + intro strip into the hero sky ── */
-header.dig-top {
-  background: linear-gradient(to bottom, #a3cdf7 0%, #86bdee 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
+/* The header, intro and hero edge share one sky colour on this route. */
+body:has(.dig-topfade) { --marketing-sky-top: #86bdee; }
+body.night:has(.dig-topfade) { --marketing-sky-top: #1f3b6d; }
 
-.dig-topfade {
-  background: linear-gradient(to bottom, #86bdee 0%, #71b7f4 100%);
-}
-
-/* The vendored hero sticks 72px below the viewport top (integration override for
-   the fixed site header), and engines shift it further at runtime — so instead
-   of blending one fixed line, the whole top region is one slow blue wash in
-   the hero's own tones with matching grain. Wherever the hero boundary lands,
-   both sides are the same blue. The opaque hero covers everything below. */
+header.dig-top,
+.dig-topfade,
 body #marketing-scope {
-  background: linear-gradient(
-    to bottom,
-    #a3cdf7 0px,
-    #86bdee 90px,
-    #71b7f4 200px,
-    #67a3d7 340px,
-    #63a0d4 460px,
-    var(--bg-base) 600px
-  );
+  background: var(--marketing-sky-top);
 }
 
-body.night header.dig-top {
-  background: linear-gradient(to bottom, #274b85 0%, #1f3b6d 100%);
+header.dig-top {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-body.night .dig-topfade {
-  background: linear-gradient(to bottom, #1f3b6d 0%, #16305c 100%);
+/* Anchor the blend to the hero itself so it follows the sticky/scroll engine.
+   The opaque first stop covers the shader edge; content paints above it. */
+#marketing-scope .hero::after {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 260px;
+  background: linear-gradient(to bottom,
+    var(--marketing-sky-top) 0%,
+    color-mix(in srgb, var(--marketing-sky-top) 94%, transparent) 15%,
+    color-mix(in srgb, var(--marketing-sky-top) 68%, transparent) 40%,
+    color-mix(in srgb, var(--marketing-sky-top) 28%, transparent) 70%,
+    color-mix(in srgb, var(--marketing-sky-top) 6%, transparent) 90%,
+    transparent 100%);
+  pointer-events: none;
+  content: "";
 }
 
-body.night #marketing-scope {
-  background: linear-gradient(
-    to bottom,
-    #274b85 0px,
-    #1f3b6d 200px,
-    #16305c 340px,
-    #122a52 460px,
-    var(--bg-base) 600px
-  );
-}
+#marketing-scope .hero-content { z-index: 2; }
 
 /* ── Contact page: staggered editorial reveal ────────────────────────── */
 .contact-reveal {
