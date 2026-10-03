@@ -1,7 +1,6 @@
 "use client"
 
-import { useEffect, useId, useRef, useState, type KeyboardEvent, type CSSProperties } from "react"
-import WaterBackground from "./WaterBackground"
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react"
 import ServiceJourney, { type JourneyService } from "./ServiceJourney"
 
 const SERVICES: { id: JourneyService; title: string; color: string }[] = [
@@ -29,7 +28,6 @@ export default function ServicesFlora() {
   const section = useRef<HTMLElement>(null)
   const tabs = useRef<(HTMLButtonElement | null)[]>([])
   const id = useId()
-  const service = SERVICES[activeIndex]
 
   useEffect(() => {
     const element = section.current
@@ -57,7 +55,9 @@ export default function ServicesFlora() {
   function onTabKeyDown(event: KeyboardEvent<HTMLButtonElement>, index: number) {
     let next: number
     switch (event.key) {
+      case "ArrowDown":
       case "ArrowRight": next = (index + 1) % SERVICES.length; break
+      case "ArrowUp":
       case "ArrowLeft": next = (index + SERVICES.length - 1) % SERVICES.length; break
       case "Home": next = 0; break
       case "End": next = SERVICES.length - 1; break
@@ -69,12 +69,11 @@ export default function ServicesFlora() {
   }
 
   return (
-    <section ref={section} aria-labelledby={`${id}-heading`} className="flora-section" style={{ "--flora-color": service.color } as CSSProperties}>
-      <WaterBackground color={service.color} />
+    <section ref={section} aria-labelledby={`${id}-heading`} className="flora-section">
       <div className="flora-shell">
         <div className="flora-content">
           <p id={`${id}-heading`} className="flora-eyebrow">What we do</p>
-          <div role="tablist" aria-label="Our services" className="flora-tabs">
+          <div role="tablist" aria-label="Our services" aria-orientation="vertical" className="flora-tabs">
             {SERVICES.map((item, index) => (
               <button
                 key={item.id}
@@ -92,7 +91,9 @@ export default function ServicesFlora() {
                 onFocus={() => setActiveIndex(index)}
                 onClick={() => setActiveIndex(index)}
                 onKeyDown={(event) => onTabKeyDown(event, index)}
-              >{item.title}</button>
+              >
+                <span className="flora-tab-label">{item.title}</span>
+              </button>
             ))}
           </div>
           {SERVICES.map((item, index) => (
