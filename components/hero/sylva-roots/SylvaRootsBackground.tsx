@@ -102,8 +102,14 @@ export default function SylvaRootsBackground() {
             // Protects the social bar / pagination dots corner.
             "radial-gradient(62% 44% at 0% 104%, rgb(251,250,248) 0%, rgba(251,250,248,0.95) 34%, rgba(251,250,248,0.6) 60%, rgba(251,250,248,0) 86%)",
             // Sits under the headline and meta row only, so the ridge below and
-            // to the right of the type stays readable as a form.
-            "radial-gradient(40% 30% at 10% 54%, rgba(251,250,248,0.94) 0%, rgba(251,250,248,0.62) 52%, rgba(251,250,248,0) 84%)",
+            // to the right of the type stays readable as a form. Narrowed from
+            // 40%x30% once the type moved up: a wide wash here was also greying
+            // out the arch, which is the thing we want visible.
+            // Tightened again (0.93/0.58 → 0.80/0.42, 31%x25% → 27%x22%) now that
+            // the additive glow and the white pollen are gone. The measured
+            // headline contrast had huge margin — glyphs at luminance 0 on a 249
+            // background — so this was spending scene visibility it did not need.
+            "radial-gradient(27% 22% at 8% 46%, rgba(251,250,248,0.80) 0%, rgba(251,250,248,0.42) 50%, rgba(251,250,248,0) 82%)",
             // A narrow left edge, enough to seat the first characters of each
             // line without reaching into the middle of the frame.
             "linear-gradient(to right, rgba(251,250,248,0.95) 0%, rgba(251,250,248,0.55) 14%, rgba(251,250,248,0.14) 26%, rgba(251,250,248,0) 36%)",
@@ -114,22 +120,21 @@ export default function SylvaRootsBackground() {
       {/*
         Bottom fade.
 
-        The moss overscans well past the hero's lower edge, so without this it
+        The moss overscans past the hero's lower edge, so without this it
         terminates on a hard horizontal line where the section clips. Fading it
         into the cream makes the scene read as continuing below the fold.
 
-        Deepened from 22% to 34% with a much slower ramp. The previous curve
-        still had a locatable start, which put a soft but findable horizon across
-        the frame. Spreading the same total coverage over more height and holding
-        the first quarter nearly clear means no single row is where the fade
-        visibly begins — the moss just gets further away until it is paper. The
-        extra depth is also what lets the eye travel under the roots.
+        Now 9% tall, down from 30% → 18% → 9%, and it stays fully transparent
+        through its first third. The job here is only to erase the clip line, and
+        the clip line is one pixel: everything above it that the taller gradients
+        covered was scene being hidden for no reason. Anything more generous also
+        reads as blur, which is the complaint this is answering.
       */}
       <div
-        className="absolute inset-x-0 bottom-0 h-[30%]"
+        className="absolute inset-x-0 bottom-0 h-[9%]"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(251,250,248,0) 0%, rgba(251,250,248,0.06) 30%, rgba(251,250,248,0.20) 52%, rgba(251,250,248,0.46) 70%, rgba(251,250,248,0.76) 85%, rgb(251,250,248) 100%)",
+            "linear-gradient(to bottom, rgba(251,250,248,0) 0%, rgba(251,250,248,0) 30%, rgba(251,250,248,0.10) 52%, rgba(251,250,248,0.30) 72%, rgba(251,250,248,0.68) 89%, rgb(251,250,248) 100%)",
         }}
       />
     </div>

@@ -5,6 +5,8 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import Stepper, { Step } from "@/src/blocks/Components/Stepper/Stepper";
 import { Confetti, type ConfettiRef } from "@/src/components/magicui/confetti";
 import { track } from "@/lib/gtag";
+import Honeypot from "@/components/Honeypot";
+import { isEmail, isOptionalPhone } from "@/lib/validation";
 
 // Simple pill button
 function Pill({ active, children, onClick }: { active?: boolean; children: React.ReactNode; onClick?: () => void }) {
@@ -53,7 +55,41 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
   const [submitting, setSubmitting] = useState(false);
   const submitStartRef = useRef<number>(0);
   const [error, setError] = useState<string | null>(null);
+  // Stepper hides its content once "Complete" is pressed, so the outcome is rendered outside it.
+  const [result, setResult] = useState<"success" | "error" | null>(null);
+  const [stepperKey, setStepperKey] = useState(0);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const confettiRef = useRef<ConfettiRef>(null);
+  const trapRef = useRef<HTMLInputElement>(null);
+
+  const resetAll = () => {
+    setResult(null);
+    setError(null);
+    setStep(1);
+    setStepperKey((k) => k + 1);
+    setData({});
+    setCategoryOther("");
+    setName("");
+    setEmail("");
+    setPhone("");
+    setEmailTouched(false);
+    setPhoneTouched(false);
+  };
+
+  const handleOpenChange = (v: boolean) => {
+    if (submitting) return;
+    onOpenChange(v);
+    // Clear a finished submission so the next open starts fresh; keep in-progress drafts.
+    if (!v && result === "success") resetAll();
+  };
+
+  const retry = () => {
+    setResult(null);
+    setError(null);
+    setStep(6);
+    setStepperKey((k) => k + 1);
+  };
 
 
   const stepName = (n: number) =>
@@ -103,11 +139,16 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
           pages: String(data.pages ?? ""),
           style: data.style || "",
           addons: data.addons || [],
+          website: trapRef.current?.value || "",
         }),
       });
-      const json = await res.json();
+      const json = await res.json().catch(() => null);
       if (!res.ok || !json?.ok) {
-        throw new Error(json?.error || "Submission failed");
+        throw new Error(
+          res.status === 400
+            ? "Some details look invalid. Please check your name and email."
+            : json?.error || "Submission failed"
+        );
       }
       success = true;
       track("project_wizard_submit_success", {
@@ -130,15 +171,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
       const remaining = Math.max(0, minDuration - elapsed);
       setTimeout(() => {
         setSubmitting(false);
-        if (success) {
-          onOpenChange(false);
-          setStep(1);
-          setData({});
-          setCategoryOther("");
-          setName("");
-          setEmail("");
-          setPhone("");
-        }
+        setResult(success ? "success" : "error");
       }, remaining);
     }
   };
@@ -212,9 +245,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
   const canProceed = (s: number) => {
     // Step 1: Name/Email validation
     if (s === 1) {
-      const emailOk = !email || /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
-      const phoneOk = !phone || /^[0-9+()\-.\s]{7,}$/.test(phone);
-      return name.trim().length > 0 && emailOk && phoneOk;
+      return name.trim().length > 0 && isEmail(email) && isOptionalPhone(phone);
     }
     // Step 2: Category
     if (s === 2) {
@@ -232,7 +263,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-5xl bg-transparent border-0 shadow-none rounded-none p-0 relative">
         {/* Accessible title for screen readers (required by Radix) */}
         <DialogTitle className="sr-only">Project Wizard</DialogTitle>
@@ -252,8 +283,57 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
             </div>
           </div>
         )}
-        {/* React Bits Stepper */}
+        {result ? (
+          <div className="w-full max-w-5xl mx-auto p-4">
+            <div
+              role={result === "error" ? "alert" : "status"}
+              aria-live="polite"
+              className="bg-card border border-border rounded-3xl p-8 md:p-12 text-center space-y-4"
+            >
+              {result === "success" ? (
+                <>
+                  <h3 className="text-xl md:text-2xl font-semibold">Thanks{name.trim() ? `, ${name.trim().split(/\s+/)[0]}` : ""}. We have your project.</h3>
+                  <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
+                    We&apos;ll review the details and reply to <span className="text-foreground">{email}</span>, usually within one business day.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenChange(false)}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-foreground text-background px-6 text-sm font-medium"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-xl md:text-2xl font-semibold">We couldn&apos;t send your project</h3>
+                  <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto">
+                    {error || "Something went wrong."} Your answers are still here.
+                  </p>
+                  <div className="pt-2 flex flex-wrap justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={retry}
+                      className="inline-flex min-h-11 items-center justify-center rounded-full bg-foreground text-background px-6 text-sm font-medium"
+                    >
+                      Review and try again
+                    </button>
+                    <a
+                      href="mailto:hello@zeroslash.in"
+                      className="inline-flex min-h-11 items-center justify-center rounded-full border border-border px-6 text-sm font-medium"
+                    >
+                      Email us instead
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        ) : (
         <Stepper
+          key={stepperKey}
           className="w-full max-w-5xl mx-auto"
           initialStep={step}
           onStepChange={(n) => {
@@ -275,28 +355,61 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
           {/* Step 1: Name / Email */}
           <Step>
             <Section title="Let's start with you" subtitle="Tell us who to contact about this project.">
-              <div className="grid gap-3">
+              <div className="relative grid gap-3">
+                <Honeypot ref={trapRef} />
                 <input
                   type="text"
+                  aria-label="Your name"
+                  autoComplete="name"
+                  required
                   className="w-full rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20"
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
-                <input
-                  type="email"
-                  className="w-full rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20"
-                  placeholder="Email (for updates)"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                <input
-                  type="tel"
-                  className="w-full rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20"
-                  placeholder="Phone (optional)"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
+                <div>
+                  <input
+                    type="email"
+                    aria-label="Email"
+                    autoComplete="email"
+                    required
+                    aria-invalid={emailTouched && !isEmail(email)}
+                    aria-describedby="wizard-email-hint"
+                    className={`w-full rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20 ${
+                      emailTouched && !isEmail(email) ? "border-red-500" : ""
+                    }`}
+                    placeholder="Email (so we can reply)"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onBlur={() => setEmailTouched(true)}
+                  />
+                  {emailTouched && !isEmail(email) ? (
+                    <p id="wizard-email-hint" className="mt-1 px-4 text-xs text-red-600">
+                      {email.trim() ? "Enter a valid email address." : "Email is required so we can reply."}
+                    </p>
+                  ) : null}
+                </div>
+                <div>
+                  <input
+                    type="tel"
+                    aria-label="Phone (optional)"
+                    autoComplete="tel"
+                    aria-invalid={phoneTouched && !isOptionalPhone(phone)}
+                    aria-describedby="wizard-phone-hint"
+                    className={`w-full rounded-full border px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-foreground/20 ${
+                      phoneTouched && !isOptionalPhone(phone) ? "border-red-500" : ""
+                    }`}
+                    placeholder="Phone (optional)"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    onBlur={() => setPhoneTouched(true)}
+                  />
+                  {phoneTouched && !isOptionalPhone(phone) ? (
+                    <p id="wizard-phone-hint" className="mt-1 px-4 text-xs text-red-600">
+                      Use at least 7 digits; spaces, +, ( ) and - are fine.
+                    </p>
+                  ) : null}
+                </div>
               </div>
             </Section>
           </Step>
@@ -460,6 +573,7 @@ export default function ProjectWizard({ open, onOpenChange }: { open: boolean; o
             </Section>
           </Step>
         </Stepper>
+        )}
       </DialogContent>
     </Dialog>
   );

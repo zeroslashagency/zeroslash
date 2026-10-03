@@ -1,50 +1,72 @@
-"use client"
+import ContactChannels from "@/components/contact/ContactChannels"
+import ContactForm from "@/components/contact/ContactForm"
 
-import { motion } from "motion/react"
-import ContactShowcase from "@/components/ContactShowcase"
+const mono = { fontFamily: "var(--font-geist-mono)" }
+const sans = { fontFamily: "var(--font-sans)" }
+
+const STUDIO = [
+  { label: "Studio", value: "Bengaluru, India" },
+  { label: "Clients", value: "Worldwide, remote-first" },
+  { label: "Timezone", value: "IST, UTC+5:30" },
+  { label: "Response", value: "Within 24 hours" },
+] as const
 
 export default function ContactPage() {
   return (
-    <div className="relative bg-background text-foreground overflow-hidden">
-      {/* Ambient background accents */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 opacity-[0.6] dark:opacity-[0.9]" style={{
-        background:
-          "radial-gradient(40% 40% at 20% 10%, rgba(183,255,99,0.10), transparent 60%), radial-gradient(40% 40% at 80% 20%, rgba(255,122,182,0.08), transparent 60%)"
-      }} />
-      <section className="relative container mx-auto px-4 md:px-6 pt-16 md:pt-24 pb-12 text-center">
-        <motion.div className="flex items-center justify-center" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>
-          <span
-            className="relative inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] uppercase tracking-widest ring-1 ring-border/60 bg-foreground/5"
+    <div className="bg-background text-foreground">
+      <section aria-labelledby="contact-heading" className="container mx-auto px-4 pb-16 pt-12 md:px-6 md:pb-24 md:pt-20">
+        <div className="mx-auto max-w-7xl">
+          <div
+            className="contact-reveal rounded-[24px] border border-foreground/10 bg-white px-6 py-10 shadow-[0_32px_80px_-40px_rgba(20,16,12,0.28)] sm:px-10 md:p-14 dark:border-white/10 dark:bg-white/[0.03] dark:shadow-none"
+            style={{ ["--index" as string]: 0 }}
           >
-            {/* pulsing status dot */}
-            <span className="relative inline-block h-2 w-2">
-              <motion.span
-                className="absolute inset-0 rounded-full bg-green-500"
-                animate={{ scale: [1, 1.15, 1], opacity: [0.9, 0.7, 0.9] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-              />
-              <motion.span
-                aria-hidden
-                className="absolute inset-[-6px] rounded-full bg-green-400/30"
-                animate={{ scale: [0.6, 1.2, 0.6], opacity: [0.15, 0.0, 0.15] }}
-                transition={{ duration: 1.6, repeat: Infinity, ease: "easeOut", delay: 0.1 }}
-              />
-            </span>
-            Available for collabs
-          </span>
-        </motion.div>
-        <motion.h1 className="text-4xl md:text-6xl font-black mt-5 mb-3 tracking-tight" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">Let’s Talk</span>
-        </motion.h1>
-        <motion.p className="text-foreground/70 max-w-2xl mx-auto" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-          Tell me what you’re building. I’ll respond within 24 hours with next steps.
-        </motion.p>
+            <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:gap-16 [&>*]:min-w-0">
+              {/* Left: pitch + direct channels + studio facts */}
+              <div className="flex min-w-0 flex-col">
+                <p className="text-[11px] uppercase tracking-[0.22em] text-foreground/45" style={mono}>
+                  We&rsquo;re here to help you
+                </p>
+                <h1
+                  id="contact-heading"
+                  className="mt-5 text-4xl leading-[1.04] tracking-[-0.02em] text-foreground sm:text-5xl"
+                  style={sans}
+                >
+                  <span className="font-bold">Tell us</span>
+                  <br />
+                  <span className="font-light">what you&rsquo;re building.</span>
+                </h1>
+                <p className="mt-5 max-w-[42ch] text-[15px] leading-relaxed text-foreground/60">
+                  Websites, brands, and marketing for businesses that want to grow. Send a few lines about the project
+                  and we&rsquo;ll reply within 24 hours with next steps, not a sales script.
+                </p>
+
+                <div className="mt-9">
+                  <ContactChannels />
+                </div>
+
+                <dl className="mt-9 grid grid-cols-2 gap-x-8 gap-y-5 border-t border-foreground/10 pt-7">
+                  {STUDIO.map((s) => (
+                    <div key={s.label}>
+                      <dt className="text-[10px] uppercase tracking-[0.18em] text-foreground/45 sm:text-[11px]" style={mono}>
+                        {s.label}
+                      </dt>
+                      <dd className="mt-1 text-sm font-medium text-foreground sm:text-[15px]">{s.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+
+              {/* Right: inquiry form in a soft inset panel */}
+              <div className="min-w-0">
+                <div className="h-full rounded-2xl bg-background p-6 sm:p-8 dark:bg-white/[0.04]">
+                  <ContactForm />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
-      {/* Contact showcase with separated, animated cards */}
-      <ContactShowcase />
-      {/** Form removed per request **/}
+
     </div>
   )
 }
-
-

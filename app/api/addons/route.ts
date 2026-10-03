@@ -1,16 +1,26 @@
 import { NextResponse } from "next/server";
+import { EMAIL_RE, failure, isBot, postUpstream, rateLimited, readJson, str } from "@/lib/api";
 
 export const runtime = 'edge';
 
 // Server-side proxy to Google Apps Script Web App for Add-ons submissions
 // Set GS_ADDONS_WEB_APP_URL in your .env.local to the Web App "exec" URL
 export async function POST(req: Request) {
-  try {
-    const { name = "", email = "", addon = "", phone = "" } = await req.json();
+  if (rateLimited(req, "addons")) return failure("addons", 429);
 
-    const nameOk = typeof name === "string" && name.trim().length > 0;
-    const emailOk = typeof email === "string" && /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
-    const addonOk = typeof addon === "string" && addon.trim().length > 0;
+  try {
+    const body = await readJson(req);
+    if (!body) return failure("addons", 400);
+    if (isBot(body)) return NextResponse.json({ ok: true });
+
+    const name = str(body.name, 200);
+    const email = str(body.email, 320);
+    const addon = str(body.addon, 200);
+    const phone = str(body.phone, 40);
+
+    const nameOk = name.length > 0;
+    const emailOk = EMAIL_RE.test(email);
+    const addonOk = addon.length > 0;
 
     if (!nameOk || !emailOk || !addonOk) {
       return NextResponse.json(
@@ -28,57 +38,15 @@ export async function POST(req: Request) {
     }
 
     const url = process.env.GS_ADDONS_WEB_APP_URL;
+    if (!url) return failure("addons", 500, "GS_ADDONS_WEB_APP_URL not set");
 
-    if (!url) {
-      return NextResponse.json(
-        {
-          ok: false,
-          error: "Server configuration error: GS_ADDONS_WEB_APP_URL not set. Please configure environment variables in Vercel.",
-        },
-        { status: 500 }
-      );
+    const { res, text } = await postUpstream(url, { name, email, addon, phone });
+    if (!res.ok) {
+      return failure("addons", 502, { status: res.status, statusText: res.statusText, body: text.slice(0, 500) });
     }
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-    try {
-      const upstream = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, addon, phone }),
-        signal: controller.signal,
-      });
-
-      const text = await upstream.text();
-      let parsed: unknown = null;
-      try { parsed = JSON.parse(text); } catch {}
-
-      if (!upstream.ok) {
-        return NextResponse.json(
-          {
-            ok: false,
-            error: "Apps Script error",
-            status: upstream.status,
-            statusText: upstream.statusText,
-            detail: text,
-            parsed,
-          },
-          { status: 502 }
-        );
-      }
-
-      if (parsed && typeof parsed === "object") {
-        return NextResponse.json({ ok: true, upstream: parsed });
-      }
-      return NextResponse.json({ ok: true, message: text });
-    } finally {
-      clearTimeout(timeout);
-    }
+    return NextResponse.json({ ok: true });
   } catch (err: unknown) {
     const isAbort = err instanceof Error && err.name === "AbortError";
-    return NextResponse.json(
-      { ok: false, error: isAbort ? "Upstream timeout" : "Server error", detail: String(err) },
-      { status: 500 }
-    );
+    return failure("addons", isAbort ? 504 : 500, err);
   }
 }

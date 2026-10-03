@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import ProjectWizard from "@/components/ProjectWizard"
 import { track } from "@/lib/gtag"
+import Honeypot from "@/components/Honeypot"
 
 const ACCENT_LIME = "#b7ff63"
 const ACCENT_PINK = "#ff7ab6"
@@ -333,6 +334,7 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
   const [submitting, setSubmitting] = useState(false)
   const [status, setStatus] = useState<{ type: 'success' | 'error' | null; message: string }>({ type: null, message: '' })
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
+  const trapRef = useRef<HTMLInputElement | null>(null)
 
   useEffect(() => {
     const el = listRef.current
@@ -345,7 +347,7 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
     setSubmitting(true)
     setStatus({ type: null, message: '' })
     try {
-      const payload = { name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(), addon: addons[active].t }
+      const payload = { name: form.name.trim(), email: form.email.trim(), phone: form.phone.trim(), addon: addons[active].t, website: trapRef.current?.value || '' }
       const res = await fetch('/api/addons', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -353,7 +355,7 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok || data?.ok === false) {
-        const msg = data?.error || data?.detail || `Request failed (${res.status})`
+        const msg = data?.error || `Request failed (${res.status})`
         setStatus({ type: 'error', message: String(msg) })
         return
       }
@@ -362,7 +364,8 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
       // Auto close after short delay
       setTimeout(() => { setModalOpen(false); setStatus({ type: null, message: '' }) }, 900)
     } catch (err) {
-      setStatus({ type: 'error', message: String(err) })
+      console.error('[addons] submit failed', err)
+      setStatus({ type: 'error', message: 'Could not send. Please check your connection and try again.' })
     } finally {
       setSubmitting(false)
     }
@@ -450,7 +453,8 @@ function AddOnsScroller({ addons }: { addons: { t: string; d: string; c: string 
                 </button>
               </div>
               <p className="text-sm mb-4">Selected service: <span className="font-semibold">{addons[active].t}</span></p>
-              <div className="grid gap-3">
+              <div className="relative grid gap-3">
+                <Honeypot ref={trapRef} />
                 <div className="grid gap-1">
                   <label htmlFor="addon-name" className="text-xs font-medium">Full Name</label>
                   <input id="addon-name" value={form.name} onChange={(e)=>setForm(f=>({...f,name:e.target.value}))} className="h-10 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-[#0f0f14] px-3 outline-none focus:ring-2 focus:ring-green-600/30" placeholder="Your name" />

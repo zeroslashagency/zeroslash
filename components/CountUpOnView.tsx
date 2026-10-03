@@ -25,6 +25,22 @@ export default function CountUpOnView({
   const isInView = useInView(containerRef, { once: true, margin: "-20% 0px" });
   const [value, setValue] = useState(0);
   const [hasRun, setHasRun] = useState(false);
+  const [viewportTier, setViewportTier] = useState(0);
+
+  useEffect(() => {
+    const mqSmall = window.matchMedia("(max-width: 639px)");
+    const mqMedium = window.matchMedia("(max-width: 1023px)");
+    const sync = () => setViewportTier(mqSmall.matches ? 1 : mqMedium.matches ? 2 : 0);
+    sync();
+    mqSmall.addEventListener("change", sync);
+    mqMedium.addEventListener("change", sync);
+    return () => {
+      mqSmall.removeEventListener("change", sync);
+      mqMedium.removeEventListener("change", sync);
+    };
+  }, []);
+
+  const effectiveFontSize = viewportTier === 1 ? 40 : viewportTier === 2 ? 52 : fontSize;
 
   useEffect(() => {
     if (!isInView || hasRun) return;
@@ -62,11 +78,11 @@ export default function CountUpOnView({
         whileHover={{ scale: 1.05, y: -4 }}
         transition={{ duration: 0.35, ease: "easeOut" }}
       >
-        <Counter value={value} places={places} fontSize={fontSize} textColor={textColor} horizontalPadding={0} counterStyle={{ gap: 2 }} gradientHeight={0} />
+        <Counter value={value} places={places} fontSize={effectiveFontSize} textColor={textColor} horizontalPadding={0} counterStyle={{ gap: 2 }} gradientHeight={0} />
         {suffix ? (
           <span
             className="font-bold"
-            style={{ fontSize: Math.round(fontSize * 0.9), lineHeight: 1, marginLeft: -2 }}
+            style={{ fontSize: Math.round(effectiveFontSize * 0.9), lineHeight: 1, marginLeft: -2 }}
           >
             {suffix}
           </span>

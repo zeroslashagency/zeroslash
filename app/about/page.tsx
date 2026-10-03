@@ -342,7 +342,7 @@ export default function AboutPage() {
                 </svg>
               </div>
               <div className="font-black tracking-tight text-5xl md:text-7xl lg:text-8xl">
-                <FlipLinkClient href="https://github.com">GITHUB</FlipLinkClient>
+                <FlipLinkClient href="https://github.com/zeroslashx1">GITHUB</FlipLinkClient>
               </div>
             </div>
 

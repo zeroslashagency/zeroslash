@@ -2,8 +2,8 @@
 const nextConfig = {
   // Remove the X-Powered-By: Next.js header
   poweredByHeader: false,
-  // Emit browser source maps in production to aid debugging (temporarily enabled)
-  productionBrowserSourceMaps: true,
+  // Keep source out of production bundles. Flip on locally when debugging a prod build.
+  productionBrowserSourceMaps: false,
   // Enforce linting and type-checking during builds to catch issues early
   eslint: {
     ignoreDuringBuilds: false,
@@ -40,8 +40,9 @@ const nextConfig = {
       "img-src 'self' data: https: https://*.facebook.com",
       // Inline styles are sometimes required for libs; consider removing 'unsafe-inline' if fully CSP-compliant
       "style-src 'self' 'unsafe-inline'",
-      // Scripts: allow Google Analytics, Meta Pixel, and necessary inline scripts
-      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.googletagmanager.com https://connect.facebook.net blob:",
+      // Scripts: allow Google Analytics, Meta Pixel, and the inline GA/pixel bootstraps.
+      // No 'unsafe-eval' in production: neither the app bundles nor gtag/fbevents need it.
+      isDev ? "script-src 'self' 'unsafe-eval' 'unsafe-inline'" : "script-src 'self' 'unsafe-inline' https://*.googletagmanager.com https://connect.facebook.net blob:",
       // Fonts may be loaded as data URLs
       "font-src 'self' data:"
     ].join('; ')
@@ -65,21 +66,21 @@ const nextConfig = {
         // Next static build assets
         source: '/_next/static/(.*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cache-Control', value: isDev ? 'no-store' : 'public, max-age=31536000, immutable' },
         ],
       },
       {
         // Public images
         source: '/images/(.*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cache-Control', value: isDev ? 'no-store' : 'public, max-age=31536000, immutable' },
         ],
       },
       {
         // Public fonts
         source: '/fonts/(.*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+          { key: 'Cache-Control', value: isDev ? 'no-store' : 'public, max-age=31536000, immutable' },
         ],
       },
     ]
@@ -87,4 +88,3 @@ const nextConfig = {
 }
 
 export default nextConfig
-

@@ -30,7 +30,11 @@ export function createScene(opts) {
 
   // ---- source module scope -------------------------------------------------
 
-  var ARCH   = { w: 1900, left: -180, top: 306, aspect: 2800 / 1377 };
+  /* Widened 1900 → 2320. Raising the pin alone lifted the moss floor with the
+     rest of the form and put its bottom edge inside the frame as a hard line.
+     Scaling the whole arch up instead sends the crown higher *and* the floor
+     further below the fold, so the form gains presence without exposing an edge. */
+  var ARCH   = { w: 2320, left: -180, top: 306, aspect: 2800 / 1377 };
   var ARCH_N = { w: 1120, left: -290, top: 555, aspect: 2800 / 1377 };
   var FAR    = { w: 1150, left:  -40, top: 320, aspect: 1600 /  757, z: -260 };
   var FAR_N  = { w:  780, left: -110, top: 600, aspect: 1600 /  757, z: -260 };
@@ -575,10 +579,11 @@ export function createScene(opts) {
        the blades and ferns read as frozen. A slow gust envelope rides on top so
        the motion swells and eases instead of ticking at a fixed rate. */
     '  float gust = 0.72 + 0.42 * sin(uTime * 0.13 + 1.7);',
-    /* Raised again from 0.062. Behind the bouquet and under a headline the scene
-       has to carry its motion at a glance; much below this the moss reads as a
-       photograph, much above it the blades shear away from their own bases. */
-    '  float a = 0.088 * uWind * gust;',
+    /* Raised again, 0.062 → 0.088 → 0.125. Behind the bouquet and under a
+       headline the scene has to carry its motion at a glance; much below this the
+       moss reads as a photograph. 0.125 is the practical ceiling — past roughly
+       0.14 the blade tips start shearing visibly away from their own bases. */
+    '  float a = 0.125 * uWind * gust;',
     '  return vec3((sin(uTime * 0.58 + ph) + 0.45 * sin(uTime * 1.37 + ph * 2.3)) * a,',
     '              sin(uTime * 0.79 + ph * 1.7) * a * 0.42,',
     '              sin(uTime * 0.51 + ph * 0.9) * a * 0.55);',
@@ -1310,8 +1315,13 @@ export function createScene(opts) {
      the cores so they are not uniform mush, a vertical ramp keeps the top of
      the frame clear (haze belongs low, near the floor the roots grow out of),
      and a radial falloff keeps the corners empty so the layer never announces
-     its own rectangular edge. */
+     its own rectangular edge.
+
+     Disabled by default via CLOUD.strength = 0 — the bail-out below skips the
+     geometry and the shader compile entirely rather than drawing a fully
+     transparent quad every frame. */
   function buildCloud() {
+    if (CLOUD.strength <= 0) return;
     cloudMesh = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 1, 1), new THREE.ShaderMaterial({
       uniforms: {
         uTime: uTime,
@@ -1372,21 +1382,31 @@ export function createScene(opts) {
     var geo = new THREE.PlaneGeometry(1, 1, 1, 1);
 
     shadowMesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
-      map: radialTexture(256, [[0, 'rgba(12,16,10,0.62)'], [0.45, 'rgba(12,16,10,0.26)'], [1, 'rgba(12,16,10,0)']]),
+      /* 0.62 → 0.74 → 0.66. Contact shadow is now the only thing seating the form
+         on the paper, and it works in the safe direction on a light plate: darker,
+         never whiter. But 0.74 laid a grey smudge across the left flank that
+         muted the moss texture — trading a white veil for a grey one. 0.66 keeps
+         the seating without flattening the moss. */
+      map: radialTexture(256, [[0, 'rgba(12,16,10,0.66)'], [0.45, 'rgba(12,16,10,0.28)'], [1, 'rgba(12,16,10,0)']]),
       transparent: true, depthWrite: false, depthTest: false
     }));
     shadowMesh.renderOrder = 1;
     shadowMesh.position.z = -70;
     scene.add(shadowMesh);
 
-    glowMesh = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({
-      map: radialTexture(256, [[0, 'rgba(226,236,212,0.30)'], [0.42, 'rgba(214,226,200,0.10)'], [1, 'rgba(214,226,200,0)']]),
-      transparent: true, depthWrite: false, depthTest: false,
-      blending: THREE.AdditiveBlending
-    }));
-    glowMesh.renderOrder = -1;
-    glowMesh.position.z = -320;
-    scene.add(glowMesh);
+    /* The additive backlight is gone.
+
+       Additive over a cream plate has only one direction to travel: towards
+       white. It was cut 0.30 → 0.10 when the fog came out, but even at 0.10 a
+       full-frame bloom behind the arch is still a white veil, just a fainter one.
+       On dark art it would read as air; here it reads as fog, so it is dropped
+       outright. Separation from the paper now comes from `shadowMesh` below the
+       form, which darkens rather than lightens.
+
+       `glowMesh` stays declared and null: `layout()` and `dispose()` both
+       null-guard it, so nothing downstream needs to change and the backlight can
+       be restored by rebuilding it here. */
+    glowMesh = null;
 
     /* ---- drifting pollen --------------------------------------------
        Enough of it to read as air rather than as a handful of sprites, which
@@ -1411,16 +1431,24 @@ export function createScene(opts) {
     pg.setAttribute('position', new THREE.BufferAttribute(pos, 3));
     pg.setAttribute('seed', new THREE.BufferAttribute(seed, 4));
 
-    poleTex = radialTexture(64, [[0, 'rgba(255,255,255,1)'], [0.35, 'rgba(236,244,224,0.5)'], [1, 'rgba(236,244,224,0)']]);
+    /* Sage, not white, and composited normally rather than additively.
+
+       This layer was the last of the white wash. Additive blending over a cream
+       plate can only travel towards white, so 3,200 sprites with an
+       rgb(255,255,255) core behaved as one soft bloom spread across the whole
+       frame — exactly the "white cloud" the fog removal was supposed to have
+       ended. Normal blending with a mid-sage core lets a mote sit DARKER than the
+       paper, so it reads as a speck of pollen catching light instead of as haze. */
+    poleTex = radialTexture(64, [[0, 'rgba(150,166,128,1)'], [0.35, 'rgba(163,178,142,0.42)'], [1, 'rgba(163,178,142,0)']]);
     motes = new THREE.Points(pg, new THREE.ShaderMaterial({
       uniforms: {
         uTime: uTime,
         uMap: { value: poleTex },
-        uSize: { value: 9 },
+        uSize: { value: 7.4 },
         uScale: { value: 440 }
       },
       transparent: true, depthWrite: false, depthTest: true,
-      blending: THREE.AdditiveBlending,
+      blending: THREE.NormalBlending,
       vertexShader: [
         'attribute vec4 seed;',
         'uniform float uTime, uSize, uScale;',
@@ -1447,7 +1475,7 @@ export function createScene(opts) {
         'varying float vFade;',
         'void main(){',
         '  vec4 t = texture2D(uMap, gl_PointCoord);',
-        '  gl_FragColor = vec4(t.rgb, t.a * vFade * 0.52);',
+        '  gl_FragColor = vec4(t.rgb, t.a * vFade * 0.40);',
         '}'
       ].join('\n')
     }));
@@ -2098,11 +2126,12 @@ export function createScene(opts) {
        lower edge, so aligning the stage flush to the hero would leave a bare
        cream band under the scene. Pushing it down bleeds the moss off-screen,
        which is what makes the roots read as growing out of the page. */
-    /* 0.18, not more. This is a push, not a zoom: every extra unit of bleed sends
-       the whole stage down, so past about this point the arch's crown leaves the
-       top of the hero faster than the moss floor gains ground at the bottom, and
-       the frame ends up with less scene in it rather than more. */
-    var bleed = REF_H * u * 0.18;
+    /* Cut again: 0.18 → 0.09 → 0.02. Bleed pushes the whole stage *down* to win
+       overscan at the bottom, which is the opposite of what the composition needs
+       now that the roots are meant to sit high in the frame. Nearly all of it is
+       handed back to the form; the soft bottom edge is carried by the wrapper's
+       gradient and the shader fade, neither of which depends on this value. */
+    var bleed = REF_H * u * 0.02;
     return { width: width, u: u, ox: (W - width) / 2, oy: H - REF_H * u + bleed };
   }
 
@@ -2150,8 +2179,14 @@ export function createScene(opts) {
        type plus a black social bar, and moss behind those measured at luminance
        83 — nowhere near enough contrast. The roots belong on the right, behind
        the bouquet, where the composition has no dark ink over it. */
-    place(nearGroup, A, 1.02, 0.06, 0);
-    place(farGroup,  F, 0.86, 0.32, F.z);
+    /* Both pins raised again (near 0.06 → -0.16 → -0.05 → -0.20, far 0.32 → 0.12
+       → -0.04). pinFy is measured downward through the root's own box, so a
+       smaller number lifts the form up the frame. The arch kept sitting low
+       enough that its lower half fell into the bottom fade and got blurred away;
+       lifting it puts the crown and the trunk in clear air and leaves only the
+       moss floor near the fade, which is all the fade is for. */
+    place(nearGroup, A, 1.02, -0.20, 0);
+    place(farGroup,  F, 0.86, -0.04, F.z);
 
     var aw = A.w * u * cover, ah = aw / A.aspect;
     var cx = wx(A.left + 0.5 * A.w), cy = wy(A.top + 0.5 * (A.w / A.aspect));
@@ -2254,35 +2289,42 @@ export function createScene(opts) {
 
            Three incommensurable frequencies per axis (no simple ratio between
            them) means the pattern never visibly repeats. */
-        nearGroup.rotation.z = (Math.sin(t * 0.22) * 0.0155
-                             + Math.sin(t * 0.37 + 1.1) * 0.0068
-                             + Math.sin(t * 0.09 + 2.7) * 0.0090);
+        /* Amplitudes roughly doubled and the beats sped up.
+
+           At the previous values the lean peaked near 0.9 degrees and the drift
+           near 1% of the form's width, which measures as motion but does not
+           register as motion: on a 2320px-wide form that is a couple of pixels
+           over several seconds, slower than the eye tracks. Since the complaint
+           is that the animation cannot be felt, the sway now peaks near 2
+           degrees and travels ~2.5% of the span, and the periods are shorter so a
+           full beat lands inside the few seconds someone actually looks at the
+           hero. Still far short of a wobbling cutout. */
+        nearGroup.rotation.z = (Math.sin(t * 0.34) * 0.0320
+                             + Math.sin(t * 0.56 + 1.1) * 0.0140
+                             + Math.sin(t * 0.15 + 2.7) * 0.0185);
         var nb = nearGroup.userData.base;
         if (nb) {
-          /* Sway is a fraction of a percent of the form's width — a few pixels
-             of travel, enough that the eye catches the ring moving against the
-             static bouquet in front of it. */
-          nearGroup.position.x = nb.x + (Math.sin(t * 0.16) * 0.010
-                                       + Math.sin(t * 0.29 + 0.6) * 0.0042) * nb.span;
-          nearGroup.position.y = nb.y + (Math.sin(t * 0.135 + 1.9) * 0.0062
-                                       + Math.sin(t * 0.245 + 0.3) * 0.0026) * nb.span;
-          /* Breath. Under half a percent, but it is the part that makes the ring
-             feel like it is under its own tension rather than being nudged. */
-          nearGroup.scale.setScalar(nb.scale * (1 + Math.sin(t * 0.115 + 0.4) * 0.0042
-                                                  + Math.sin(t * 0.19 + 2.2) * 0.0018));
+          nearGroup.position.x = nb.x + (Math.sin(t * 0.25) * 0.0215
+                                       + Math.sin(t * 0.44 + 0.6) * 0.0090) * nb.span;
+          nearGroup.position.y = nb.y + (Math.sin(t * 0.21 + 1.9) * 0.0135
+                                       + Math.sin(t * 0.375 + 0.3) * 0.0056) * nb.span;
+          /* Breath, now ~1%: the part that makes the ring feel like it is under
+             its own tension rather than being nudged. */
+          nearGroup.scale.setScalar(nb.scale * (1 + Math.sin(t * 0.185 + 0.4) * 0.0092
+                                                  + Math.sin(t * 0.30 + 2.2) * 0.0040));
         }
       }
       if (farGroup) {
         farGroup.rotation.y = smooth.x * 0.030;
         /* Counter-phase and slower, so near and far do not drift as one slab and
            the ridge reads as being further away. */
-        farGroup.rotation.z = (Math.sin(t * 0.17 + 2.4) * 0.0092
-                            + Math.sin(t * 0.071 + 0.8) * 0.0055);
+        farGroup.rotation.z = (Math.sin(t * 0.26 + 2.4) * 0.0190
+                            + Math.sin(t * 0.115 + 0.8) * 0.0115);
         var fb = farGroup.userData.base;
         if (fb) {
-          farGroup.position.x = fb.x + Math.sin(t * 0.105 + 3.4) * 0.0072 * fb.span;
-          farGroup.position.y = fb.y + Math.sin(t * 0.088 + 1.2) * 0.0040 * fb.span;
-          farGroup.scale.setScalar(fb.scale * (1 + Math.sin(t * 0.082 + 2.9) * 0.0030));
+          farGroup.position.x = fb.x + Math.sin(t * 0.165 + 3.4) * 0.0150 * fb.span;
+          farGroup.position.y = fb.y + Math.sin(t * 0.140 + 1.2) * 0.0084 * fb.span;
+          farGroup.scale.setScalar(fb.scale * (1 + Math.sin(t * 0.130 + 2.9) * 0.0064));
         }
       }
     }
@@ -2424,7 +2466,13 @@ export function createScene(opts) {
     nearLimbs = nearLimbs.concat(extra);
 
     nearGroup = assembleRoot(nearLimbs, {
-      aspect: ARCH.aspect, haze: 0.15, fog: 0.0, alpha: 1.0, order: 2,
+      /* Haze cut from 0.15 to 0.04. `aerial()` mixes towards uHazeCol, which over
+         cream is near-white paper, so on the *near* root this was pure loss: it
+         is the closest thing in the frame and has no distance to suggest. What it
+         actually did was lift the crown towards the page and make the form look
+         like it was dissolving. Kept just above zero so the top of the arch still
+         softens a touch rather than ending as a decal. */
+      aspect: ARCH.aspect, haze: 0.04, fog: 0.0, alpha: 1.0, order: 2,
       blades: DENSITY.bladesNear, ferns: DENSITY.fernsNear, flowers: DENSITY.flowersNear,
       fernSize: [0.22, 0.50], flowerSize: [0.055, 0.118], mainLimbs: mainCount,
       wire: FEATURES.growthIntro,
@@ -2454,11 +2502,16 @@ export function createScene(opts) {
          what decide whether that side reads as a form or as a smudge.
          Source values (fog 0.26, hazeLift 0.92) were tuned to sink it into a
          dark page; over cream the same numbers mix even its shadows up into the
-         paper and the ridge loses every edge. Halving the flat fog and dropping
-         the lift to 0.34 keeps its darks dark, so the silhouette and the moss
-         texture survive while the crown still fades into the air. */
-      aspect: FAR.aspect, haze: 0.15, fog: 0.11, alpha: 1.0, order: 0,
-      hazeCol: CREAM_TONE.hazeFar.slice(), hazeLift: 0.34,
+         paper and the ridge loses every edge.
+
+         Cut again — fog 0.11 → 0.03, haze 0.15 → 0.06, lift 0.34 → 0.18. `fog` is
+         the flat term applied at every depth, so it was washing the ridge's near
+         edge as hard as its crest: that is the milky veil that made this side of
+         the frame look fogged rather than distant. Depth separation now comes
+         almost entirely from the ridge being smaller, darker and behind, which is
+         what actually reads as distance. */
+      aspect: FAR.aspect, haze: 0.06, fog: 0.03, alpha: 1.0, order: 0,
+      hazeCol: CREAM_TONE.hazeFar.slice(), hazeLift: 0.18,
       blades: DENSITY.bladesFar, ferns: DENSITY.fernsFar, flowers: DENSITY.flowersFar,
       fernSize: [0.26, 0.56], flowerSize: [0.034, 0.062],
       mask: [0.4, 3.4, 0.0, 0.42], wire: FEATURES.growthIntro,

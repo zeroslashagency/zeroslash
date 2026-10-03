@@ -1,22 +1,24 @@
 import type { MetadataRoute } from "next"
+import { SITE_URL } from "@/lib/seo"
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zeroslash.in"
+// Public, indexable routes only. /lab and /api are disallowed in robots.ts.
+const PAGES: { path: string; priority: number; changeFrequency: "daily" | "weekly" | "monthly" }[] = [
+  { path: "", priority: 1, changeFrequency: "weekly" },
+  { path: "/services", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/digital-marketing", priority: 0.9, changeFrequency: "monthly" },
+  { path: "/calculator", priority: 0.8, changeFrequency: "monthly" },
+  { path: "/about", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/reviews", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/contact", priority: 0.7, changeFrequency: "monthly" },
+  { path: "/waitlist", priority: 0.5, changeFrequency: "monthly" },
+]
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString()
-  const pages = [
-    "",
-    "/about",
-    "/services",
-    "/contact",
-    "/reviews",
-    "/waitlist",
-  ]
-
-  return pages.map((path) => ({
+  return PAGES.map(({ path, priority, changeFrequency }) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
-    changeFrequency: path === "" ? "daily" : "weekly",
-    priority: path === "" ? 1 : path === "/services" ? 0.9 : 0.7,
+    changeFrequency,
+    priority,
   }))
 }

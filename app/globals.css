@@ -517,3 +517,244 @@
   --tw-ring-color: oklch(0.62 0.1 45);
   --tw-ring-offset-color: rgb(251, 250, 248);
 }
+
+/* ── Minimal services + sculptural flower ───────────────────────────── */
+.flora-section {
+  position: relative;
+  left: 50%;
+  width: 100vw;
+  margin-left: -50vw;
+  padding: clamp(4rem, 8vw, 8rem) 1.5rem;
+  overflow: hidden;
+  isolation: isolate;
+  color: var(--foreground);
+  background: var(--background);
+}
+
+.flora-water { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.flora-water canvas { display: block; width: 100%; height: 100%; }
+.flora-art { position: relative; isolation: isolate; }
+.flora-art > .flora-flower { z-index: 1; }
+
+.flora-shell {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 6vw, 6rem);
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.flora-content { min-width: 0; }
+
+.flora-eyebrow {
+  margin: 0 0 1.75rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.flora-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  row-gap: 0.85rem;
+  margin-top: 0;
+}
+
+.flora-tab {
+  position: relative;
+  justify-self: start;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 0 0.4rem;
+  border: 0;
+  color: var(--muted-foreground);
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: clamp(1.7rem, 2.4vw, 2.1rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+
+.flora-tab:hover, .flora-tab[aria-selected="true"] { color: var(--foreground); }
+.flora-tab[aria-selected="true"]::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: currentColor;
+  content: "";
+}
+
+.flora-tab:focus-visible, .flora-readout:focus-visible, .journey-control:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 5px;
+  border-radius: 2px;
+}
+
+.flora-readout { min-height: 16rem; padding-top: 0.75rem; }
+.flora-readout[hidden] { display: none; }
+.service-journey { width: 100%; }
+.journey-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.journey-paper { fill: var(--background); }
+.journey-accent, .journey-palette circle[fill] { fill: var(--journey-color); }
+.journey-tint { fill: color-mix(in srgb, var(--journey-color) 25%, var(--background)); }
+.journey-footer { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 0.25rem; }
+.journey-footer p { margin: 0; font-size: 0.9375rem; letter-spacing: -0.025em; }
+.journey-control { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; min-height: 44px; padding: 0 0.25rem; border: 0; background: transparent; color: var(--muted-foreground); font-size: 0.6875rem; cursor: pointer; }
+.journey-control:hover { color: var(--foreground); }
+.journey-train { animation: journey-roll 1.1s ease-in-out infinite; }
+.journey-wheel { animation: journey-wheel-turn 1.25s linear infinite; }
+.journey-sleepers { animation: journey-track 0.7s linear infinite; }
+.journey-scenery { animation: journey-landscape 9s linear infinite; }
+.journey-clouds { animation: journey-cloud-drift 7s ease-in-out infinite alternate; }
+.journey-wave { animation: journey-wave 2.8s ease-in-out infinite; }
+.journey-steam { animation: journey-steam-rise 2.2s ease-out infinite; }
+.journey-code { animation: journey-code-pulse 2.4s ease-in-out infinite; }
+.journey-layout { animation: journey-layout-grow 3s ease-in-out infinite; transform-box: fill-box; transform-origin: left center; }
+.journey-spark { animation: journey-sparkle 2.5s ease-in-out infinite; }
+.journey-megaphone { animation: journey-broadcast 2s ease-in-out infinite; transform-origin: 28px 28px; }
+.journey-signals { animation: journey-signal 2s ease-out infinite; }
+.journey-letter { animation: journey-letter-flight 3s ease-in-out infinite; }
+.journey-audience { animation: journey-audience-wave 2.8s ease-in-out infinite; }
+.journey-audience-second { animation-delay: -0.8s; }
+.journey-audience-third { animation-delay: -1.6s; }
+.journey-palette { animation: journey-palette-turn 4s ease-in-out infinite; }
+.journey-brandmark { animation: journey-brand-turn 8s ease-in-out infinite; }
+.journey-type { animation: journey-type-lift 3s ease-in-out infinite; }
+.journey-wire { animation: journey-code-pulse 3s ease-in-out infinite; }
+.journey-cursor { animation: journey-cursor-tap 3s ease-in-out infinite; }
+.journey-check { animation: journey-check-draw 3s ease-in-out infinite; stroke-dasharray: 32; }
+.service-journey[data-running="false"] svg * { animation-play-state: paused; }
+@keyframes journey-roll { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(1px, -1.2px); } }
+@keyframes journey-wheel-turn { to { transform: rotate(360deg); } }
+@keyframes journey-track { to { transform: translateX(-20px); } }
+@keyframes journey-landscape { from { transform: translateX(12px); } to { transform: translateX(-540px); } }
+@keyframes journey-cloud-drift { to { transform: translateX(-14px); } }
+@keyframes journey-steam-rise { 0% { transform: translate(3px, 6px); opacity: 0; } 25% { opacity: 0.5; } 100% { transform: translate(-10px, -15px); opacity: 0; } }
+@keyframes journey-wave { 0%, 100% { transform: rotate(0); } 35% { transform: rotate(-12deg); } 55% { transform: rotate(8deg); } }
+@keyframes journey-code-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes journey-layout-grow { 0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.7); } }
+@keyframes journey-sparkle { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+@keyframes journey-broadcast { 0%, 100% { transform: rotate(0); } 40% { transform: rotate(-5deg); } 60% { transform: rotate(2deg); } }
+@keyframes journey-signal { 0% { opacity: 0.2; transform: translateX(0); } 50% { opacity: 1; } 100% { opacity: 0; transform: translateX(7px); } }
+@keyframes journey-letter-flight { 0%, 100% { transform: translate(0, 0) rotate(0); } 50% { transform: translate(3px, -9px) rotate(-4deg); } }
+@keyframes journey-audience-wave { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+@keyframes journey-palette-turn { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(8deg); } }
+@keyframes journey-brand-turn { 0%, 15% { transform: rotate(0); } 45%, 65% { transform: rotate(90deg); } 100% { transform: rotate(180deg); } }
+@keyframes journey-type-lift { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+@keyframes journey-cursor-tap { 0%, 100% { transform: translate(8px, 8px); } 45%, 65% { transform: translate(0, 0); } 55% { transform: translate(-1px, -2px); } }
+@keyframes journey-check-draw { 0%, 100% { stroke-dashoffset: 0; } 40% { stroke-dashoffset: 32; } 65% { stroke-dashoffset: 0; } }
+
+.flora-flower { position: relative; width: 100%; height: clamp(24rem, 40vw, 33rem); }
+.flora-flower[hidden] { display: none; }
+.flora-flower canvas { display: block; width: 100%; height: 100%; }
+.flora-image img { display: block; width: 100%; height: 100%; object-fit: contain; transform: scale(1.4); transform-origin: center; }
+
+@media (max-width: 47.99rem) {
+  .flora-section { padding: 4rem 1.5rem 2.5rem; }
+  .flora-shell { grid-template-columns: minmax(0, 1fr); gap: 0.5rem; }
+  .flora-tabs { column-gap: 1rem; row-gap: 0.75rem; }
+  .flora-tab { font-size: clamp(1.5rem, 6.2vw, 1.8rem); }
+  .flora-readout { min-height: 0; padding-bottom: 1.5rem; }
+  .flora-flower { height: 23rem; max-width: 28rem; margin: 0 auto; }
+  .flora-image img { transform: scale(1.12); }
+}
+
+@media (min-width: 48rem) and (max-width: 59.99rem) {
+  .flora-image img { transform: scale(1.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flora-section, .flora-tab { transition: none; }
+  .service-journey svg * { animation: none !important; }
+  .journey-control { display: none; }
+}
+
+/* Cursor nodes belong inside #marketing-scope (their styles only exist there).
+   Anything stranded directly under body is engine leakage: unstyled, in normal
+   flow, and able to stretch the page's scroll width. Never render it. */
+body > .dot-cursor,
+body > svg.ft-cursor {
+  display: none !important;
+}
+
+/* ── Digital-marketing top fade: stitch the header + intro strip into the hero sky ── */
+header.dig-top {
+  background: linear-gradient(to bottom, #a3cdf7 0%, #86bdee 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dig-topfade {
+  background: linear-gradient(to bottom, #86bdee 0%, #71b7f4 100%);
+}
+
+/* The vendored hero sticks 72px below the viewport top (integration override for
+   the fixed site header), and engines shift it further at runtime — so instead
+   of blending one fixed line, the whole top region is one slow blue wash in
+   the hero's own tones with matching grain. Wherever the hero boundary lands,
+   both sides are the same blue. The opaque hero covers everything below. */
+body #marketing-scope {
+  background: linear-gradient(
+    to bottom,
+    #a3cdf7 0px,
+    #86bdee 90px,
+    #71b7f4 200px,
+    #67a3d7 340px,
+    #63a0d4 460px,
+    var(--bg-base) 600px
+  );
+}
+
+body.night header.dig-top {
+  background: linear-gradient(to bottom, #274b85 0%, #1f3b6d 100%);
+}
+
+body.night .dig-topfade {
+  background: linear-gradient(to bottom, #1f3b6d 0%, #16305c 100%);
+}
+
+body.night #marketing-scope {
+  background: linear-gradient(
+    to bottom,
+    #274b85 0px,
+    #1f3b6d 200px,
+    #16305c 340px,
+    #122a52 460px,
+    var(--bg-base) 600px
+  );
+}
+
+/* ── Contact page: staggered editorial reveal ────────────────────────── */
+.contact-reveal {
+  opacity: 0;
+  animation: contact-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--index, 0) * 90ms);
+}
+
+@keyframes contact-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-reveal {
+    opacity: 1;
+    animation: none;
+  }
+}

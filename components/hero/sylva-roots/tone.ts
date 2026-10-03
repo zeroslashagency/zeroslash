@@ -14,13 +14,17 @@
  * fill of the full tier.
  */
 export const DENSITY = {
-  bladesNear: 70_000,
-  bladesFar: 20_000,
-  fernsNear: 26,
-  fernsFar: 8,
-  flowersNear: 120,
-  flowersFar: 40,
-  motes: 2_300,
+  bladesNear: 88_000,
+  bladesFar: 26_000,
+  /* Ferns and flowers are the readable "extra elements" — individual silhouettes
+     you can actually pick out, unlike blades which merge into texture at this
+     scale. Raised well past the small tier because the frame was reading as one
+     undifferentiated mound. */
+  fernsNear: 44,
+  fernsFar: 15,
+  flowersNear: 210,
+  flowersFar: 72,
+  motes: 3_200,
   pixelRatioCap: 1.6,
   antialias: false,
 } as const
@@ -28,18 +32,20 @@ export const DENSITY = {
 /**
  * The drifting cloud haze that sits behind the roots.
  *
- * One full-frame quad running fbm noise, not geometry, so the cost is a single
- * fragment pass and it scales with viewport rather than with detail. It reads as
- * slow weather moving behind the form and it is what stops the cream plate from
- * looking like flat paper behind the moss.
+ * Switched off. In practice this layer did not read as weather — it read as a
+ * pale film laid over the whole hero, and because it crossed the type column and
+ * the moss alike, the only way to see it was to make it heavy enough to grey out
+ * the thing it was meant to sit behind. Every attempt to tune it traded root
+ * contrast for atmosphere, which is the wrong trade in a composition whose
+ * subject is the root.
  *
- * `strength` is the peak alpha of the densest wisp. Keep it low: this layer
- * crosses the whole hero including the type column, so anything heavy enough to
- * see clearly is also heavy enough to mottle the Playfair headline.
+ * `strength: 0` short-circuits the build entirely (see `buildCloud`), so this
+ * costs no quad, no shader compile, and no fragment pass. The uniforms below are
+ * kept so the layer can be revived by raising `strength` alone.
  */
 export const CLOUD = {
-  /** Peak opacity of the thickest wisp. */
-  strength: 0.5,
+  /** Peak opacity of the thickest wisp. Zero disables the layer outright. */
+  strength: 0,
   /** Horizontal drift in world units per second. */
   drift: 5.2,
   /** Noise feature size; larger means broader, softer banks. */
@@ -94,9 +100,9 @@ export const STILL_BELOW_PX = 900
  */
 export const CREAM_TONE = {
   /** Warm key. Source: [1.14, 1.06, 0.88] — trimmed so highlights do not blow out on paper. */
-  key: [1.06, 1.0, 0.9],
+  key: [1.02, 0.97, 0.86],
   /** Bounce off the floor of the hero. Source: [0.78, 0.78, 0.62]. */
-  fill: [0.86, 0.88, 0.76],
+  fill: [0.74, 0.77, 0.64],
   /**
    * Ambient. Source: [0.086, 0.090, 0.080] — lifted roughly 9x.
    *
@@ -104,15 +110,22 @@ export const CREAM_TONE = {
    * hero: at the source's ambient, moss behind the left column came out at mean
    * luminance 83, which black Playfair type cannot survive. Lifting it keeps
    * unlit faces near the paper instead of going to silhouette.
+   *
+   * But lifted to 0.74 it overshot in the other direction: with unlit faces
+   * sitting that close to the paper, the root had no shaded side left and the
+   * whole form washed out to near-white — legible type over an invisible scene.
+   * 0.58 restores the tonal range that makes the arch read as a solid object.
+   * The type stays safe because the roots now live on the right half, away from
+   * the ink, and the scrim in the wrapper covers the corners where they meet.
    */
-  amb: [0.74, 0.75, 0.69],
+  amb: [0.58, 0.6, 0.53],
   /**
    * Distance haze, retargeted to the cream itself so depth fades into the
    * paper. Source: [0.176, 0.195, 0.145], which would fog the far ridge grey-green.
    */
-  haze: [0.96, 0.955, 0.94],
+  haze: [0.9, 0.9, 0.87],
   /** Far ridge sits in slightly paler air, so it reads as further off. */
-  hazeFar: [0.965, 0.96, 0.95],
+  hazeFar: [0.925, 0.925, 0.91],
   /** ACES exposure. Source: 1.30. */
-  exposure: 1.12,
+  exposure: 1.06,
 } as const

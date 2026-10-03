@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { AnimatedThemeToggler } from "@/components/magicui/animated-theme-toggler";
 import { track } from "@/lib/gtag";
 import { ArrowUpRight, Menu, X } from "lucide-react";
+import { SOCIAL } from "@/lib/site";
 
 const NAV = [
   { label: "Home", href: "/" },
@@ -46,12 +47,16 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  const isDigPage = pathname?.startsWith("/digital-marketing") ?? false
+  const digTop = isDigPage && !isScrolled
+
   return (
     <>
       <header
+        data-dig-top={digTop || undefined}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] ${
           isVisible ? "translate-y-0" : "-translate-y-full"
-        } ${isScrolled ? "bg-[rgb(251,250,248)]/90 backdrop-blur-xl border-b border-black/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.06)]" : "bg-[rgb(251,250,248)]/80 backdrop-blur-md border-b border-transparent"}`}
+        } ${digTop ? "dig-top border-b border-transparent" : isScrolled ? "bg-[rgb(251,250,248)]/90 backdrop-blur-xl border-b border-black/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.06)]" : "bg-[rgb(251,250,248)]/80 backdrop-blur-md border-b border-transparent"}`}
         style={{ willChange: "transform" }}
       >
         {/* top hairline accent */}
@@ -59,7 +64,7 @@ export function Header() {
 
         <div className="mx-auto max-w-[1440px] px-4 md:px-6 lg:px-8 h-[64px] md:h-[72px] flex items-center justify-between gap-4">
           {/* LEFT — Brand */}
-          <Link href="/" className="flex items-center gap-3 shrink-0 group">
+          <Link href="/" className="flex min-h-11 items-center gap-3 shrink-0 group">
             <div className="flex items-center gap-2.5">
               <Image src="/images/logo.svg" alt="ZeroSlash" width={28} height={28} className="h-[28px] w-[28px] block dark:hidden" />
               <Image src="/images/logo.svg" alt="ZeroSlash" width={28} height={28} className="h-[28px] w-[28px] hidden dark:block invert brightness-0" />
@@ -86,7 +91,7 @@ export function Header() {
                   key={item.label}
                   href={item.href}
                   onClick={() => item.label === "Contact" && track("contact_nav_click", { location: "header_desktop" })}
-                  className={`relative px-[14px] xl:px-[18px] py-[7px] rounded-full text-[13px] font-medium tracking-[-0.01em] transition-all duration-200 ${
+                  className={`relative inline-flex items-center justify-center min-h-11 xl:min-h-0 px-[14px] xl:px-[18px] py-[7px] rounded-full text-[13px] font-medium tracking-[-0.01em] transition-all duration-200 ${
                     active
                       ? isDig
                         ? "bg-[#7C5CFF] text-white shadow-sm"
@@ -108,8 +113,8 @@ export function Header() {
           {/* RIGHT — Actions */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
             {/* Theme */}
-            <div className="hidden md:grid place-items-center w-9 h-9 rounded-full bg-white border border-black/10 shadow-sm">
-              <AnimatedThemeToggler />
+            <div className="hidden md:grid place-items-center w-11 h-11 xl:w-9 xl:h-9 rounded-full bg-white border border-black/10 shadow-sm">
+              <AnimatedThemeToggler className="min-h-11 min-w-11 xl:min-h-0 xl:min-w-0" />
             </div>
 
             <button
@@ -117,7 +122,7 @@ export function Header() {
                 track("get_started_click", { location: "header_desktop" });
                 setWizardOpen(true);
               }}
-              className="hidden md:inline-flex items-center gap-2 pl-5 pr-1.5 py-1.5 rounded-full bg-black text-white text-[13px] font-semibold tracking-[-0.01em] hover:bg-black/90 hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
+              className="hidden md:inline-flex items-center gap-2 min-h-11 xl:min-h-0 pl-5 pr-1.5 py-1.5 rounded-full bg-black text-white text-[13px] font-semibold tracking-[-0.01em] hover:bg-black/90 hover:scale-[1.01] active:scale-[0.98] transition-all duration-200 shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
             >
               Start a project
               <span className="w-7 h-7 rounded-full bg-white text-black grid place-items-center">
@@ -127,15 +132,15 @@ export function Header() {
 
             {/* Mobile: theme + menu */}
             <div className="flex items-center gap-2 lg:hidden">
-              <div className="grid place-items-center w-9 h-9 rounded-full bg-white border border-black/10 shadow-sm md:hidden">
-                <AnimatedThemeToggler />
+              <div className="grid place-items-center w-11 h-11 rounded-full bg-white border border-black/10 shadow-sm md:hidden">
+                <AnimatedThemeToggler className="min-h-11 min-w-11" />
               </div>
 
               <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                 <SheetTrigger asChild>
                   <button
                     aria-label="Open menu"
-                    className="w-9 h-9 rounded-full bg-black text-white grid place-items-center shadow-[0_4px_14px_rgba(0,0,0,0.12)] hover:bg-black/90 transition-colors"
+                    className="w-11 h-11 rounded-full bg-black text-white grid place-items-center shadow-[0_4px_14px_rgba(0,0,0,0.12)] hover:bg-black/90 transition-colors"
                   >
                     <Menu className="w-[18px] h-[18px]" />
                   </button>
@@ -151,8 +156,8 @@ export function Header() {
                         <span className="text-[14px] font-bold tracking-[-0.02em] text-black">ZeroSlash Agency</span>
                       </Link>
                       <SheetClose asChild>
-                        <button className="w-8 h-8 rounded-full bg-black text-white grid place-items-center">
-                          <X className="w-4 h-4" />
+                        <button aria-label="Close menu" className="w-11 h-11 rounded-full bg-black text-white grid place-items-center">
+                          <X className="w-4 h-4" aria-hidden />
                         </button>
                       </SheetClose>
                     </div>
@@ -191,13 +196,13 @@ export function Header() {
                     <div className="pt-6 mt-6 border-t border-black/5 space-y-3">
                       <div className="px-4 py-3 rounded-2xl bg-white border border-black/5">
                         <p className="text-[11px] tracking-[0.14em] uppercase font-semibold text-black/40 mb-1">Get in touch</p>
-                        <a href="mailto:hello@zeroslash.in" className="text-[14px] font-medium text-black">hello@zeroslash.in</a>
+                        <a href="mailto:hello@zeroslash.in" className="inline-flex min-h-11 items-center py-2 -my-2 text-[14px] font-medium text-black">hello@zeroslash.in</a>
                         <p className="text-[12px] text-black/50 mt-1">Chennai • Available worldwide</p>
                       </div>
                       <div className="flex items-center gap-2 px-1">
-                        <a href="https://linkedin.com" target="_blank" rel="noopener" className="text-[11px] font-bold tracking-[0.08em] uppercase text-black/60 hover:text-black">LinkedIn</a>
+                        <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center px-1 -mx-1 text-[12px] font-bold tracking-[0.08em] uppercase text-black/60 hover:text-black">LinkedIn</a>
                         <span className="text-black/20">/</span>
-                        <a href="https://instagram.com" target="_blank" rel="noopener" className="text-[11px] font-bold tracking-[0.08em] uppercase text-black/60 hover:text-black">Instagram</a>
+                        <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center px-1 -mx-1 text-[12px] font-bold tracking-[0.08em] uppercase text-black/60 hover:text-black">Instagram</a>
                         <span className="ml-auto text-[11px] font-bold bg-black text-white px-2 py-1 rounded-md">EN</span>
                       </div>
                     </div>
@@ -210,7 +215,7 @@ export function Header() {
                         setMobileOpen(false);
                         setWizardOpen(true);
                       }}
-                      className="w-full inline-flex items-center justify-between pl-5 pr-1.5 py-1.5 rounded-full bg-black text-white text-[14px] font-semibold"
+                      className="w-full inline-flex items-center justify-between min-h-11 pl-5 pr-1.5 py-1.5 rounded-full bg-black text-white text-[14px] font-semibold"
                     >
                       Start a project
                       <span className="w-9 h-9 rounded-full bg-white text-black grid place-items-center">

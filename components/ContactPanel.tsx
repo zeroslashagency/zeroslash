@@ -1,6 +1,8 @@
 "use client"
 
 import React from "react"
+import Honeypot from "@/components/Honeypot"
+import { SOCIAL, SOCIAL_LIST } from "@/lib/site"
 
 type ContactPanelProps = {
   open: boolean
@@ -60,9 +62,9 @@ export default function ContactPanel({ open, onClose }: ContactPanelProps) {
             <div className="inline-flex items-center px-3 py-1 bg-black text-white rounded-md text-xs font-bold tracking-wide mb-4">
               CONTACT
             </div>
-            <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-black">
+            <h2 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-black">
               LET&rsquo;S WORK TOGETHER
-            </h1>
+            </h2>
             <p className="text-lg md:text-xl text-black/80 max-w-xl mb-8">
               Are you looking for a digital partner to help with your strategy, UX, web presence, or marketing? Let&rsquo;s start a conversation.
             </p>
@@ -70,32 +72,29 @@ export default function ContactPanel({ open, onClose }: ContactPanelProps) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10 text-sm text-black">
               <div>
                 <div className="font-bold mb-1">GIVE US A CALL</div>
-                <a href="tel:+919500255291" className="text-black underline hover:no-underline">+91 95002 55291</a>
+                <a href="tel:+919500255291" className="inline-flex items-center min-h-11 text-black underline hover:no-underline">+91 95002 55291</a>
               </div>
               <div>
                 <div className="font-bold mb-1">SEND US AN EMAIL</div>
-                <a href="mailto:hello@zeroslash.in" className="text-black underline hover:no-underline">hello@zeroslash.in</a>
+                <a href="mailto:hello@zeroslash.in" className="inline-flex items-center min-h-11 text-black underline hover:no-underline">hello@zeroslash.in</a>
               </div>
               <div>
-                <div className="font-bold mb-1">JOIN US</div>
-                <a href="#" className="text-black underline hover:no-underline">See Vacancies</a>
+                <div className="font-bold mb-1">FOLLOW US</div>
+                <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center min-h-11 text-black underline hover:no-underline">LinkedIn</a>
               </div>
             </div>
 
             <div className="flex gap-3">
-              {[
-                { label: "Facebook", href: "#" },
-                { label: "X", href: "#" },
-                { label: "Instagram", href: "#" },
-                { label: "LinkedIn", href: "#" },
-              ].map((s) => (
+              {SOCIAL_LIST.map((s) => (
                 <a
                   key={s.label}
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
-                  className="w-9 h-9 rounded-full border-2 border-black/60 text-black flex items-center justify-center hover:bg-black hover:text-white transition-colors text-xs font-bold"
+                  className="w-11 h-11 rounded-full border-2 border-black/60 text-black inline-flex items-center justify-center hover:bg-black hover:text-white transition-colors text-xs font-bold"
                 >
-                  {s.label[0]}
+                  <span aria-hidden>{s.short}</span>
                 </a>
               ))}
             </div>
@@ -113,30 +112,33 @@ export default function ContactPanel({ open, onClose }: ContactPanelProps) {
               const source = (form.querySelector('#source') as HTMLSelectElement)?.value || ""
               const message = (form.querySelector('#message') as HTMLTextAreaElement)?.value?.trim() || ""
               const subscribe = (form.querySelector('#subscribe') as HTMLInputElement)?.checked || false
+              const website = (form.querySelector('#hp-website') as HTMLInputElement)?.value || ""
 
               setSubmitting(true)
               try {
                 const res = await fetch('/api/contact', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ fullName, email, phone, source, message, subscribe }),
+                  body: JSON.stringify({ fullName, email, phone, source, message, subscribe, website }),
                 })
                 const data = await res.json().catch(() => ({}))
                 if (!res.ok || data?.ok === false) {
-                  const errMsg = data?.error || data?.detail || `Request failed (${res.status})`
+                  const errMsg = data?.error || `Request failed (${res.status})`
                   setStatus({ type: 'error', message: String(errMsg) })
                   return
                 }
                 setStatus({ type: 'success', message: 'Message sent successfully!' })
                 form.reset()
               } catch (err) {
-                setStatus({ type: 'error', message: String(err) })
+                console.error('[contact] submit failed', err)
+                setStatus({ type: 'error', message: 'Could not send. Please check your connection and try again.' })
               } finally {
                 setSubmitting(false)
               }
             }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 content-start"
+            className="relative grid grid-cols-1 sm:grid-cols-2 gap-4 content-start"
           >
+            <Honeypot />
             <div className="flex flex-col gap-1">
               <label className="text-sm font-bold text-black" htmlFor="fullName">Full Name</label>
               <input id="fullName" className="h-11 rounded-md border-2 border-black/30 bg-white/50 backdrop-blur-[2px] px-3 outline-none text-black placeholder:text-black/50 focus-visible:border-black/60 focus-visible:ring-black/20 focus-visible:ring-[3px]" required />

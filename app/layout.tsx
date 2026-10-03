@@ -6,13 +6,14 @@ import { Geist_Mono, Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { Header } from "@/components/header"
 import { ThemeProvider } from "@/components/theme-provider"
-import { faqSchema } from "./faq-schema"
-// AnalyticsListener removed temporarily
+import { REVIEW_COUNT } from "@/lib/site"
+import { SITE_NAME, SITE_URL } from "@/lib/seo"
 
 const displaySerif = Playfair_Display({
   variable: "--font-display-serif",
   subsets: ["latin"],
-  weight: ["600", "800", "900"],
+  weight: ["600", "800"],
+  style: ["normal", "italic"],
 })
 
 const sans = Inter({
@@ -25,8 +26,6 @@ const mono = Geist_Mono({
   subsets: ["latin"],
 })
 
-const SITE_NAME = "ZeroSlash Agency"
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zeroslash.in"
 const SITE_TWITTER = "@zeroslashx1"
 
 export const metadata: Metadata = {
@@ -70,14 +69,10 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  // Inherited by routes without their own metadata, so every public route
+  // overrides it via lib/seo pageMetadata. Here it is correct for "/".
   alternates: {
-    canonical: SITE_URL,
-    languages: {
-      "en-US": SITE_URL,
-      "en-GB": SITE_URL,
-      "en-IN": SITE_URL,
-      "x-default": SITE_URL,
-    },
+    canonical: "/",
   },
   openGraph: {
     type: "website",
@@ -234,11 +229,6 @@ export default function RootLayout({
                 "@type": "WebSite",
                 name: SITE_NAME,
                 url: SITE_URL,
-                potentialAction: {
-                  "@type": "SearchAction",
-                  target: `${SITE_URL}/search?q={search_term_string}`,
-                  "query-input": "required name=search_term_string",
-                },
               }),
             }}
           />
@@ -269,7 +259,8 @@ export default function RootLayout({
                 aggregateRating: {
                   "@type": "AggregateRating",
                   ratingValue: "5.0",
-                  reviewCount: "76",
+                  // Must match the reviews visibly listed on /reviews.
+                  reviewCount: String(REVIEW_COUNT),
                 },
               }),
             }}
@@ -308,13 +299,6 @@ export default function RootLayout({
                   },
                 ],
               }),
-            }}
-          />
-          <script
-            type="application/ld+json"
-            // eslint-disable-next-line react/no-danger
-            dangerouslySetInnerHTML={{
-              __html: JSON.stringify(faqSchema),
             }}
           />
         </ThemeProvider>

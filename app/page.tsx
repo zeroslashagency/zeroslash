@@ -20,8 +20,9 @@ import ProjectWizard from "@/components/ProjectWizard"
 import BouquetSway from "@/components/hero/BouquetSway"
 import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/components/lazy-on-view"
+import { RATING, REVIEW_COUNT, SOCIAL } from "@/lib/site"
 import { useState, useEffect, useRef } from "react"
-const ServicesSection = nextDynamic(() => import("@/components/sections/ServicesSpheres"), { ssr: false, loading: () => null })
+const ServicesSection = nextDynamic(() => import("@/components/sections/flora/ServicesFlora"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
 const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
@@ -116,7 +117,10 @@ export default function Home() {
                 <span className="text-[10px] tracking-[0.2em] uppercase text-black/30 font-medium">Work <span className="mx-1">→</span> Studio</span>
               </div>
               {/* LEFT 46% — Zeroslash */}
-              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center">
+              {/* Anchored above centre (justify-center → justify-start with a top
+                  offset) so the headline block sits higher in the frame and hands
+                  the lower half of the hero to the root scene. */}
+              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center lg:justify-start lg:pt-[12vh] xl:pt-[10vh]">
                 <div className="flex items-center gap-2 mb-5 md:mb-7">
                   <span className="w-3.5 h-3.5 rounded-full border border-black grid place-items-center"><span className="w-1.5 h-1.5 rounded-full bg-black" /></span>
                   <span className="text-[12px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
@@ -127,7 +131,7 @@ export default function Home() {
                   <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px] mt-1">ZeroSlash <span className="font-light text-[#C8C8C8]">Agency</span></span>
                 </h1>
                 <div className="flex flex-wrap items-center gap-5 mt-6 md:mt-8 text-[13px]">
-                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2.5 group">
+                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2.5 min-h-11 group">
                     <span className="w-7 h-7 rounded-full border border-black/10 grid place-items-center group-hover:bg-black group-hover:text-white transition-colors"><ArrowRight className="w-3.5 h-3.5" /></span>
                     <span className="font-semibold tracking-wide text-black text-[14px]">Start a project</span>
                   </button>
@@ -145,16 +149,32 @@ export default function Home() {
                   <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-center lg:object-[center_center] scale-[1.18] md:scale-[1.22] lg:scale-[1.32] xl:scale-[1.38] lg:translate-x-4 xl:translate-x-6" sizes="(max-width: 1024px) 100vw, 54vw" />
                 </BouquetSway>
                 <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
-                  <button aria-label="Up" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowUp className="w-4 h-4" /></button>
-                  <button aria-label="Down" className="w-9 h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors"><ArrowDown className="w-4 h-4" /></button>
+                  <button
+                    type="button"
+                    aria-label="Back to top"
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="w-11 h-11 lg:w-9 lg:h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  ><ArrowUp className="w-4 h-4" aria-hidden /></button>
+                  <button
+                    type="button"
+                    aria-label="Scroll to next section"
+                    onClick={() => {
+                      // Skip hidden siblings (display:none sections have no height).
+                      let next = document.getElementById("hero")?.nextElementSibling as HTMLElement | null
+                      while (next && next.offsetHeight === 0) next = next.nextElementSibling as HTMLElement | null
+                      if (next) next.scrollIntoView({ behavior: "smooth", block: "start" })
+                      else window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
+                    }}
+                    className="w-11 h-11 lg:w-9 lg:h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
+                  ><ArrowDown className="w-4 h-4" aria-hidden /></button>
                 </div>
               </div>
             </div>
             {/* SOCIAL BAR — left bottom corner exact like ref: LINKEDIN / INSTAGRAM EN */}
             <div className="absolute left-5 md:left-8 lg:left-16 bottom-5 md:bottom-6 flex items-center gap-3 z-10">
-              <a href="https://linkedin.com" target="_blank" rel="noopener" className="text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">LINKEDIN</a>
+              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center py-3 -my-3 text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">LINKEDIN</a>
               <span className="text-[13px] md:text-[14px] font-black text-black mx-0.5">/</span>
-              <a href="https://instagram.com" target="_blank" rel="noopener" className="text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">INSTAGRAM</a>
+              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center py-3 -my-3 text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">INSTAGRAM</a>
               <span className="ml-3 md:ml-4 inline-flex items-center justify-center bg-black text-white text-[12px] md:text-[13px] font-black tracking-[0.04em] px-[10px] py-[5px] rounded-[6px] leading-none">EN</span>
             </div>
             {/* Pagination dots left bottom */}
@@ -265,7 +285,7 @@ export default function Home() {
       <section className="w-full py-0 bg-background overflow-hidden -mb-12 md:-mb-16 lg:-mb-20 relative z-10 fade-top">
         <div className="w-screen max-w-none mx-[calc(50%-50vw)] px-0">
           <CurvedLoop
-            marqueeText="  Be ✦   Creative  ✦   With  ✦   React  ✦   Bits ✦ "
+            marqueeText="  Design ✦   Build  ✦   Grow  ✦   Zero  ✦   Slash ✦ "
             speed={2}
             curveAmount={200}
             direction="left"
@@ -281,15 +301,15 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
-              <div className="text-center mb-12 md:mb-16">
+              <div className="text-center mb-8 md:mb-12 lg:mb-16">
                 <div className="inline-flex items-center px-4 py-2 rounded-full bg-card border border-border text-gray-600 dark:text-gray-300 text-sm font-medium mb-6 shadow-sm">
                    <Sparkles className="w-4 h-4 mr-2" />
                    <ShinyText text="Our Commitment" speed={2} />
                  </div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
                   Dedicated to
                   <br />
-                  <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent animate-shine">
+                  <span className="text-foreground">
                     Delivering Results
                   </span>
                   <br />
@@ -342,9 +362,9 @@ export default function Home() {
                   </span>
                   <span className="h-px flex-1 bg-border" aria-hidden />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-16 items-end">
+                <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-16 items-end [&>*]:min-w-0">
                   <h2
-                    className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[0.95] tracking-[-0.02em]"
+                    className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1] sm:leading-[0.95] tracking-[-0.02em]"
                     style={{ fontFamily: "var(--font-display-serif)" }}
                   >
                     Our approach to
@@ -358,11 +378,11 @@ export default function Home() {
               </div>
 
               {/* Approach swatch board — three equal tiles, label set over the image */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-12 md:mb-16">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-12 md:mb-16 [&>*]:min-w-0">
                 {APPROACH_SWATCHES.map((item, i) => (
                   <ScrollFloat key={item.index} delay={[0.1, 0.22, 0.34][i]}>
                     <div
-                      className="swatch-field group relative aspect-[4/5] overflow-hidden rounded-[2px]"
+                      className="swatch-field group relative aspect-[5/6] sm:aspect-[4/5] overflow-hidden rounded-[2px]"
                       style={{ ["--swatch-tone" as string]: item.tone }}
                     >
                       <div className="swatch-media absolute inset-0 z-0">
@@ -375,7 +395,7 @@ export default function Home() {
                           priority={i === 0}
                         />
                       </div>
-                      <div className="absolute inset-0 z-10 flex flex-col justify-end p-6 lg:p-7">
+                      <div className="absolute inset-0 z-10 flex flex-col justify-end p-5 sm:p-6 lg:p-7">
                         <span
                           className="block text-[11px] tracking-[0.18em] text-white/60 mb-3"
                           style={{ fontFamily: "var(--font-geist-mono)" }}
@@ -396,7 +416,7 @@ export default function Home() {
 
               {/* Premium Minimal Stats Section: dominant numbers, clean layout */}
               <div className="py-8 md:py-10 lg:py-12">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 lg:gap-12 items-start">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-10 md:gap-8 lg:gap-12 items-start [&>*]:min-w-0">
                   <CountUpOnView target={30} label="Projects Delivered" places={[10,1]} fontSize={72} suffix="+" textColor="var(--foreground)" />
                   <CountUpOnView target={98} label="Client Satisfaction" places={[10,1]} fontSize={72} suffix="%" textColor="var(--foreground)" />
                   <CountUpOnView target={3} label="Years Experience" places={[1]} fontSize={72} suffix="+" textColor="var(--foreground)" />
@@ -414,24 +434,24 @@ export default function Home() {
       <section className="w-full py-8 md:py-12 lg:py-16 bg-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-12 md:mb-16">
+            <div className="text-center mb-8 md:mb-12 lg:mb-16">
               <div className="mb-6">
                 <SectionPill label="How we work" dotClassName="bg-violet-400" shiny />
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
                 At ZeroSlash Agency, we don’t just deliver projects — we build growth engines for your brand.
               </h2>
             </div>
 
             {/* Process Flow Cards with Dynamic Connector Lines */}
-            <div id="flow-container" className="relative max-w-4xl mx-auto">
+            <div id="flow-container" className="relative max-w-4xl mx-auto min-w-0">
               {/* Dynamic overlay that connects pins 1→2→3→4 */}
-              <FlowConnector containerId="flow-container" />
+              <div className="hidden lg:block"><FlowConnector containerId="flow-container" /></div>
               {/* Step 1 - Define (Top Right) */}
-              <div className="relative mb-32 md:mb-40 flex justify-end pr-4 md:pr-8" id="card-1">
+              <div className="relative mb-10 lg:mb-40 flex justify-end pr-0 md:pr-8" id="card-1">
                 <div className="relative">
                   <div
-                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-72 md:w-80 shadow-2xl transform rotate-6 hover:rotate-3 transition-all duration-300 relative"
+                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-full md:w-80 shadow-2xl transform rotate-0 lg:rotate-6 lg:hover:rotate-3 transition-all duration-300 relative"
                     style={{
                       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05)",
                     }}
@@ -455,10 +475,10 @@ export default function Home() {
               {/* Connector overlay handles 1→2 */}
 
               {/* Step 2 - Design (Left) */}
-              <div className="relative mb-32 md:mb-40 flex justify-start pl-4 md:pl-8" id="card-2">
+              <div className="relative mb-10 lg:mb-40 flex justify-start pl-0 md:pl-8" id="card-2">
                 <div className="relative">
                   <div
-                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-72 md:w-80 shadow-2xl transform -rotate-3 hover:rotate-0 transition-all duration-300 relative"
+                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-full md:w-80 shadow-2xl transform rotate-0 lg:-rotate-3 hover:rotate-0 transition-all duration-300 relative"
                     style={{
                       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05)",
                     }}
@@ -482,10 +502,10 @@ export default function Home() {
               {/* Connector overlay handles 2→3 */}
 
               {/* Step 3 - Build (Right) */}
-              <div className="relative mb-32 md:mb-40 flex justify-end pr-4 md:pr-8" id="card-3">
+              <div className="relative mb-10 lg:mb-40 flex justify-end pr-0 md:pr-8" id="card-3">
                 <div className="relative">
                   <div
-                    className="bg-card border border-border rounded-2xl overflow-visible p-6 md:p-8 w-72 md:w-80 shadow-2xl transform rotate-2 hover:rotate-0 transition-all duration-300 relative"
+                    className="bg-card border border-border rounded-2xl overflow-visible p-6 md:p-8 w-full md:w-80 shadow-2xl transform rotate-0 lg:rotate-2 hover:rotate-0 transition-all duration-300 relative"
                     style={{
                       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05)",
                     }}
@@ -511,10 +531,10 @@ export default function Home() {
               {/* Connector overlay handles 3→4 */}
 
               {/* Step 4 - Launch (Left) */}
-              <div className="relative mb-12 md:mb-16 flex justify-start pl-4 md:pl-8" id="card-4">
+              <div className="relative mb-10 md:mb-12 lg:mb-16 flex justify-start pl-0 md:pl-8" id="card-4">
                 <div className="relative">
                   <div
-                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-72 md:w-80 shadow-2xl transform -rotate-4 hover:rotate-0 transition-all duration-300 relative"
+                    className="bg-card border border-border rounded-2xl p-6 md:p-8 w-full md:w-80 shadow-2xl transform rotate-0 lg:-rotate-4 hover:rotate-0 transition-all duration-300 relative"
                     style={{
                       boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05)",
                     }}
@@ -555,20 +575,20 @@ export default function Home() {
       <section className="w-full py-8 md:py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12 md:mb-16">
+            <div className="text-center mb-8 md:mb-12 lg:mb-16">
               <div className="mb-4">
                 <SectionPill label="Featured Work" dotClassName="bg-blue-400" shiny />
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6 leading-tight tracking-tight">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
                 Recent projects that delivered
                 <br />
                 measurable results
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
               {/* Dec's Cafe Case Study */}
-              <Card className="bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
+              <Card className="min-w-0 bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="aspect-video relative overflow-hidden">
                   <Image
                     src="/images/decs-cafe.png"
@@ -578,7 +598,7 @@ export default function Home() {
                     loading="lazy"
                     className="object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-black text-white px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium">
                     Coffee Shop
                   </div>
                 </div>
@@ -586,28 +606,28 @@ export default function Home() {
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">Dec&#39;s Cafe</h3>
                   <p className="text-foreground/70 mb-6">Premium coffee experience with seamless online ordering</p>
 
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                  <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       500+ customers
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       4.7★ rating
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       15+ varieties
                     </div>
                   </div>
 
-                  <blockquote className="border-l-4 border-border pl-4 italic text-foreground/70">
+                  <blockquote className="min-w-0 border-l-2 md:border-l-4 border-border pl-3 md:pl-4 italic text-foreground/70 text-sm md:text-base [overflow-wrap:anywhere]">
                     &ldquo;ZeroSlash transformed our digital presence in days. The interactive menu and NYC café vibe?
                     Spot-on. Customers keep complimenting how easy it is to order iced coffee on their phones!&rdquo;
-                    <footer className="text-foreground/60 mt-2 not-italic font-medium">— Samantha R., Owner</footer>
+                    <footer className="text-foreground/60 mt-2 not-italic font-medium text-sm md:text-base">— Samantha R., Owner</footer>
                   </blockquote>
                 </CardContent>
               </Card>
 
               {/* Fresh Bread Case Study */}
-              <Card className="bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
+              <Card className="min-w-0 bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="aspect-video relative overflow-hidden">
                   <Image
                     src="/images/fresh-bread.png"
@@ -617,7 +637,7 @@ export default function Home() {
                     loading="lazy"
                     className="object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-black text-white px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium">
                     Bakery Website
                   </div>
                 </div>
@@ -625,28 +645,28 @@ export default function Home() {
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">The Perfect Fresh Bread</h3>
                   <p className="text-foreground/70 mb-6">Artisanal bakery with elegant e-commerce experience</p>
 
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                  <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       300+ daily orders
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       4.9★ rating
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       60% growth
                     </div>
                   </div>
 
-                  <blockquote className="border-l-4 border-border pl-4 italic text-foreground/70">
+                  <blockquote className="min-w-0 border-l-2 md:border-l-4 border-border pl-3 md:pl-4 italic text-foreground/70 text-sm md:text-base [overflow-wrap:anywhere]">
                     &ldquo;Our new site feels as warm as our sourdough. They captured our brand&rsquo;s heart – simple, wholesome,
                     and mobile-friendly. Orders jumped 30% in Week 1!&rdquo;
-                    <footer className="text-foreground/60 mt-2 not-italic font-medium">— Maria L., Head Baker</footer>
+                    <footer className="text-foreground/60 mt-2 not-italic font-medium text-sm md:text-base">— Maria L., Head Baker</footer>
                   </blockquote>
                 </CardContent>
               </Card>
 
               {/* Flow Yoga Studio Case Study */}
-              <Card className="bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
+              <Card className="min-w-0 bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="aspect-video relative overflow-hidden">
                   <Image
                     src="/images/yoga-studio.jpeg"
@@ -656,7 +676,7 @@ export default function Home() {
                     loading="lazy"
                     className="object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-black text-white px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium">
                     Fitness & Wellness
                   </div>
                 </div>
@@ -664,27 +684,27 @@ export default function Home() {
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">Flow Yoga Studio</h3>
                   <p className="text-foreground/70 mb-6">Class bookings, memberships, and a calming brand system</p>
 
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                  <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       200+ weekly bookings
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       4.8★ rating
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       2x retention
                     </div>
                   </div>
 
-                  <blockquote className="border-l-4 border-border pl-4 italic text-foreground/70">
+                  <blockquote className="min-w-0 border-l-2 md:border-l-4 border-border pl-3 md:pl-4 italic text-foreground/70 text-sm md:text-base [overflow-wrap:anywhere]">
                     &ldquo;Members love how easy it is to reserve classes and manage passes. The brand feels zen yet premium.&rdquo;
-                    <footer className="text-foreground/60 mt-2 not-italic font-medium">— Priya K., Studio Owner</footer>
+                    <footer className="text-foreground/60 mt-2 not-italic font-medium text-sm md:text-base">— Priya K., Studio Owner</footer>
                   </blockquote>
                 </CardContent>
               </Card>
 
               {/* ZenFix Mobile Repair Case Study */}
-              <Card className="bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
+              <Card className="min-w-0 bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="aspect-video relative overflow-hidden">
                   <Image
                     src="/images/mobile.jpg"
@@ -694,7 +714,7 @@ export default function Home() {
                     loading="lazy"
                     className="object-cover"
                   />
-                  <div className="absolute top-4 right-4 bg-black text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-3 right-3 md:top-4 md:right-4 bg-black text-white px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium">
                     Repair Service
                   </div>
                 </div>
@@ -702,21 +722,21 @@ export default function Home() {
                   <h3 className="text-xl md:text-2xl font-bold text-foreground mb-2">ZenFix Mobile Repair</h3>
                   <p className="text-foreground/70 mb-6">Booking flows, status tracking, and trust-building UX</p>
 
-                  <div className="flex flex-wrap gap-3 mb-6">
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                  <div className="flex flex-wrap gap-2 md:gap-3 mb-4 md:mb-6">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       250+ monthly repairs
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       4.9★ rating
                     </div>
-                    <div className="bg-muted border border-border px-3 py-1 rounded-full text-sm font-medium text-foreground/70">
+                    <div className="bg-muted border border-border px-2.5 py-1 md:px-3 rounded-full text-xs md:text-sm font-medium text-foreground/70">
                       <span className="tabular-nums">-20%</span> bounce rate
                     </div>
                   </div>
 
-                  <blockquote className="border-l-4 border-border pl-4 italic text-foreground/70">
+                  <blockquote className="min-w-0 border-l-2 md:border-l-4 border-border pl-3 md:pl-4 italic text-foreground/70 text-sm md:text-base [overflow-wrap:anywhere]">
                     &ldquo;Online bookings doubled and walk-ins are smoother thanks to clear repair timelines and updates.&rdquo;
-                    <footer className="text-foreground/60 mt-2 not-italic font-medium">— Ahmed S., Owner</footer>
+                    <footer className="text-foreground/60 mt-2 not-italic font-medium text-sm md:text-base">— Ahmed S., Owner</footer>
                   </blockquote>
                 </CardContent>
               </Card>
@@ -741,7 +761,7 @@ export default function Home() {
           the Transform & Grow section. Native 3:2 is kept at every width so the
           two reaching hands stay in frame; a tall crop would cut them off. */}
       <section
-        className="relative w-screen max-w-none mx-[calc(50%-50vw)] aspect-[3/2] overflow-hidden"
+        className="relative w-screen max-w-none mx-[calc(50%-50vw)] aspect-[3/2] min-h-[300px] sm:min-h-0 overflow-hidden"
         aria-label="ZeroSlash — where craft meets creation"
       >
         <Image
@@ -763,12 +783,12 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
-              <div className="text-center mb-12 md:mb-16">
+              <div className="text-center mb-8 md:mb-12 lg:mb-16">
                 <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-sm font-medium mb-6 shadow-sm">
                    <ArrowRight className="w-4 h-4 mr-2" />
                    <ShinyText text="Transform & Grow" speed={2} />
                  </div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-6 leading-tight tracking-tight">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
                   Helping You
                   <br />
                   Transform Your
@@ -785,14 +805,14 @@ export default function Home() {
               </div>
 
               {/* Services Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
                 {/* Design Card */}
-                <ScrollFloat delay={0.1}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
+                <ScrollFloat delay={0.1} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
+                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
                       <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-pink-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-2 shadow-lg">
+                        <div className="inline-block bg-pink-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-2 shadow-lg">
                           DESIGN
                         </div>
                         <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
@@ -800,20 +820,20 @@ export default function Home() {
                         </p>
                       </div>
                       <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Discovery & Strategy</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Web Design & UI/UX</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">User-Centered Experience</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3">
-                          <div className="w-2 h-2 bg-pink-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Accessible, Inclusive Design</h4>
                         </div>
                       </div>
@@ -822,12 +842,12 @@ export default function Home() {
                 </ScrollFloat>
 
                 {/* Build Card */}
-                <ScrollFloat delay={0.2}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
+                <ScrollFloat delay={0.2} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500"></div>
+                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
                       <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-green-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform rotate-1 shadow-lg">
+                        <div className="inline-block bg-green-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform rotate-1 shadow-lg">
                           BUILD
                         </div>
                         <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
@@ -835,20 +855,20 @@ export default function Home() {
                         </p>
                       </div>
                       <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Website Development</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Shopify & E-commerce</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">CMS Solutions (Custom & Headless)</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Technical SEO Foundations</h4>
                         </div>
                         
@@ -858,12 +878,12 @@ export default function Home() {
                 </ScrollFloat>
 
                 {/* Grow Card */}
-                <ScrollFloat delay={0.3}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-3xl p-8 md:p-10 shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
+                <ScrollFloat delay={0.3} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
+                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
                       <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-blue-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-1 shadow-lg">
+                        <div className="inline-block bg-blue-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-1 shadow-lg">
                           GROW
                         </div>
                         <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
@@ -871,20 +891,20 @@ export default function Home() {
                         </p>
                       </div>
                       <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Paid Advertising (PPC)</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Search Engine Optimisation</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Content & Email Marketing</h4>
                         </div>
-                        <div className="flex items-center py-2 md:py-3 border-b border-gray-100">
-                          <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
+                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
                           <h4 className="text-black font-semibold text-sm md:text-base">Social Media Growth</h4>
                         </div>
                         
@@ -904,23 +924,23 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
-              <div className="text-center mb-12 md:mb-16 relative">
+              <div className="text-center mb-8 md:mb-12 lg:mb-16 relative">
                 <div className="inline-flex items-center px-4 py-2 rounded-full bg-card border border-border text-foreground/70 text-sm font-medium mb-6 shadow-sm">
                    <div className="w-2 h-2 bg-pink-400 rounded-full mr-2"></div>
                    <ShinyText text="Our Team" speed={2} />
                  </div>
 
                 {/* Decorative Badge */}
-                <div className="absolute -top-4 right-1/4 transform translate-x-1/2">
+                <div className="hidden md:block absolute -top-4 right-1/4 transform translate-x-1/2">
                   <div className="bg-pink-400 text-white px-4 py-2 rounded-xl font-bold text-sm transform rotate-12 shadow-lg">
                     3+ YEARS EXPER
                   </div>
                 </div>
 
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
                   A Dedicated Team of
                   <br />
-                  <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+                  <span className="text-foreground">
                     Professionals
                   </span>
                 </h2>
@@ -931,17 +951,17 @@ export default function Home() {
               </div>
 
               {/* Team Features Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8 items-stretch">
                 {/* We're About Results */}
-                <ScrollFloat delay={0.1}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-3xl p-6 md:p-8 transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
+                <ScrollFloat delay={0.1} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
+                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
                       <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 bg-pink-100 rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-pink-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                           <Check className="w-6 h-6 md:w-8 md:h-8 text-pink-600" strokeWidth={2} />
                         </div>
-                        <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 md:mb-4 tracking-tight">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
                           WE’RE ABOUT RESULTS
                         </h3>
                       </div>
@@ -953,15 +973,15 @@ export default function Home() {
                 </ScrollFloat>
 
                 {/* Experienced Team */}
-                <ScrollFloat delay={0.2}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-3xl p-6 md:p-8 transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
+                <ScrollFloat delay={0.2} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
+                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
                       <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-100 rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-blue-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                           <Diamond className="w-6 h-6 md:w-8 md:h-8 text-blue-600" strokeWidth={2} />
                         </div>
-                        <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 md:mb-4 tracking-tight">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
                           EXPERIENCED TEAM
                         </h3>
                       </div>
@@ -973,15 +993,15 @@ export default function Home() {
                 </ScrollFloat>
 
                 {/* Quality Assurance */}
-                <ScrollFloat delay={0.3}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-3xl p-6 md:p-8 transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
+                <ScrollFloat delay={0.3} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
+                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
                       <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 bg-green-100 rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-green-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                           <Star className="w-6 h-6 md:w-8 md:h-8 text-green-600" strokeWidth={2} />
                         </div>
-                        <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 md:mb-4 tracking-tight">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
                           QUALITY ASSURANCE
                         </h3>
                       </div>
@@ -993,15 +1013,15 @@ export default function Home() {
                 </ScrollFloat>
 
                 {/* Support & Aftercare */}
-                <ScrollFloat delay={0.4}>
-                  <div className="group relative">
-                    <div className="absolute inset-0 rounded-3xl transform -rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-3xl p-6 md:p-8 transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
+                <ScrollFloat delay={0.4} className="min-w-0 md:h-full xl:h-auto">
+                  <div className="group relative md:h-full xl:h-auto">
+                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
+                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
                       <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 bg-purple-100 rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-purple-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
                           <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-purple-600" strokeWidth={2} />
                         </div>
-                        <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 md:mb-4 tracking-tight">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
                           SUPPORT & AFTERCARE
                         </h3>
                       </div>
@@ -1022,9 +1042,9 @@ export default function Home() {
         <section className="w-full py-8 md:py-12 lg:py-16 bg-background">
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                 {/* Left - Professional Image (place after content on mobile) */}
-                <div className="relative order-2 lg:order-1 mt-6 lg:mt-0">
+                <div className="relative order-2 lg:order-1 mt-6 lg:mt-0 min-w-0">
                   <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl overflow-hidden shadow-2xl">
                     <Image
                       src="/images/x2.jpeg"
@@ -1033,7 +1053,7 @@ export default function Home() {
                       height={600}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
                       loading="lazy"
-                      className="w-full h-auto object-contain"
+                      className="w-full h-auto max-w-full object-contain"
                     />
                   </div>
                   {/* Decorative elements (hide on mobile to avoid overflow outside section) */}
@@ -1044,16 +1064,16 @@ export default function Home() {
                 {/* Right - Content (show before image on mobile) */}
                 <div className="space-y-8 order-1 lg:order-2">
                   <div>
-                    <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight tracking-tight">
+                    <h2 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight tracking-tight">
                       YOUR TRUSTED
                       <br />
-                      <span className="bg-gradient-to-r from-foreground to-foreground/60 bg-clip-text text-transparent">
+                      <span className="text-foreground">
                         DIGITAL PARTNER
                       </span>
                     </h2>
                   </div>
 
-                  <div className="space-y-6 text-lg text-foreground/70 leading-relaxed">
+                  <div className="space-y-6 text-base sm:text-lg text-foreground/70 leading-relaxed">
                     <p>
                       At ZeroSlash Agency, we help fitness, lifestyle, and growing businesses unlock their full digital potential. Based in India and working with clients worldwide, we deliver high-end web design, powerful marketing, and smart automation—all crafted to your unique needs.
                     </p>
@@ -1067,14 +1087,14 @@ export default function Home() {
                     <Button
                       onClick={() => setWizardOpen(true)}
                       aria-label="Start Your Project"
-                      className="bg-black hover:bg-gray-800 text-white px-8 py-4 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="bg-black hover:bg-gray-800 text-white px-8 py-4 h-auto lg:h-9 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       Start Your Project
                       <ArrowRight className="ml-2 w-5 h-5" />
                     </Button>
                     <Button
                       variant="outline"
-                      className="border-2 border-black hover:border-gray-800 text-black hover:text-gray-800 px-8 py-4 rounded-full text-lg font-medium hover:bg-gray-50 transition-all duration-300 bg-transparent"
+                      className="border-2 border-black hover:border-gray-800 text-black hover:text-gray-800 px-8 py-4 h-auto lg:h-9 rounded-full text-lg font-medium hover:bg-gray-50 transition-all duration-300 bg-transparent"
                     >
                       Our Story
                     </Button>
@@ -1089,9 +1109,9 @@ export default function Home() {
       {/* Velocity scroll divider (rose + phrase) */}
       <section className="w-full py-4">
         <VelocityScroll
-          text="🌹 Ready. Set. Ship. 🌹"
+          text="Ready. Set. Ship."
           default_velocity={5}
-          className="text-[clamp(2rem,12vw,7rem)] font-extrabold tracking-tight bg-gradient-to-r from-neutral-300 to-white bg-clip-text text-transparent"
+          className="text-[clamp(2rem,12vw,7rem)] font-extrabold tracking-tight text-foreground/80"
         />
       </section>
 
@@ -1117,17 +1137,17 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 container mx-auto px-4 md:px-6">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 items-start">
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 lg:gap-16 items-start">
             {/* Left: contact */}
-            <div className="space-y-2 text-black/90">
+            <div className="flex flex-col items-start gap-2 text-black/90">
               <div className="font-semibold">Contact</div>
-              <a href="mailto:hello@zeroslash.in" className="font-bold underline decoration-transparent hover:decoration-black">hello@zeroslash.in</a>
-              <div className="font-bold">+91 95002 55291</div>
+              <a href="mailto:hello@zeroslash.in" className="inline-flex items-center min-h-11 font-bold underline decoration-transparent hover:decoration-black">hello@zeroslash.in</a>
+              <a href="tel:+919500255291" className="inline-flex items-center min-h-11 font-bold">+91 95002 55291</a>
             </div>
 
             {/* Center: CTA */}
             <div className="text-center">
-              <h3 className="text-2xl md:text-3xl font-extrabold text-black/95 mb-5">Got a project? Want to collaborate?</h3>
+              <h3 className="text-2xl lg:text-3xl font-extrabold text-black/95 mb-5">Got a project? Want to collaborate?</h3>
               <button
                 type="button"
                 onClick={() => setWizardOpen(true)}
@@ -1161,8 +1181,8 @@ export default function Home() {
           <div className="mt-12 md:mt-16 pt-6 md:pt-8 border-t border-black/10 flex flex-col md:flex-row items-center justify-between gap-4 text-black/90">
             <div className="text-sm opacity-90">© 2025 ZeroSlash Agency</div>
             <div className="flex items-center gap-6 text-sm opacity-90">
-              <Link href="#">Privacy Policy</Link>
-              <Link href="#">Terms & Conditions</Link>
+              <Link href="/reviews" className="inline-flex items-center py-3 -my-3 hover:opacity-70 transition-opacity">Reviews</Link>
+              <Link href="/calculator" className="inline-flex items-center py-3 -my-3 hover:opacity-70 transition-opacity">Cost Calculator</Link>
             </div>
             <div className="flex items-center gap-3 bg-black/15 backdrop-blur-[1px] rounded-full px-4 py-2">
               <div className="flex text-yellow-500">
@@ -1170,13 +1190,13 @@ export default function Home() {
                   <Star key={i} className="w-4 h-4 fill-current" />
                 ))}
               </div>
-              <span className="text-sm font-medium">5.0 from 76+ reviews</span>
+              <span className="text-sm font-medium">{RATING} from {REVIEW_COUNT} reviews</span>
             </div>
           </div>
         </div>
 
         {/* Giant background text */}
-        <div className="pointer-events-none select-none absolute inset-x-0 -bottom-6 md:-bottom-8 text-black/15 font-black tracking-tight text-[16vw] md:text-[13vw] leading-none text-center">
+        <div className="pointer-events-none select-none absolute inset-x-0 -bottom-6 md:-bottom-8 text-black/15 font-black tracking-tight text-[12vw] sm:text-[14vw] md:text-[13vw] leading-none text-center">
           LET’S WORK TOGETHER
         </div>
       </footer>

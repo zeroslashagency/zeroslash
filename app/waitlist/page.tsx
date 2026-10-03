@@ -3,6 +3,7 @@
 import { useRef, useState } from "react"
 import { motion } from "motion/react"
 import Link from "next/link"
+import Honeypot from "@/components/Honeypot"
 
 const ACCENT_LIME = "#b7ff63"
 
@@ -10,6 +11,7 @@ export default function WaitlistPage() {
   const [bgScroll, setBgScroll] = useState(false)
   const scrollerRef = useRef<HTMLDivElement | null>(null)
   const emailRef = useRef<HTMLInputElement | null>(null)
+  const trapRef = useRef<HTMLInputElement | null>(null)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -113,7 +115,7 @@ export default function WaitlistPage() {
                 const res = await fetch("/api/waitlist", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ email }),
+                  body: JSON.stringify({ email, website: trapRef.current?.value || "" }),
                 })
                 const data = await res.json().catch(() => ({}))
                 if (!res.ok || !data?.ok) {
@@ -130,6 +132,7 @@ export default function WaitlistPage() {
               }
             }}
           >
+            <Honeypot ref={trapRef} />
             <input
               ref={emailRef}
               type="email"

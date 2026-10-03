@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
 import { Star, ArrowLeft } from "lucide-react"
+import { CONTACT, RATING, REVIEW_COUNT, SOCIAL_LIST } from "@/lib/site"
 
 export default function ReviewsPage() {
   const allReviews = [
@@ -138,7 +139,7 @@ export default function ReviewsPage() {
                     <Star key={i} className="w-6 h-6 fill-current" />
                   ))}
                 </div>
-                <span className="text-foreground text-lg font-semibold">5.0 from 76+ reviews</span>
+                <span className="text-foreground text-lg font-semibold">{RATING} from {REVIEW_COUNT} reviews</span>
               </div>
             </div>
           </div>
@@ -200,25 +201,19 @@ export default function ReviewsPage() {
                   We craft digital experiences that deliver results. Partner with our team to build exceptional
                   solutions that drive growth.
                 </p>
-                <div className="flex space-x-4">
-                  <a
-                    href="#"
-                    className="w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-foreground/10 hover:bg-foreground hover:text-background"
-                  >
-                    <span className="text-sm font-bold">f</span>
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-foreground/10 hover:bg-foreground hover:text-background"
-                  >
-                    <span className="text-sm font-bold">t</span>
-                  </a>
-                  <a
-                    href="#"
-                    className="w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-foreground/10 hover:bg-foreground hover:text-background"
-                  >
-                    <span className="text-sm font-bold">in</span>
-                  </a>
+                <div className="flex gap-3">
+                  {SOCIAL_LIST.map((s) => (
+                    <a
+                      key={s.label}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.label}
+                      className="w-11 h-11 rounded-full flex items-center justify-center transition-colors bg-foreground/10 hover:bg-foreground hover:text-background"
+                    >
+                      <span className="text-sm font-bold" aria-hidden>{s.short}</span>
+                    </a>
+                  ))}
                 </div>
               </div>
 
@@ -231,26 +226,19 @@ export default function ReviewsPage() {
                       Home
                     </Link>
                   </li>
-                  <li>
-                    <Link href="#" className="text-foreground/70 hover:text-foreground transition-colors">
-                      About
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-foreground/70 hover:text-foreground transition-colors">
-                      Services
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-foreground/70 hover:text-foreground transition-colors">
-                      Work
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#" className="text-foreground/70 hover:text-foreground transition-colors">
-                      Contact
-                    </Link>
-                  </li>
+                  {[
+                    { label: "About", href: "/about" },
+                    { label: "Services", href: "/services" },
+                    { label: "Digital Marketing", href: "/digital-marketing" },
+                    { label: "Cost Calculator", href: "/calculator" },
+                    { label: "Contact", href: "/contact" },
+                  ].map((l) => (
+                    <li key={l.href}>
+                      <Link href={l.href} className="text-foreground/70 hover:text-foreground transition-colors">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
 
@@ -258,8 +246,8 @@ export default function ReviewsPage() {
               <div>
                 <h3 className="font-bold text-foreground mb-6">Contact</h3>
                 <div className="space-y-3">
-                  <p className="text-foreground/70">+91 9500255291</p>
-                  <p className="text-foreground/70">hello@zeroslash.in</p>
+                  <a href={CONTACT.phoneHref} className="block text-foreground/70 hover:text-foreground transition-colors">{CONTACT.phoneDisplay}</a>
+                  <a href={`mailto:${CONTACT.email}`} className="block text-foreground/70 hover:text-foreground transition-colors">{CONTACT.email}</a>
                   <p className="text-foreground/70">Remote-first team</p>
                 </div>
               </div>
@@ -269,12 +257,6 @@ export default function ReviewsPage() {
             <div className="border-t border-border mt-8 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center">
               <div className="flex flex-wrap gap-6 text-sm text-foreground/60 mb-4 md:mb-0">
                 <span>© 2025 ZeroSlash Agency</span>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  Privacy Policy
-                </Link>
-                <Link href="#" className="hover:text-foreground transition-colors">
-                  Terms of Service
-                </Link>
               </div>
               <div className="flex items-center bg-foreground/10 rounded-lg px-4 py-2">
                 <div className="flex text-yellow-400 mr-2">
@@ -282,7 +264,7 @@ export default function ReviewsPage() {
                     <Star key={i} className="w-4 h-4 fill-current" />
                   ))}
                 </div>
-                <span className="text-foreground text-sm font-medium">5.0 from 76+ reviews</span>
+                <span className="text-foreground text-sm font-medium">{RATING} from {REVIEW_COUNT} reviews</span>
               </div>
             </div>
           </div>

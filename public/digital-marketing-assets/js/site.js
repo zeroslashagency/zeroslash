@@ -1042,6 +1042,10 @@ customElements.define('site-footer', SiteFooter);
 (function initDotCursor() {
   const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
   if (!fine.matches) return;
+  if (window.__marketingEnsureDotCursor) {
+    window.__marketingEnsureDotCursor();
+    return;
+  }
 
   const dot = document.createElement('div');
   dot.className = 'dot-cursor';
@@ -1050,8 +1054,12 @@ customElements.define('site-footer', SiteFooter);
   label.className = 'dot-label';
   label.textContent = 'Press play, stranger';
   dot.appendChild(label);
-  document.body.appendChild(dot);
-  document.documentElement.classList.add('dot-cursor-on');
+  const ensure = () => {
+    if (!dot.isConnected) document.body.appendChild(dot);
+    document.documentElement.classList.add('dot-cursor-on');
+  };
+  window.__marketingEnsureDotCursor = ensure;
+  ensure();
 
   let x = window.innerWidth / 2, y = window.innerHeight / 2;
   let shown = false, raf = 0;
