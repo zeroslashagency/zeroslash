@@ -1865,7 +1865,7 @@
 #marketing-scope .sun-group {
       position: absolute;
       width: var(--sun-w);
-      top:   calc(var(--sun-w) * -0.256087);
+      top:   calc(var(--sun-w) * -0.08);
       right: calc(var(--sun-w) * -0.171192);
       height: auto;
       pointer-events: none;
@@ -2172,7 +2172,6 @@
          resolves to top:-271px — the design value (correct, do not change).
          height = 32.71vw; bottom = top + height = 200px. */
       top: calc(200px - 32.71vw);
-      background-image: url(/digital-marketing-assets/assets/sky-band.svg);
       background-size: 100% 100%;
       background-repeat: no-repeat;
       background-position: top;
@@ -3157,7 +3156,7 @@
        site.css (#nav.nav-on-dark / .nav-on-light, set by initNavContrast), so the
        pin stays legible over any section regardless of theme. No night override. — */
 /* — sky band: same vectors recolored (Vector 27 #0a0a0f, wisps #0f0f2d) — */
-#marketing-scope.night .sky-band { background-image: url(/digital-marketing-assets/assets/sky-band-night.svg); }
+
 /* projects/featured bg + intro/heading text + tile-overlay (256:1927/1945) all
        flip via tokens (--bg-base, --text-heading, --overlay-scrim, --text-contrast). */
 /* logos row (256:1930): opacity 70%; svg logos go light (#fff9f1 / white variants),
@@ -3901,3 +3900,31 @@
 #marketing-scope site-footer { display: block !important; contain: layout; }
 /* kill heavy infinite mask animation off-screen via anim-idle already — ensure it applies */
 #marketing-scope .anim-idle { animation-play-state: paused !important; }
+
+
+/* The band container remains fixed for the cream seam and paper-plane geometry. */
+#marketing-scope .sky-band { --sky-band-wisp: #fef2e2; }
+#marketing-scope.night .sky-band { --sky-band-wisp: #0f0f2d; }
+#marketing-scope .sky-band-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; overflow: hidden; }
+#marketing-scope .sky-band-foundation { fill: var(--bg-base); }
+#marketing-scope .sky-band-wisp {
+  fill: var(--sky-band-wisp);
+  animation: sky-band-drift var(--wisp-duration, 22s) ease-in-out infinite alternate;
+  animation-delay: var(--wisp-delay, 0s);
+  animation-play-state: paused;
+}
+#marketing-scope .sky-band[data-running="true"] .sky-band-wisp { animation-play-state: running; }
+#marketing-scope .sky-band-wisp-1 { --wisp-x: 12px; --wisp-y: -3px; --wisp-duration: 22s; --wisp-delay: -6s; }
+#marketing-scope .sky-band-wisp-2 { --wisp-x: -16px; --wisp-y: 4px; --wisp-duration: 26s; --wisp-delay: -18s; }
+#marketing-scope .sky-band-wisp-3 { --wisp-x: 10px; --wisp-y: 3px; --wisp-duration: 20s; --wisp-delay: -9s; }
+#marketing-scope .sky-band-wisp-4 { --wisp-x: -14px; --wisp-y: -4px; --wisp-duration: 24s; --wisp-delay: -3s; }
+#marketing-scope .sky-band-wisp-5 { --wisp-x: 18px; --wisp-y: 5px; --wisp-duration: 26s; --wisp-delay: -12s; }
+#marketing-scope .sky-band-wisp-6 { --wisp-x: -12px; --wisp-y: 3px; --wisp-duration: 21s; --wisp-delay: -15s; }
+#marketing-scope .sky-band-wisp-7 { --wisp-x: 14px; --wisp-y: -3px; --wisp-duration: 18s; --wisp-delay: -7s; }
+@keyframes sky-band-drift {
+  from { transform: translate(calc(var(--wisp-x) * -1), calc(var(--wisp-y) * -1)); }
+  to { transform: translate(var(--wisp-x), var(--wisp-y)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #marketing-scope .sky-band-wisp { animation: none; transform: none; }
+}

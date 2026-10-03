@@ -65,6 +65,30 @@ export default function MarketingView() {
   const scopeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const band = scopeRef.current?.querySelector<HTMLElement>(".sky-band");
+    if (!band) return;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let visible = false;
+    const updateMotion = () => {
+      band.dataset.running = String(visible && !document.hidden && !reducedMotion.matches);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      updateMotion();
+    });
+    observer.observe(band);
+    document.addEventListener("visibilitychange", updateMotion);
+    reducedMotion.addEventListener("change", updateMotion);
+    updateMotion();
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", updateMotion);
+      reducedMotion.removeEventListener("change", updateMotion);
+      band.dataset.running = "false";
+    };
+  }, []);
+
+  useEffect(() => {
     const scope = scopeRef.current;
     if (!scope) return;
 

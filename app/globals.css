@@ -716,7 +716,7 @@ header.dig-top {
 
 #marketing-scope .hero::after { z-index: 1; }
 #marketing-scope .hero-content { z-index: 2; }
-/* Fade only decorative art; transparency stays clean as the content scales. */
+/* Fade the clouds and moon; the foreground sun stays clear of this mask. */
 #marketing-scope .hero-sky-art {
   position: absolute;
   inset: 0;
@@ -725,6 +725,7 @@ header.dig-top {
   mask-image: linear-gradient(to bottom, transparent 0px, rgba(0, 0, 0, 0.06) 40px, rgba(0, 0, 0, 0.32) 100px, rgba(0, 0, 0, 0.72) 180px, black 260px);
   -webkit-mask-image: linear-gradient(to bottom, transparent 0px, rgba(0, 0, 0, 0.06) 40px, rgba(0, 0, 0, 0.32) 100px, rgba(0, 0, 0, 0.72) 180px, black 260px);
 }
+#marketing-scope .hero-content > .sun-group { z-index: 3; }
 #marketing-scope .hero-content > .hero-eyebrow,
 #marketing-scope .hero-content > h1,
 #marketing-scope .hero-vertical,
