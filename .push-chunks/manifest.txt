@@ -18,3 +18,4 @@ public/images/flora/website-laptop-1122.webp|4d73137ccc73306c9a6542e1c95e0566591
 public/images/flora/website-laptop-480.webp|d27f1e21f37b487ba47370eed10b60788a1b591225551a9ac5d3692b8812764e|  156790
 public/images/flora/website-laptop-800.webp|dce415ddef5e1b1c6422cf91d53e2543a08d3a13d1047fff97d9210f43f54dac|  385500
 public/images/flora/website-laptop.webp|5bbe603fb5d892545067cfc88476bca75cf67214fec80022692ce5a68337e312|  582382
+
