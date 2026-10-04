@@ -730,7 +730,7 @@ header.dig-top {
 #marketing-scope .hero-content > h1,
 #marketing-scope .hero-vertical,
 #marketing-scope .h-line,
-#marketing-scope .hero-content > .recorder { z-index: 4; }
+#marketing-scope .hero-content > .hero-window { z-index: 4; }
 
 /* ── Contact page: staggered editorial reveal ────────────────────────── */
 .contact-reveal {

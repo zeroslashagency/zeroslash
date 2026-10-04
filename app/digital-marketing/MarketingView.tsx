@@ -65,18 +65,23 @@ export default function MarketingView() {
   const scopeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const band = scopeRef.current?.querySelector<HTMLElement>(".sky-band");
-    if (!band) return;
+    const scenes = Array.from(scopeRef.current?.querySelectorAll<HTMLElement>(".sky-band, .hero-window") ?? []);
+    if (!scenes.length) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let visible = false;
+    const visible = new Set<Element>();
     const updateMotion = () => {
-      band.dataset.running = String(visible && !document.hidden && !reducedMotion.matches);
+      scenes.forEach((scene) => {
+        scene.dataset.running = String(visible.has(scene) && !document.hidden && !reducedMotion.matches);
+      });
     };
-    const observer = new IntersectionObserver(([entry]) => {
-      visible = entry.isIntersecting;
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) visible.add(entry.target);
+        else visible.delete(entry.target);
+      });
       updateMotion();
     });
-    observer.observe(band);
+    scenes.forEach((scene) => observer.observe(scene));
     document.addEventListener("visibilitychange", updateMotion);
     reducedMotion.addEventListener("change", updateMotion);
     updateMotion();
@@ -84,7 +89,7 @@ export default function MarketingView() {
       observer.disconnect();
       document.removeEventListener("visibilitychange", updateMotion);
       reducedMotion.removeEventListener("change", updateMotion);
-      band.dataset.running = "false";
+      scenes.forEach((scene) => { scene.dataset.running = "false"; });
     };
   }, []);
 

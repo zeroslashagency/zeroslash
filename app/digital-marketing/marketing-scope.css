@@ -198,7 +198,7 @@
        Tier 2 — semantic role tokens: LIGHT values here in :root, DARK values
        redefined once in `body.night` (search "NIGHT THEME"). Themed CSS references
        var(--role) so switching theme only re-points tokens. Decorative/art colors
-       (recorder UI, willow/meadow art, SVG mesh fills) stay as literals. */
+       (window scene UI, willow/meadow art, SVG mesh fills) stay as literals. */
 #marketing-scope {
       /* — Tier 1: palette — */
       --c-cream:       #fff9f1;   /* warm page cream */
@@ -1766,10 +1766,10 @@
 #marketing-scope .dot-cursor.hot { width: 30px; height: 30px; margin: -15px 0 0 -15px; }
 /* a small pinch on press */
 #marketing-scope .dot-cursor.down { width: 8px; height: 8px; margin: -4px 0 0 -4px; }
-/* over the recorder: the dot swells into a labelled circle.
+/* over the window scene: the dot swells into a labelled circle.
      Still difference-blended, so the disc inverts the backdrop and the black
      label knocks out to the true page colour underneath. */
-#marketing-scope .dot-cursor.reel, #marketing-scope .dot-cursor.labelled { width: 104px; height: 104px; margin: -52px 0 0 -52px; }
+#marketing-scope #marketing-scope .dot-cursor.labelled { width: 104px; height: 104px; margin: -52px 0 0 -52px; }
 #marketing-scope .dot-cursor .dot-label {
     position: absolute;
     inset: 0;
@@ -1791,7 +1791,7 @@
     transition: opacity 0.16s ease, transform 0.2s cubic-bezier(0.22,1,0.36,1);
     pointer-events: none;
   }
-#marketing-scope .dot-cursor.reel .dot-label, #marketing-scope .dot-cursor.labelled .dot-label { opacity: 1; transform: scale(1); }
+#marketing-scope #marketing-scope .dot-cursor.labelled .dot-label { opacity: 1; transform: scale(1); }
 /* the footer garden has its own watering-can cursor — hide the dot there */
 #marketing-scope:has(.ft-cursor.on) .dot-cursor { opacity: 0; }
 }
@@ -1830,7 +1830,7 @@
       background-image: url(/digital-marketing-assets/assets/hero-sky-day.webp);
       background-size: cover;
       /* bias up: the densest wisps are in the photo's lower half, and the hero's
-         own bottom is where the headline and recorder sit */
+         own bottom is where the headline and window scene sit */
       background-position: center 35%;
       background-repeat: no-repeat;
       mix-blend-mode: screen;
@@ -1953,194 +1953,81 @@
       transform: translateY(-0.16em) rotate(-7deg);
       color: #F4D24A;
     }
-/* ════ RECORDER — Figma node 1:40 ════ */
-#marketing-scope .recorder {
-      position: absolute;
-      left: calc(50% - 229px);
-      top: calc(50vh + 58px);
-      transform: translate(-50%, -50%) scale(1.08);
-      display: flex;
-      align-items: flex-start;
-      gap: 22px;
-      padding: 16px;
-      border-radius: 9999px;
-      background: #dfdcd5;
-      border: 1px solid #c9c9c9;
-      box-shadow: 0 11px 9.6px 0 rgba(0,0,0,0.25);
-    }
-/* neumorphic inner bevel */
-#marketing-scope .recorder::after {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      pointer-events: none;
-      box-shadow:
-        inset 0 5px 7.3px 2px #f5f1ee,
-        inset -2px -10px 2.3px 0 #b8b7b2;
-    }
-/* disk (nodes 1:41 / 1:62) */
-#marketing-scope .disk {
-      position: relative;
-      width: 89px; height: 89px;
-      border-radius: 9999px;
-      border: 3px solid #373535;
-      box-shadow: 0 0 0 2px #62615e;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-#marketing-scope .disk-face {
-      position: absolute;
-      inset: 0;
-      border-radius: 9999px;
-      background: conic-gradient(from 180deg,
-        rgb(18,18,18) 0%, rgb(18,18,18) 8.76%, rgb(39,39,39) 10.18%,
-        rgb(59,59,59) 11.59%, rgb(80,80,80) 13.01%, rgb(100,100,100) 14.42%,
-        rgb(79,79,79) 18.19%, rgb(59,59,59) 21.95%, rgb(38,38,38) 31%,
-        rgb(18,18,18) 40.04%, rgb(18,18,18) 59.51%, rgb(39,39,39) 61.29%,
-        rgb(59,59,59) 63.07%, rgb(80,80,80) 64.84%, rgb(100,100,100) 66.62%,
-        rgb(79,79,79) 68.72%, rgb(57,57,57) 70.82%, rgb(38,38,38) 80.96%,
-        rgb(18,18,18) 91.1%, rgb(18,18,18) 100%);
-    }
-#marketing-scope .disk-texture {
-      position: absolute;
-      inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      border-radius: 9999px;
-      mix-blend-mode: color-dodge;
-      opacity: 0.1;
-    }
-#marketing-scope .disk-cap {
-      position: absolute;
-      left: 50%; top: 50%;
-      transform: translate(-50%, -50%);
-    }
-#marketing-scope .disk-cap.c1 { width: 32.19px; height: 32.19px; }
-#marketing-scope .disk-cap.c2 { width: 18.45px; height: 18.45px; }
-#marketing-scope .disk-cap.c3 { width: 5.94px;  height: 5.94px;  }
-#marketing-scope .disk.spinning { animation: disk-spin 1.8s linear infinite; }
-@keyframes disk-spin { to { transform: rotate(360deg); } }
-/* center column (node 1:45) */
-#marketing-scope .rec-center {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 171.42px;
-      align-self: stretch;
-    }
-#marketing-scope .rec-title {
-      font-family: 'JetBrains Mono', monospace;
-      /* 11 not 12: the title has to clear .rec-center's fixed 171.42px in ONE
-         line, and this string measures 180px at 12px. Kept as a wrap (not
-         nowrap) so a font fallback degrades to two lines instead of spilling
-         out of the pill. */
-      font-size: 11px;
-      letter-spacing: -0.12px;
-      color: #070707;
-      width: 100%;
-      margin-bottom: 4px;
-    }
-/* play slider (node 1:49) */
-#marketing-scope .play-slider {
-      position: relative;
-      width: 100%;
-      height: 23.45px;
-      cursor: pointer;
-      touch-action: none;
-    }
-/* smooth follow during playback; disabled mid-drag so scrubbing stays 1:1 */
-#marketing-scope .play-slider:not(.scrubbing) .slider-knob { transition: left .12s linear; }
-#marketing-scope .play-slider:not(.scrubbing) .slider-fill { transition: width .12s linear; }
-#marketing-scope .play-slider.scrubbing { cursor: grabbing; }
-#marketing-scope .slider-track {
-      position: absolute;
-      left: 0; right: 0;
-      top: 5.58px;
-      height: 12.29px;
-      border-radius: 9999px;
-      background: #686360;
-      box-shadow: 0 3px 1px 0 #ededed;
-      overflow: hidden;
-    }
-#marketing-scope .slider-track::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      box-shadow:
-        inset 0 -1px 3px 0 rgba(0,0,0,0.2),
-        inset 3px 3px 3.4px 0 rgba(0,0,0,0.5);
-    }
-#marketing-scope .slider-fill {
-      position: absolute;
-      left: 0;
-      top: 0.46px;
-      height: 11.83px;
-      width: 0;
-      background: var(--gold);
-    }
-#marketing-scope .slider-knob {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 23.45px; height: 23.45px;
-      border-radius: 9999px;
-      border: 1px solid #e4e5e5;
-      background: radial-gradient(circle at 50% 50%, #f6f4f5 0%, #caccc9 100%);
-      box-shadow: 2px 4px 4px 0 rgba(0,0,0,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-#marketing-scope .slider-knob::after {
-      content: '';
-      width: 7.32px; height: 7.32px;
-      border-radius: 9999px;
-      background: linear-gradient(150deg, #ffffff 15.95%, #8d8b8f 70.17%);
-      box-shadow: 0 1px 1.9px 0 rgba(0,0,0,0.51);
-    }
-#marketing-scope .timestamps {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: -0.1px;
-      color: #070707;
-    }
-/* play circle (node 1:57) */
-#marketing-scope .play-circle {
-      position: relative;
-      width: 41.32px; height: 41.32px;
-      border: none;
-      background: none;
-      padding: 0;
-      cursor: pointer;
-      border-radius: 50%;
-      transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1);
-    }
-#marketing-scope .play-circle:hover { transform: scale(1.1); }
-#marketing-scope .play-circle:active { transform: scale(0.92); }
-#marketing-scope .play-circle:focus-visible { outline: 2px solid #070707; outline-offset: 2px; }
-#marketing-scope .play-circle .ring { position: absolute; inset: 0; width: 100%; height: 100%; }
-#marketing-scope .play-circle .tri { position: absolute; inset: 8.33%; width: 83.34%; height: 83.34%; }
-#marketing-scope .pause-bars {
-      position: absolute;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-    }
-#marketing-scope .pause-bars span {
-      width: 4px; height: 14px;
-      background: #070707;
-      border-radius: 2px;
-    }
-#marketing-scope .play-circle.playing .tri { display: none; }
-#marketing-scope .play-circle.playing .pause-bars { display: flex; }
+/* Quiet window scene replaces the audio controls at the same hero anchor. */
+#marketing-scope .hero-window {
+  position: absolute;
+  left: calc(50% - 229px);
+  top: calc(50vh + 58px);
+  width: 425px;
+  height: 180px;
+  transform: translate(-50%, -50%) scale(1.08);
+}
+#marketing-scope .hero-window-svg { display: block; width: 425px; height: 180px; }
+/* Every animated detail follows the same fifteen-second story clock. */
+#marketing-scope .hero-window-svg text { fill: #65735d; font-family: 'Space Grotesk', sans-serif; font-size: 10px; letter-spacing: 0.06em; }
+#marketing-scope .window-designer-arm { transform-origin: 83px 103px; animation: window-designer-work 15s ease-in-out infinite; }
+#marketing-scope .window-stage-sketch { animation: window-story-sketch 15s linear infinite; }
+#marketing-scope .window-stage-build { opacity: 0; animation: window-story-build 15s linear infinite; }
+#marketing-scope .window-stage-tree { opacity: 0; animation: window-story-tree 15s linear infinite; }
+#marketing-scope .window-sketch-lines,
+#marketing-scope .window-sketch-arrow { stroke-dasharray: 100; stroke-dashoffset: 100; animation: window-sketch-draw 15s ease-in-out infinite; }
+#marketing-scope .window-build-heading { animation: window-build-heading 15s ease-out infinite; }
+#marketing-scope .window-build-card-one { animation: window-build-first 15s ease-out infinite; }
+#marketing-scope .window-build-card-two { animation: window-build-second 15s ease-out infinite; }
+#marketing-scope .window-build-card-three { animation: window-build-third 15s ease-out infinite; }
+#marketing-scope .window-build-cursor { animation: window-cursor-move 15s ease-in-out infinite; }
+#marketing-scope .window-tree-trunk,
+#marketing-scope .window-tree-branches,
+#marketing-scope .window-tree-roots { stroke-dasharray: 100; stroke-dashoffset: 100; animation: window-tree-draw 15s ease-out infinite; }
+#marketing-scope .window-tree-leaves,
+#marketing-scope .window-tree-fruit { transform-origin: 309px 119px; animation: window-tree-bloom 15s ease-out infinite; }
+#marketing-scope .window-falling-leaf { transform-origin: 358px 55px; animation: window-leaf-cycle 15s ease-in-out infinite; }
+#marketing-scope .window-phase-grow { animation: window-grow-caption 15s linear infinite; }
+#marketing-scope .window-phase-evolve { opacity: 0; animation: window-evolve-caption 15s linear infinite; }
+#marketing-scope .window-next-idea { opacity: 0; transform-origin: 135px 119px; animation: window-idea-cycle 15s ease-in-out infinite; }
+#marketing-scope .hero-window-svg * { animation-play-state: paused; }
+#marketing-scope .hero-window[data-running="true"] .hero-window-svg * { animation-play-state: running; }
+@keyframes window-designer-work {
+  0%, 8%, 16%, 24%, 100% { transform: rotate(-3deg); }
+  4%, 12%, 20% { transform: rotate(5deg); }
+  35%, 65% { transform: rotate(-9deg); }
+  85%, 95% { transform: rotate(1deg); }
+}
+@keyframes window-story-sketch { 0%, 22%, 100% { opacity: 1; } 27%, 94% { opacity: 0; } 98% { opacity: 1; } }
+@keyframes window-story-build { 0%, 23%, 55%, 100% { opacity: 0; } 29%, 49% { opacity: 1; } }
+@keyframes window-story-tree { 0%, 48%, 100% { opacity: 0; } 55%, 95% { opacity: 1; } }
+@keyframes window-sketch-draw { 0% { stroke-dashoffset: 100; } 22%, 95% { stroke-dashoffset: 0; } 98%, 100% { stroke-dashoffset: 100; } }
+@keyframes window-build-heading { 0%, 24%, 100% { opacity: 0; transform: translateY(8px); } 31%, 55% { opacity: 1; transform: translateY(0); } 70% { opacity: 0; } }
+@keyframes window-build-first { 0%, 29%, 100% { opacity: 0; transform: translateY(18px); } 36%, 55% { opacity: 1; transform: translateY(0); } 70% { opacity: 0; } }
+@keyframes window-build-second { 0%, 34%, 100% { opacity: 0; transform: translateY(18px); } 41%, 55% { opacity: 1; transform: translateY(0); } 70% { opacity: 0; } }
+@keyframes window-build-third { 0%, 39%, 100% { opacity: 0; transform: translateY(18px); } 46%, 55% { opacity: 1; transform: translateY(0); } 70% { opacity: 0; } }
+@keyframes window-cursor-move { 0%, 26% { opacity: 0; transform: translate(-50px, 6px); } 32% { opacity: 1; transform: translate(-50px, 6px); } 43% { opacity: 1; transform: translate(39px, -16px); } 52%, 100% { opacity: 0; transform: translate(39px, -16px); } }
+@keyframes window-tree-draw { 0%, 48%, 100% { stroke-dashoffset: 100; } 66%, 96% { stroke-dashoffset: 0; } }
+@keyframes window-tree-bloom { 0%, 57%, 100% { opacity: 0; transform: scale(0.2); } 76%, 96% { opacity: 1; transform: scale(1); } }
+@keyframes window-leaf-cycle {
+  0%, 61%, 100% { opacity: 0; transform: translate(0, 0) rotate(0); }
+  74%, 80% { opacity: 1; transform: translate(0, 0) rotate(-6deg); }
+  86% { opacity: 1; transform: translate(-63px, 42px) rotate(70deg); }
+  92% { opacity: 1; transform: translate(-166px, 82px) rotate(170deg); }
+  97% { opacity: 0; transform: translate(-221px, 64px) rotate(280deg) scale(0.3); }
+}
+@keyframes window-grow-caption { 0%, 76% { opacity: 1; } 81%, 100% { opacity: 0; } }
+@keyframes window-evolve-caption { 0%, 76%, 100% { opacity: 0; } 81%, 95% { opacity: 1; } }
+@keyframes window-idea-cycle { 0%, 91% { opacity: 0; transform: scale(0.5); } 97% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(0.5); } }
+@media (prefers-reduced-motion: reduce) {
+  #marketing-scope .hero-window-svg * { animation: none; transform: none; }
+  #marketing-scope .window-stage-sketch,
+  #marketing-scope .window-stage-build,
+  #marketing-scope .window-phase-evolve,
+  #marketing-scope .window-next-idea { opacity: 0; }
+  #marketing-scope .window-stage-tree,
+  #marketing-scope .window-tree-leaves,
+  #marketing-scope .window-tree-fruit,
+  #marketing-scope .window-phase-grow { opacity: 1; }
+  #marketing-scope .window-tree-trunk,
+  #marketing-scope .window-tree-branches,
+  #marketing-scope .window-tree-roots { stroke-dashoffset: 0; }
+}
 /* hero content wrapper — scroll-driven scale + fade */
 #marketing-scope .hero-content {
       position: absolute;
@@ -2191,7 +2078,7 @@
 }
 /* laptops (13"–15", ~1280–1536 CSS px — a 13" MacBook Air reports ~1470,
        a 13/14" Pro ~1512): give the sun a bit more presence while trimming the
-       headline + recorder so the two balance. Wide monitors (>1536) keep base. */
+       headline + window scene so the two balance. Wide monitors (>1536) keep base. */
 @media (max-width: 1536px) {#marketing-scope .hero-content { --sun-w: clamp(300px, 44vw, 680px); }
 #marketing-scope .h-line { font-size: 136px; letter-spacing: 2.70px; }
 /* center the whole text block on the viewport: the 1440-tuned base anchors
@@ -2202,10 +2089,10 @@
 #marketing-scope .hero-eyebrow { left: calc(50% - 398px); top: calc(50vh - 200px); }
 #marketing-scope .hero-vertical { left: calc(50% - 445px); top: calc(50vh - 26px); }
 #marketing-scope .h-line.multidisciplinary { left: calc(50% - 398px); top: calc(50vh - 192px); }
-/* rotating word: centered on the recorder, tucked close and lifted up */
+/* rotating word: centered on the window scene, tucked close and lifted up */
 #marketing-scope .h-line.designer { left: calc(50% + 59px); top: calc(50vh - 2px); }
 /* scale down; left edge stays on the "D"; lifted to tighten under "Designer who" */
-#marketing-scope .recorder { left: calc(50% - 184px); top: calc(50vh + 80px); transform: translate(-50%, -50%) scale(1.0); }
+#marketing-scope .hero-window { left: calc(50% - 184px); top: calc(50vh + 80px); transform: translate(-50%, -50%) scale(1.0); }
 }
 /* intro paragraph (node 1:115) */
 #marketing-scope .intro-copy {
@@ -2697,13 +2584,13 @@
            LARGE viewport (lvh) so the cream section starts below even the tallest
            (toolbar-hidden) viewport and can never peek in. lvh is a fixed value, so
            the hero never resizes as the toolbar toggles — no snap, no flicker.
-           The CONTENT box is pinned to svh below so the recorder still fits on load. */
+           The CONTENT box is pinned to svh below so the window scene still fits on load. */
         height: 100svh;    /* fallback for browsers without lvh */
         height: 100lvh;
         min-height: 100svh;
         min-height: 100lvh;
       }
-/* keep the hero's laid-out content (heading + bottom-anchored recorder) inside
+/* keep the hero's laid-out content (heading + bottom-anchored window scene) inside
          the SMALL viewport so it's fully visible on first load (toolbar shown), even
          though the blue panel itself extends down to lvh behind it. */
 #marketing-scope .hero-content {
@@ -2897,13 +2784,13 @@
 /* break "Designer who" after "Designer": the tagged word-space becomes a
          zero-size block, dropping "who" to its own line (rotating word is line 3). */
 #marketing-scope .h-line.multidisciplinary .h-space { display: block; width: 0; height: 0; }
-#marketing-scope .recorder {
+#marketing-scope .hero-window {
         position: relative;
         z-index: 2;
         left: auto; top: auto;
         transform: none;
-        width: fit-content;
-        align-self: flex-start;   /* LEFT align the recorder */
+        width: 425px;
+        align-self: flex-start;   /* LEFT align the window scene */
         margin: 44px 0 0;
       }
 }
@@ -2933,18 +2820,18 @@
         /* iOS Safari's toolbars make the visible (svh) height short, so the header
            sits just under the sun — NOT pushed far down. The +45 constant is tuned
            so a bigger sun bleeds further into the top-right corner instead of
-           moving the header. Bottom pad keeps the recorder clear of the sky-band. */
+           moving the header. Bottom pad keeps the window scene clear of the sky-band. */
         padding: calc(var(--sun-w) * 0.5 + 45px) 24px 124px var(--col-pad-l);
       }
 /* nudge the sky group down so it sits just below the nav buttons */
 #marketing-scope .sun-group, #marketing-scope .hero-cloud, #marketing-scope .moon-group { transform: translateY(70px); }
-#marketing-scope .recorder {
+#marketing-scope .hero-window {
         transform: scale(0.66);
         transform-origin: top left;    /* keep the left edge fixed when scaling */
-        /* was `auto`, which bottom-pinned the recorder and dumped ALL the column's
+        /* was `auto`, which bottom-pinned the window scene and dumped ALL the column's
            spare height into this one gap — fine on a 667px phone, but it grew to
            ~170px on a tall viewport and the hero read as two split-apart blocks.
-           A bounded gap keeps eyebrow → header → recorder reading as one group at
+           A bounded gap keeps eyebrow → header → window scene reading as one group at
            any height; the leftover space now falls below, into the sky art. */
         margin: clamp(24px, 4.5vh, 56px) 0 0;
       }
@@ -2993,8 +2880,8 @@
 #marketing-scope .t-role { font-size: 17px; }
 #marketing-scope .t-arrows { gap: 44px; }
 }
-/* very narrow phones: the recorder (natural ~425px) needs a deeper scale */
-@media (max-width: 360px) {#marketing-scope .recorder { transform: scale(0.58); }
+/* very narrow phones: the window scene (natural ~425px) needs a deeper scale */
+@media (max-width: 360px) {#marketing-scope .hero-window { transform: scale(0.58); }
 }
 /* ── About intro: line-by-line reveal on scroll ──
        No pin — the blurb scrolls normally. JS splits each paragraph into visual
