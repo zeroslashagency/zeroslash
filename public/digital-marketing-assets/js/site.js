@@ -104,8 +104,8 @@ const FOOTER_HTML = `
     <div class="ft-garden" aria-hidden="true"></div>
 
     <div class="ft-inner">
-      <p class="ft-sub reveal">From early concepts to refined experiences, I help ambitious teams build products that earn trust, move quickly, and drive growth.</p>
-      <h2 class="ft-head"><button class="ft-head-btn" type="button" data-contact-open>Grow together?</button></h2>
+      <p class="ft-sub reveal">We help growing businesses bring their websites, brand and marketing into focus. Tell us what you want to work on next.</p>
+      <h2 class="ft-head"><button class="ft-head-btn" type="button" data-contact-open>Let’s talk</button></h2>
     </div>
 
     <p class="ft-credit">Crafted by ZeroSlash Agency · India @2026</p>
@@ -161,7 +161,7 @@ const CONTACT_HTML = `
     <div class="cd-body">
       <p class="cd-eyebrow"><span class="cd-dot" aria-hidden="true"></span>AVAILABLE FOR NEW PROJECTS</p>
       <h2 class="cd-title" id="cd-title">Grow together?</h2>
-      <p class="cd-intro">Tell me what you're growing — a product, a brand, a wild idea. I'll write back within 48 hours.</p>
+      <p class="cd-intro">Tell us about your business and what you want to build or improve. We’ll talk through a useful next step.</p>
 
       <form class="cd-form" id="cd-form">
         <input type="text" name="_honey" class="cd-honey" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -185,13 +185,13 @@ const CONTACT_HTML = `
           <span class="cd-send-label">Send it over</span>
           <img src="/digital-marketing-assets/assets/imgEmail.svg" alt="" width="20" height="20">
         </button>
-        <p class="cd-error" hidden>Hmm, that didn't send. Email me directly at <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
+        <p class="cd-error" hidden>Hmm, that didn't send. Email us directly at <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>.</p>
       </form>
 
       <div class="cd-done" hidden>
         ${daisySVG()}
         <h3 class="cd-done-title">Planted!</h3>
-        <p class="cd-done-copy">Your note is on its way. I'll write back within 48 hours.</p>
+        <p class="cd-done-copy">Your note is on its way. We’ll be in touch to talk about your project.</p>
       </div>
     </div>
 
@@ -203,8 +203,8 @@ const CONTACT_HTML = `
       <a class="cd-alt-mail" href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a>
       <nav class="cd-alt-social" aria-label="Social links">
         <a href="https://www.linkedin.com/company/zeroslash" target="_blank" rel="noopener">LinkedIn&nbsp;↗</a>
-        <a href="https://zeroslash.in" target="_blank" rel="noopener">GitHub&nbsp;↗</a>
-        <a href="https://zeroslash.in/contact" target="_blank" rel="noopener">Behance&nbsp;↗</a>
+        <a href="https://zeroslash.in" target="_blank" rel="noopener">Website&nbsp;↗</a>
+        <a href="https://zeroslash.in/contact" target="_blank" rel="noopener">Contact&nbsp;↗</a>
       </nav>
     </div>
   </aside>
@@ -267,7 +267,7 @@ function initContact() {
     // offline: if no network, show mailto fallback immediately (no fetch)
     if (!navigator.onLine) {
       errEl.hidden = false;
-      errEl.textContent = 'You appear to be offline — please email me directly at ' + CONTACT_EMAIL;
+      errEl.textContent = 'You appear to be offline — please email us directly at ' + CONTACT_EMAIL;
       return;
     }
     sendBtn.disabled = true;

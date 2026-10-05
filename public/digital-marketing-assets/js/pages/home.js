@@ -709,14 +709,14 @@
     })();
 
     /* ── hero line 2: vertical roll (slot) through the word cycle
-       Builds → Codes → Ships → Solves → (loop), each held ~2.5s. Each letter is
+       Grow → Work → Bloom → Last → (loop), each held ~2.5s. Each letter is
        an .h-letter span so it inherits the title's hover tilt/gold. Honors
        prefers-reduced-motion (plain swap, no motion). ── */
     (function () {
       const host = document.getElementById('scramble');
       if (!host) return;
 
-      const WORDS = ['Builds', 'Codes', 'Ships', 'Solves'];  // starts on Builds; reorder freely
+      const WORDS = ['Grow', 'Work', 'Bloom', 'Last'];
       /* HOLD is the pace knob — it's the dead pause between rolls, and the only
          one worth touching. DUR is the roll itself and stays at the original 560
          so the spring overshoot below still has room to read. */

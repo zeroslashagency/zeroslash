@@ -3808,3 +3808,39 @@
 @media (prefers-reduced-motion: reduce) {
   #marketing-scope .sky-band-foundation { animation: none; transform: scale(1.08); }
 }
+
+
+/* Services use original artwork and readable captions, without client claims. */
+#marketing-scope .service-overview { overflow: visible; opacity: 1; text-align: center; }
+#marketing-scope .service-overview::before, #marketing-scope .service-overview::after { display: none; }
+#marketing-scope .service-overview p { margin: 0; color: var(--text-eyebrow); font-size: 18px; line-height: 1.5; }
+#marketing-scope .service-tile { background: var(--surface-raised); border: 1px solid color-mix(in srgb, var(--text-heading) 10%, transparent); }
+#marketing-scope .service-art { position: absolute; inset: 0 0 33%; display: grid; align-items: center; }
+#marketing-scope .service-artwork { display: block; width: 100%; height: 100%; }
+#marketing-scope .service-tile .tile-overlay {
+  inset: auto 0 0; min-height: 33%; padding: 28px;
+  align-items: flex-start; justify-content: center; gap: 8px;
+  opacity: 1; background: transparent; backdrop-filter: none; -webkit-backdrop-filter: none;
+}
+#marketing-scope .service-kind { color: var(--text-eyebrow); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; }
+#marketing-scope .service-tile .tile-overlay-title { color: var(--text-heading); font-size: clamp(25px, 2.6vw, 36px); line-height: 1.15; text-align: left; text-transform: none; letter-spacing: -0.04em; }
+#marketing-scope .service-tile .tile-overlay-subtitle { color: var(--text-eyebrow); font-size: 16px; line-height: 1.5; text-align: left; letter-spacing: -0.01em; }
+#marketing-scope .service-tile:focus-visible { outline: 2px solid var(--text-heading); outline-offset: 5px; }
+@media (max-width: 640px) {
+  #marketing-scope .service-tile .tile-overlay { padding: 20px; gap: 6px; }
+  #marketing-scope .service-tile .tile-overlay-subtitle { font-size: 14px; }
+}
+
+#marketing-scope .approach-card { background: color-mix(in srgb, var(--bg-base) 94%, transparent); border-color: color-mix(in srgb, var(--text-heading) 22%, transparent); backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: 0 8px 24px rgb(0 0 0 / 0.1); }
+#marketing-scope .approach-art { width: 82px; height: 82px; flex: none; }
+#marketing-scope .approach-title { margin: 0; color: var(--text-heading); font-family: 'Space Grotesk', sans-serif; font-size: 34px; font-weight: 400; line-height: 1.1; letter-spacing: -0.04em; }
+#marketing-scope .approach-copy { color: var(--text-eyebrow); font-size: 18px; line-height: 1.5; }
+#marketing-scope .approach-card .t-divider { border-color: color-mix(in srgb, var(--text-heading) 22%, transparent); }
+#marketing-scope .approach-outcome { margin: 0; color: var(--text-heading); font-size: 14px; line-height: 1.5; }
+/* Captions reserve their own space at every width. */
+#marketing-scope a.service-tile { display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+#marketing-scope .service-tile .service-art { position: static; min-height: 0; }
+#marketing-scope .service-tile .tile-overlay { position: static; min-height: 0; }
+@media (max-width: 640px) {
+  #marketing-scope a.service-tile { min-height: 340px; }
+}

@@ -13,7 +13,7 @@ export const metadata: Metadata = pageMetadata({
 
 export default function DigitalMarketingPage() {
   return (
-    <div className="dig-topfade relative w-full overflow-hidden -mt-[72px] pt-[72px]">
+    <div className="dig-topfade relative w-full overflow-x-clip overflow-y-visible -mt-[72px] pt-[72px]">
       {/* Direct mount under #marketing-scope. Scoped CSS isolates tokens so ZeroSlash chrome never bleeds.
           Copy and image paths live in ./marketingHtml.ts; the engines it drives are in public/digital-marketing-assets/js. */}
       <MarketingView />
