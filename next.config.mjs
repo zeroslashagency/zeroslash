@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   // Remove the X-Powered-By: Next.js header
   poweredByHeader: false,
   // Keep source out of production bundles. Flip on locally when debugging a prod build.
@@ -32,7 +33,6 @@ const nextConfig = {
     const csp = [
       "default-src 'self'",
       "base-uri 'self'",
-      "frame-ancestors 'none'",
       "object-src 'none'",
       // Next.js dev (HMR) may use websockets; keep ws: in connect-src to avoid breaking dev
       "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://connect.facebook.net https://*.facebook.com https://*.facebook.net ws:",
@@ -56,7 +56,6 @@ const nextConfig = {
           { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains; preload' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'Permissions-Policy', value: 'geolocation=(), microphone=(), camera=(), interest-cohort=()' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
           { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },

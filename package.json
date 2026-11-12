@@ -4,20 +4,17 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "next dev",
+    "dev": "next dev -p 3000 -H 0.0.0.0",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "start": "next start",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "deploy": "npx wrangler pages deploy .vercel/output/static"
+    "start": "next start -p 3000 -H 0.0.0.0"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "latest",
     "@radix-ui/react-slot": "^1.2.3",
     "@types/canvas-confetti": "^1.9.0",
-    "@vercel/speed-insights": "^1.0.12",
     "autoprefixer": "^10.4.20",
     "canvas-confetti": "^1.9.3",
     "class-variance-authority": "^0.7.1",
@@ -36,7 +33,6 @@
     "three": "0.185.1"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.13.13",
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19.1.10",

@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { EMAIL_RE, failure, isBot, rateLimited, readJson, str } from "@/lib/api";
 
-export const runtime = 'edge';
-
 // Server-side proxy to Google Apps Script Web App
 // Set GS_WAITLIST_WEB_APP_URL in your .env.local to the Web App "exec" URL
 export async function POST(req: Request) {

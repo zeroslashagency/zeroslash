@@ -4,8 +4,10 @@ import type { NextRequest } from 'next/server'
 // Enforce HTTPS in production. Honors x-forwarded-proto on platforms like Vercel/NGINX.
 export function middleware(req: NextRequest) {
   if (process.env.NODE_ENV === 'production') {
+    const host = req.headers.get('host') || ''
+    const isLocal = host.startsWith('localhost') || host.startsWith('127.0.0.1') || host.startsWith('0.0.0.0')
     const proto = req.headers.get('x-forwarded-proto') || req.nextUrl.protocol.replace(':', '')
-    if (proto !== 'https') {
+    if (!isLocal && proto !== 'https') {
       const url = req.nextUrl
       url.protocol = 'https'
       return NextResponse.redirect(url, 308)
