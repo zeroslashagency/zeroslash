@@ -61,6 +61,55 @@ const APPROACH_SWATCHES = [
   },
 ] as const
 
+/* Transform & Grow — three equal-height editorial capability pillars */
+const TRANSFORM_PILLARS = [
+  {
+    index: "01",
+    discipline: "Strategy & UX",
+    title: "Design",
+    accent: "#c9547b",
+    description:
+      "We design conversion-focused websites that don’t just look great—they build trust and turn visitors into customers.",
+    ctaLabel: "Start a Design project",
+    items: [
+      "Discovery & Strategy",
+      "Web Design & UI/UX",
+      "User-Centered Experience",
+      "Accessible, Inclusive Design",
+    ],
+  },
+  {
+    index: "02",
+    discipline: "Engineering",
+    title: "Build",
+    accent: "#2e7d5b",
+    description:
+      "We engineer fast, scalable, and reliable platforms that adapt to your growth and deliver seamless performance.",
+    ctaLabel: "Start a Build project",
+    items: [
+      "Website Development",
+      "Shopify & E-commerce",
+      "CMS Solutions (Custom & Headless)",
+      "Technical SEO Foundations",
+    ],
+  },
+  {
+    index: "03",
+    discipline: "Performance",
+    title: "Grow",
+    accent: "#2b5ec7",
+    description:
+      "We craft data-driven marketing campaigns that help you attract, engage, and retain customers.",
+    ctaLabel: "Start a Grow project",
+    items: [
+      "Paid Advertising (PPC)",
+      "Search Engine Optimisation",
+      "Content & Email Marketing",
+      "Social Media Growth",
+    ],
+  },
+] as const
+
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
   const gapSliderRef = useRef<HTMLElement>(null)
@@ -805,113 +854,69 @@ export default function Home() {
               </div>
 
               {/* Services Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 items-stretch">
-                {/* Design Card */}
-                <ScrollFloat delay={0.1} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border/80 group-hover:-translate-y-2">
-                      <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-pink-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-2 shadow-lg">
-                          DESIGN
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
+                {TRANSFORM_PILLARS.map((pillar, idx) => (
+                  <ScrollFloat key={pillar.index} delay={0.08 * (idx + 1)} className="min-w-0 h-full">
+                    <article className="h-full flex flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 transition-[border-color,transform] duration-200 hover:-translate-y-1 hover:border-foreground/25">
+                      <div className="flex-1 flex flex-col">
+                        <div className="flex items-center justify-between gap-4 mb-6">
+                          <span
+                            className="text-[11px] uppercase tracking-[0.18em] text-foreground/55 tabular-nums"
+                            style={{ fontFamily: "var(--font-geist-mono)" }}
+                          >
+                            {pillar.index} / {pillar.discipline}
+                          </span>
+                          <span
+                            className="h-[2px] w-10 shrink-0 rounded-full"
+                            style={{ backgroundColor: pillar.accent }}
+                            aria-hidden
+                          />
                         </div>
-                        <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
-                          We design conversion-focused websites that don’t just look great—they build trust and turn visitors into customers.
-                        </p>
-                      </div>
-                      <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Discovery & Strategy</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Web Design & UI/UX</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">User-Centered Experience</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-pink-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Accessible, Inclusive Design</h4>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ScrollFloat>
 
-                {/* Build Card */}
-                <ScrollFloat delay={0.2} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
-                      <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-green-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform rotate-1 shadow-lg">
-                          BUILD
-                        </div>
-                        <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
-                          We engineer fast, scalable, and reliable platforms that adapt to your growth and deliver seamless performance.
-                        </p>
-                      </div>
-                      <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Website Development</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Shopify & E-commerce</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">CMS Solutions (Custom & Headless)</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-green-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Technical SEO Foundations</h4>
-                        </div>
-                        
-                      </div>
-                    </div>
-                  </div>
-                </ScrollFloat>
+                        <h3
+                          className="text-3xl sm:text-[34px] font-bold tracking-[-0.02em] text-foreground leading-none mb-4"
+                          style={{ fontFamily: "var(--font-display-serif)" }}
+                        >
+                          {pillar.title}
+                        </h3>
 
-                {/* Grow Card */}
-                <ScrollFloat delay={0.3} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 bg-gradient-to-r from-foreground/5 to-transparent rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500"></div>
-                    <div className="relative bg-card rounded-2xl md:rounded-3xl p-6 md:p-10 md:h-full xl:h-auto shadow-lg hover:shadow-2xl transition-all duration-500 border border-border group-hover:-translate-y-2">
-                      <div className="mb-6 md:mb-8">
-                        <div className="inline-block bg-blue-400 text-white px-4 md:px-6 py-2 md:py-3 rounded-xl md:rounded-2xl font-bold text-lg md:text-xl mb-4 md:mb-6 transform -rotate-1 shadow-lg">
-                          GROW
-                        </div>
-                        <p className="text-gray-600 leading-relaxed text-base md:text-lg mb-4 md:mb-6">
-                          We craft data-driven marketing campaigns that help you attract, engage, and retain customers.
+                        <p className="text-[15px] leading-relaxed text-foreground/70 mb-7">
+                          {pillar.description}
                         </p>
+
+                        <ul className="mt-auto border-t border-border/70 divide-y divide-border/70">
+                          {pillar.items.map((item, itemIdx) => (
+                            <li
+                              key={item}
+                              className="flex items-baseline gap-3.5 py-3.5 min-w-0"
+                            >
+                              <span
+                                className="text-[11px] text-foreground/45 tabular-nums shrink-0"
+                                style={{ fontFamily: "var(--font-geist-mono)" }}
+                              >
+                                0{itemIdx + 1}
+                              </span>
+                              <h4 className="text-sm sm:text-[15px] font-medium text-foreground leading-snug">
+                                {item}
+                              </h4>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
-                      <div className="space-y-3 md:space-y-4">
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Paid Advertising (PPC)</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Search Engine Optimisation</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Content & Email Marketing</h4>
-                        </div>
-                        <div className="flex items-start md:items-center gap-3 py-2.5 md:py-3 border-b border-gray-100 min-w-0">
-                          <div className="w-2 h-2 shrink-0 mt-2 md:mt-0 bg-blue-400 rounded-full"></div>
-                          <h4 className="text-black font-semibold text-sm md:text-base">Social Media Growth</h4>
-                        </div>
-                        
+
+                      <div className="mt-7 pt-5 border-t border-border">
+                        <button
+                          type="button"
+                          onClick={() => setWizardOpen(true)}
+                          className="group/btn w-full min-h-11 inline-flex items-center justify-between gap-3 text-sm font-semibold text-foreground hover:text-foreground/75 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm"
+                        >
+                          <span className="whitespace-nowrap">{pillar.ctaLabel}</span>
+                          <ArrowRight className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover/btn:translate-x-1" aria-hidden />
+                        </button>
                       </div>
-                    </div>
-                  </div>
-                </ScrollFloat>
+                    </article>
+                  </ScrollFloat>
+                ))}
               </div>
             </div>
           </div>
