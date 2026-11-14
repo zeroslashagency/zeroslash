@@ -52,12 +52,18 @@ export default function FlowConnector({ containerId, pinSelector = '[data-flow-p
   useEffect(() => {
     const container = document.getElementById(containerId);
     if (!container) return;
-    const ro = new ResizeObserver(() => compute());
+    let raf = 0;
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(compute);
+    };
+    const ro = new ResizeObserver(schedule);
     ro.observe(container);
-    const onResize = () => compute();
+    const onResize = () => schedule();
     window.addEventListener("resize", onResize);
     const id = setInterval(compute, 500);
     return () => {
+      cancelAnimationFrame(raf);
       ro.disconnect();
       window.removeEventListener("resize", onResize);
       clearInterval(id);

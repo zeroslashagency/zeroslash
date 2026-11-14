@@ -5,11 +5,10 @@ export const dynamic = 'force-static'
 import Link from "next/link"
 import Image from "next/image"
 import ShinyText from "../components/ShinyText"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
-import { ArrowRight, Sparkles, Search, Cog, Rocket, Star, Diamond, Check, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
+import { ArrowRight, Sparkles, Search, Cog, Rocket, Star, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import CountUpOnView from "../components/CountUpOnView"
 import SectionPill from "@/components/SectionPill"
@@ -22,6 +21,9 @@ import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/components/lazy-on-view"
 import { RATING, REVIEW_COUNT, SOCIAL } from "@/lib/site"
 import { useState, useEffect, useRef } from "react"
+import BrandRibbonsSection from "@/components/sections/brand-ribbons/BrandRibbonsSection"
+import TeamLanyardPasses from "@/components/sections/TeamLanyardPasses"
+
 const ServicesSection = nextDynamic(() => import("@/components/sections/flora/ServicesFlora"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
@@ -955,170 +957,29 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* Team Features Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8 items-stretch">
-                {/* We're About Results */}
-                <ScrollFloat delay={0.1} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
-                      <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-pink-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Check className="w-6 h-6 md:w-8 md:h-8 text-pink-600" strokeWidth={2} />
-                        </div>
-                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
-                          WE’RE ABOUT RESULTS
-                        </h3>
-                      </div>
-                      <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-                        At ZeroSlash Agency, everything we create is built to drive growth and measurable impact—not just look good. We align every project with your specific business goals and long-term vision.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollFloat>
-
-                {/* Experienced Team */}
-                <ScrollFloat delay={0.2} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
-                      <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-blue-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Diamond className="w-6 h-6 md:w-8 md:h-8 text-blue-600" strokeWidth={2} />
-                        </div>
-                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
-                          EXPERIENCED TEAM
-                        </h3>
-                      </div>
-                      <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-                        A dedicated in-house crew of designers, developers, and strategists. No outsourcing, no shortcuts—just focused collaboration to deliver the best outcomes.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollFloat>
-
-                {/* Quality Assurance */}
-                <ScrollFloat delay={0.3} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:rotate-1 group-hover:rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
-                      <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-green-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Star className="w-6 h-6 md:w-8 md:h-8 text-green-600" strokeWidth={2} />
-                        </div>
-                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
-                          QUALITY ASSURANCE
-                        </h3>
-                      </div>
-                      <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-                        We hold ourselves to high standards. Every website, campaign, and system we launch goes through rigorous testing to ensure performance, security, and reliability.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollFloat>
-
-                {/* Support & Aftercare */}
-                <ScrollFloat delay={0.4} className="min-w-0 md:h-full xl:h-auto">
-                  <div className="group relative md:h-full xl:h-auto">
-                    <div className="absolute inset-0 rounded-3xl transform rotate-0 md:-rotate-1 group-hover:-rotate-2 transition-transform duration-500 bg-gradient-to-br from-background/0 via-background/0 to-background/0" />
-                    <div className="relative rounded-2xl md:rounded-3xl p-6 md:p-8 md:h-full xl:h-auto transition-all duration-500 group-hover:-translate-y-2 ring-1 ring-border/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0.02)_100%)] dark:bg-[linear-gradient(180deg,rgba(255,255,255,0.04)_0%,rgba(255,255,255,0.01)_100%)]">
-                      <div className="mb-4 md:mb-6">
-                        <div className="w-12 h-12 md:w-16 md:h-16 shrink-0 bg-purple-100 rounded-2xl md:rounded-3xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                          <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-purple-600" strokeWidth={2} />
-                        </div>
-                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-4 tracking-tight text-balance">
-                          SUPPORT & AFTERCARE
-                        </h3>
-                      </div>
-                      <p className="text-foreground/80 leading-relaxed text-sm md:text-base">
-                        Our work doesn’t stop at launch. ZeroSlash Agency provides responsive support, updates, and optimisations to keep your digital presence thriving.
-                      </p>
-                    </div>
-                  </div>
-                </ScrollFloat>
-              </div>
+              {/* Team Lanyard Passes Grid */}
+              <TeamLanyardPasses />
             </div>
           </div>
         </section>
       </ScrollReveal>
 
-      {/* Your Trusted Digital Partner Section - Changed to White Background */}
-      <ScrollReveal>
-        <section className="w-full py-8 md:py-12 lg:py-16 bg-background">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-                {/* Artwork follows content on mobile. */}
-                <div className="relative order-2 lg:order-1 mt-6 lg:mt-0 min-w-0">
-                  <Image
-                    src="/images/trusted-digital-partner.webp"
-                    alt="ZeroSlash Agency and Grow Together badges surrounded by greenery"
-                    width={1254}
-                    height={1254}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                    loading="lazy"
-                    className="w-full h-auto max-w-full object-contain"
-                  />
-                </div>
+      {/* 3D Interactive Brand Ribbons Showcase */}
+      <BrandRibbonsSection />
 
-                {/* Right - Content (show before image on mobile) */}
-                <div className="space-y-8 order-1 lg:order-2">
-                  <div>
-                    <h2 className="text-[2rem] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-4 leading-tight tracking-tight">
-                      YOUR TRUSTED
-                      <br />
-                      <span className="text-foreground">
-                        DIGITAL PARTNER
-                      </span>
-                    </h2>
-                  </div>
-
-                  <div className="space-y-6 text-base sm:text-lg text-foreground/70 leading-relaxed">
-                    <p>
-                      At ZeroSlash Agency, we help fitness, lifestyle, and growing businesses unlock their full digital potential. Based in India and working with clients worldwide, we deliver high-end web design, powerful marketing, and smart automation—all crafted to your unique needs.
-                    </p>
-
-                    <p>
-                      Since our beginnings, we’ve built a reputation for clarity, creativity, and execution—transforming brands with innovative digital strategies, scalable development, and designs that perform.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <Button
-                      onClick={() => setWizardOpen(true)}
-                      aria-label="Start Your Project"
-                      className="bg-black hover:bg-gray-800 text-white px-8 py-4 h-auto lg:h-9 rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300"
-                    >
-                      Start Your Project
-                      <ArrowRight className="ml-2 w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="border-2 border-black hover:border-gray-800 text-black hover:text-gray-800 px-8 py-4 h-auto lg:h-9 rounded-full text-lg font-medium hover:bg-gray-50 transition-all duration-300 bg-transparent"
-                    >
-                      Our Story
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Velocity scroll divider (rose + phrase) */}
-      <section className="w-full py-4">
+      {/* Velocity scroll divider — seamless #ebebea continuation beneath overhanging ribbon straps */}
+      <section className="relative z-10 w-screen max-w-none mx-[calc(50%-50vw)] bg-[#ebebea] pt-2 pb-10 md:pt-4 md:pb-14">
         <VelocityScroll
           text="Ready. Set. Ship."
           default_velocity={5}
-          className="text-[clamp(2rem,12vw,7rem)] font-extrabold tracking-tight text-foreground/80"
+          className="text-[clamp(2rem,12vw,7rem)] font-extrabold tracking-tight text-[#141414]/85"
         />
       </section>
 
       {/* Footer - Lime CTA style (softened for readability) */}
       <footer
         id="page-footer"
-        className="relative overflow-hidden py-16 md:py-24"
+        className="relative z-30 overflow-hidden py-16 md:py-24"
         style={{ background: "#C8FA91" }}
       >
         {/* Center spotlight */}

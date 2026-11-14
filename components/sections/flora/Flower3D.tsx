@@ -199,7 +199,11 @@ export default function Flower3D({ color }: { color: string }) {
         if (visible) requestRender(); else stop()
       })
       observer.observe(host)
-      const resizeObserver = new ResizeObserver(resize)
+      let resizeFrame = 0
+      const resizeObserver = new ResizeObserver(() => {
+        cancelAnimationFrame(resizeFrame)
+        resizeFrame = requestAnimationFrame(resize)
+      })
       resizeObserver.observe(host)
       host.addEventListener("pointermove", onPointerMove)
       host.addEventListener("pointerleave", resetPointer)
@@ -210,6 +214,7 @@ export default function Flower3D({ color }: { color: string }) {
 
       cleanup = () => {
         stop()
+        cancelAnimationFrame(resizeFrame)
         observer.disconnect()
         resizeObserver.disconnect()
         host.removeEventListener("pointermove", onPointerMove)

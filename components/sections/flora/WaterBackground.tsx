@@ -191,7 +191,11 @@ export default function WaterBackground({ color }: { color: string }) {
         if (visible) requestRender(); else stop()
       })
       intersection.observe(host)
-      const size = new ResizeObserver(resize)
+      let sizeFrame = 0
+      const size = new ResizeObserver(() => {
+        cancelAnimationFrame(sizeFrame)
+        sizeFrame = requestAnimationFrame(resize)
+      })
       size.observe(host)
       const theme = new MutationObserver(() => {
         uniforms.uDark.value = document.documentElement.classList.contains("dark") ? 1 : 0
@@ -204,6 +208,7 @@ export default function WaterBackground({ color }: { color: string }) {
       resize()
       cleanup = () => {
         stop()
+        cancelAnimationFrame(sizeFrame)
         updateRef.current = null
         intersection.disconnect()
         size.disconnect()
