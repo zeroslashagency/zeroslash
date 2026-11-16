@@ -4,64 +4,31 @@ export const dynamic = 'force-static'
 
 import Link from "next/link"
 import Image from "next/image"
-import ShinyText from "../components/ShinyText"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
-import { ArrowRight, Sparkles, Search, Cog, Rocket, Star, Calendar, Eye, ArrowUp, ArrowDown } from "lucide-react"
+import { ArrowRight, Sparkles, Compass, Workflow, Briefcase, TrendingUp, Users, Search, Cog, Rocket, Star, ArrowDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
+import { motion, useReducedMotion } from "motion/react"
 import CountUpOnView from "../components/CountUpOnView"
 import SectionPill from "@/components/SectionPill"
 import ShineBorder from "@/components/magicui/shine-border"
 import FlowConnector from "@/components/FlowConnector"
 import ContactButton from "@/components/ContactButton"
 import ProjectWizard from "@/components/ProjectWizard"
-import BouquetSway from "@/components/hero/BouquetSway"
+import CloudHorizonCanvas from "@/components/hero/CloudHorizonCanvas"
 import { VelocityScroll } from "@/components/VelocityScroll"
 import { LazyOnView } from "@/components/lazy-on-view"
 import { RATING, REVIEW_COUNT, SOCIAL } from "@/lib/site"
 import { useState, useEffect, useRef } from "react"
 import BrandRibbonsSection from "@/components/sections/brand-ribbons/BrandRibbonsSection"
 import TeamLanyardPasses from "@/components/sections/TeamLanyardPasses"
+import ApproachShowcase from "@/components/sections/ApproachShowcase"
 
 const ServicesSection = nextDynamic(() => import("@/components/sections/flora/ServicesFlora"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
 const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
-/* Living-root hero background. Client-only so the hero copy still renders on the
-   server; the canvas fades in once the scene has painted. */
-const SylvaRootsBackground = nextDynamic(() => import("@/components/hero/sylva-roots/SylvaRootsBackground"), { ssr: false, loading: () => null })
-// (removed unused DynamicFlowConnector)
-
-/* How We Work — three equal tiles. Each carries a macro floral photograph; the
-   `tone` token still backs the tile so it holds its colour while the image
-   loads and in dark mode. */
-const APPROACH_SWATCHES = [
-  {
-    index: "01",
-    title: "Investigate Deeply",
-    body: "We dig beneath the surface — industry insights, user interviews, and real data drive every solution we create.",
-    tone: "var(--swatch-1)",
-    image: "/images/approach/investigate.webp",
-    alt: "Macro photograph of teal and leopard-spotted daisy petals",
-  },
-  {
-    index: "02",
-    title: "Build Reliably",
-    body: "Development with purpose. We engineer scalable, high-performance systems that evolve with your growth.",
-    tone: "var(--swatch-2)",
-    image: "/images/approach/build.webp",
-    alt: "Macro photograph of purple and cream leopard-spotted daisy petals",
-  },
-  {
-    index: "03",
-    title: "Create Boldly",
-    body: "From branding to user experience, we craft digital identities that demand attention and deliver impact.",
-    tone: "var(--swatch-3)",
-    image: "/images/approach/create.webp",
-    alt: "Macro photograph of a blue and white spotted gerbera daisy",
-  },
-] as const
 
 /* Transform & Grow — three equal-height editorial capability pillars */
 const TRANSFORM_PILLARS = [
@@ -114,6 +81,7 @@ const TRANSFORM_PILLARS = [
 
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
+  const prefersReducedMotion = useReducedMotion()
   const gapSliderRef = useRef<HTMLElement>(null)
   const gapTextRef = useRef<HTMLDivElement>(null)
   const gapFlowerRef = useRef<HTMLImageElement>(null)
@@ -155,86 +123,84 @@ export default function Home() {
   }, [])
   return (
     <div className="w-full bg-background">
-      {/* Floral Editorial Hero — COVER HOME SCREEN — big type + big bouquet */}
-      <section id="hero" className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-[rgb(251,250,248)] -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] min-h-[100svh] flex flex-col overflow-hidden">
-        {/* Living roots. First child so it sits behind everything; the hero's own
-            overflow-hidden clips it. */}
-        <SylvaRootsBackground />
-        <div className="w-full relative flex-1 flex flex-col z-10">
-            {/* Grid 46 / 54 — full viewport */}
-            <div className="grid grid-cols-1 lg:grid-cols-[46%_54%] relative flex-1 min-h-[calc(100svh-80px)] items-stretch">
-              {/* Vertical label desktop */}
-              <div className="hidden lg:flex absolute -left-2 top-[42%] -rotate-90 origin-left z-10">
-                <span className="text-[10px] tracking-[0.2em] uppercase text-black/30 font-medium">Work <span className="mx-1">→</span> Studio</span>
+      {/* Minimalist Cloud Horizon Hero */}
+      <section
+        id="hero"
+        className="relative w-screen max-w-none mx-[calc(50%-50vw)] bg-background -mt-[60px] md:-mt-[80px] pt-[60px] md:pt-[80px] min-h-[100svh] flex flex-col overflow-hidden"
+      >
+        <CloudHorizonCanvas />
+
+        <div className="relative z-10 flex-1 flex flex-col items-center justify-center text-center px-5 md:px-8 pt-10 sm:pt-12 pb-[34vh] sm:pb-[36vh] lg:pb-[38vh]">
+          <div className="max-w-3xl mx-auto">
+            <h1
+              className="text-[clamp(2.75rem,6.2vw,5.25rem)] font-bold leading-[0.98] tracking-[-0.03em] text-foreground [text-wrap:balance]"
+              style={{ fontFamily: "var(--font-display-serif)" }}
+            >
+              ZeroSlash Agency
+            </h1>
+
+            <motion.div
+              animate={prefersReducedMotion ? undefined : { y: [0, -5, 0] }}
+              transition={
+                prefersReducedMotion
+                  ? undefined
+                  : { duration: 6, repeat: Infinity, ease: "easeInOut" }
+              }
+              className="mt-5 md:mt-6 will-change-transform"
+            >
+              <blockquote className="max-w-[44ch] mx-auto text-base sm:text-lg md:text-xl italic text-foreground/70 leading-relaxed">
+                &ldquo;We craft quiet, unmistakable digital experiences where depth and simplicity speak for themselves.&rdquo;
+              </blockquote>
+
+              <div className="mt-7 md:mt-8 flex justify-center">
+                <button
+                  type="button"
+                  onClick={() => setWizardOpen(true)}
+                  className="inline-flex items-center justify-center gap-2.5 min-h-[44px] px-6 py-3 rounded-full bg-foreground text-background text-sm font-semibold tracking-wide whitespace-nowrap shrink-0 shadow-sm hover:opacity-90 active:scale-[0.98] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground"
+                >
+                  <span>Start a project</span>
+                  <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
+                </button>
               </div>
-              {/* LEFT 46% — Zeroslash */}
-              {/* Anchored above centre (justify-center → justify-start with a top
-                  offset) so the headline block sits higher in the frame and hands
-                  the lower half of the hero to the root scene. */}
-              <div className="px-5 md:px-8 lg:pl-16 lg:pr-8 py-8 md:py-10 lg:py-8 flex flex-col justify-center lg:justify-start lg:pt-[12vh] xl:pt-[10vh]">
-                <div className="flex items-center gap-2 mb-5 md:mb-7">
-                  <span className="w-3.5 h-3.5 rounded-full border border-black grid place-items-center"><span className="w-1.5 h-1.5 rounded-full bg-black" /></span>
-                  <span className="text-[12px] tracking-[0.14em] uppercase font-semibold text-black">Studio</span>
-                </div>
-                <h1 className="font-bold leading-[0.88] tracking-[-0.03em] text-black" style={{ fontFamily: "var(--font-display-serif)" }}>
-                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px]">Bespoke digital</span>
-                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px]">experiences</span>
-                  <span className="block text-[42px] md:text-[54px] lg:text-[64px] xl:text-[78px] mt-1">ZeroSlash <span className="font-light text-[#C8C8C8]">Agency</span></span>
-                </h1>
-                <div className="flex flex-wrap items-center gap-5 mt-6 md:mt-8 text-[13px]">
-                  <button onClick={() => setWizardOpen(true)} className="inline-flex items-center gap-2.5 min-h-11 group">
-                    <span className="w-7 h-7 rounded-full border border-black/10 grid place-items-center group-hover:bg-black group-hover:text-white transition-colors"><ArrowRight className="w-3.5 h-3.5" /></span>
-                    <span className="font-semibold tracking-wide text-black text-[14px]">Start a project</span>
-                  </button>
-                  <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Calendar className="w-3.5 h-3.5" />3+ Years</span>
-                  <span className="flex items-center gap-1.5 text-black/40 text-[13px]"><Eye className="w-3.5 h-3.5" />30+ Projects</span>
-                </div>
-              </div>
-              {/* RIGHT 54% — Bouquet — COVER */}
-              <div className="relative h-[520px] md:h-[640px] lg:h-auto lg:min-h-[calc(100svh-80px)] overflow-visible lg:self-stretch">
-                {/* In front of the roots, so the bouquet stays the hero's subject
-                    and the scene reads through its transparent margin. BouquetSway
-                    puts it on the same wind as the roots, so the two lean together
-                    instead of the PNG sitting there like a sticker. */}
-                <BouquetSway>
-                  <Image src="/images/floral/bouquet.png" alt="Floral bouquet" fill priority className="object-contain object-center lg:object-[center_center] scale-[1.18] md:scale-[1.22] lg:scale-[1.32] xl:scale-[1.38] lg:translate-x-4 xl:translate-x-6" sizes="(max-width: 1024px) 100vw, 54vw" />
-                </BouquetSway>
-                <div className="absolute bottom-6 right-6 md:bottom-8 md:right-8 flex flex-col gap-2 z-10">
-                  <button
-                    type="button"
-                    aria-label="Back to top"
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="w-11 h-11 lg:w-9 lg:h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  ><ArrowUp className="w-4 h-4" aria-hidden /></button>
-                  <button
-                    type="button"
-                    aria-label="Scroll to next section"
-                    onClick={() => {
-                      // Skip hidden siblings (display:none sections have no height).
-                      let next = document.getElementById("hero")?.nextElementSibling as HTMLElement | null
-                      while (next && next.offsetHeight === 0) next = next.nextElementSibling as HTMLElement | null
-                      if (next) next.scrollIntoView({ behavior: "smooth", block: "start" })
-                      else window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
-                    }}
-                    className="w-11 h-11 lg:w-9 lg:h-9 rounded-full bg-white shadow-[0_4px_18px_rgba(0,0,0,0.08)] border border-black/5 grid place-items-center hover:bg-black hover:text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
-                  ><ArrowDown className="w-4 h-4" aria-hidden /></button>
-                </div>
-              </div>
-            </div>
-            {/* SOCIAL BAR — left bottom corner exact like ref: LINKEDIN / INSTAGRAM EN */}
-            <div className="absolute left-5 md:left-8 lg:left-16 bottom-5 md:bottom-6 flex items-center gap-3 z-10">
-              <a href={SOCIAL.linkedin} target="_blank" rel="noopener noreferrer" className="inline-flex items-center py-3 -my-3 text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">LINKEDIN</a>
-              <span className="text-[13px] md:text-[14px] font-black text-black mx-0.5">/</span>
-              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" className="inline-flex items-center py-3 -my-3 text-[13px] md:text-[14px] font-black tracking-[0.06em] uppercase text-black hover:opacity-60 transition-opacity">INSTAGRAM</a>
-              <span className="ml-3 md:ml-4 inline-flex items-center justify-center bg-black text-white text-[12px] md:text-[13px] font-black tracking-[0.04em] px-[10px] py-[5px] rounded-[6px] leading-none">EN</span>
-            </div>
-            {/* Pagination dots left bottom */}
-            <div className="hidden lg:flex absolute left-5 bottom-8 flex-col gap-1.5">
-              <span className="w-1 h-1 rounded-full bg-black" />
-              <span className="w-1 h-1 rounded-full bg-black/15" />
-              <span className="w-1 h-1 rounded-full bg-black/15" />
-              <span className="w-1 h-1 rounded-full bg-black/15" />
-            </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Discreet perimeter links & scroll continuation */}
+        <div className="absolute left-5 md:left-8 lg:left-12 bottom-5 md:bottom-6 z-20 flex items-center gap-3">
+          <a
+            href={SOCIAL.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center min-h-[44px] text-xs md:text-[13px] font-semibold tracking-[0.08em] uppercase text-foreground/75 hover:text-foreground transition-colors"
+          >
+            LinkedIn
+          </a>
+          <span className="text-xs text-foreground/40" aria-hidden="true">/</span>
+          <a
+            href={SOCIAL.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center min-h-[44px] text-xs md:text-[13px] font-semibold tracking-[0.08em] uppercase text-foreground/75 hover:text-foreground transition-colors"
+          >
+            Instagram
+          </a>
+        </div>
+
+        <div className="absolute right-5 md:right-8 lg:right-12 bottom-5 md:bottom-6 z-20">
+          <button
+            type="button"
+            aria-label="Scroll to next section"
+            onClick={() => {
+              let next = document.getElementById("hero")?.nextElementSibling as HTMLElement | null
+              while (next && next.offsetHeight === 0) next = next.nextElementSibling as HTMLElement | null
+              if (next) next.scrollIntoView({ behavior: "smooth", block: "start" })
+              else window.scrollBy({ top: window.innerHeight, behavior: "smooth" })
+            }}
+            className="w-11 h-11 rounded-full bg-card/90 text-foreground border border-border shadow-sm backdrop-blur-sm grid place-items-center hover:bg-foreground hover:text-background transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
+          >
+            <ArrowDown className="w-4 h-4" aria-hidden="true" />
+          </button>
         </div>
       </section>
 
@@ -353,10 +319,7 @@ export default function Home() {
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
               <div className="text-center mb-8 md:mb-12 lg:mb-16">
-                <div className="inline-flex items-center px-4 py-2 rounded-full bg-card border border-border text-gray-600 dark:text-gray-300 text-sm font-medium mb-6 shadow-sm">
-                   <Sparkles className="w-4 h-4 mr-2" />
-                   <ShinyText text="Our Commitment" speed={2} />
-                 </div>
+                <SectionPill label="Our Commitment" icon={Sparkles} className="mb-6" />
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
                   Dedicated to
                   <br />
@@ -402,17 +365,9 @@ export default function Home() {
         <section className="w-full py-8 md:py-12 lg:py-16 bg-background relative overflow-hidden">
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
-              {/* Section Header — flush left, eyebrow + rule, body offset right */}
+              {/* Section Header — flush left, unified badge, body offset right */}
               <div className="mb-12 md:mb-16">
-                <div className="flex items-center gap-4 mb-6">
-                  <span
-                    className="text-[11px] uppercase tracking-[0.18em] text-foreground/50 whitespace-nowrap"
-                    style={{ fontFamily: "var(--font-geist-mono)" }}
-                  >
-                    How We Work
-                  </span>
-                  <span className="h-px flex-1 bg-border" aria-hidden />
-                </div>
+                <SectionPill label="How We Work" icon={Compass} className="mb-6" />
                 <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-16 items-end [&>*]:min-w-0">
                   <h2
                     className="text-[30px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-[1] sm:leading-[0.95] tracking-[-0.02em]"
@@ -428,41 +383,9 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Approach swatch board — three equal tiles, label set over the image */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 mb-12 md:mb-16 [&>*]:min-w-0">
-                {APPROACH_SWATCHES.map((item, i) => (
-                  <ScrollFloat key={item.index} delay={[0.1, 0.22, 0.34][i]}>
-                    <div
-                      className="swatch-field group relative aspect-[5/6] sm:aspect-[4/5] overflow-hidden rounded-[2px]"
-                      style={{ ["--swatch-tone" as string]: item.tone }}
-                    >
-                      <div className="swatch-media absolute inset-0 z-0">
-                        <Image
-                          src={item.image}
-                          alt={item.alt}
-                          fill
-                          sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                          className="object-cover"
-                          priority={i === 0}
-                        />
-                      </div>
-                      <div className="absolute inset-0 z-10 flex flex-col justify-end p-5 sm:p-6 lg:p-7">
-                        <span
-                          className="block text-[11px] tracking-[0.18em] text-white/60 mb-3"
-                          style={{ fontFamily: "var(--font-geist-mono)" }}
-                        >
-                          {item.index}
-                        </span>
-                        <h3 className="text-lg md:text-xl font-semibold text-white mb-2 tracking-[-0.01em]">
-                          {item.title}
-                        </h3>
-                        <p className="text-white/75 leading-relaxed text-sm md:text-base">
-                          {item.body}
-                        </p>
-                      </div>
-                    </div>
-                  </ScrollFloat>
-                ))}
+              {/* Approach fanned card showcase */}
+              <div className="mb-12 md:mb-16">
+                <ApproachShowcase />
               </div>
 
               {/* Premium Minimal Stats Section: dominant numbers, clean layout */}
@@ -486,9 +409,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-8 md:mb-12 lg:mb-16">
-              <div className="mb-6">
-                <SectionPill label="How we work" dotClassName="bg-violet-400" shiny />
-              </div>
+              <SectionPill label="How we work" icon={Workflow} className="mb-6" />
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
                 At ZeroSlash Agency, we don’t just deliver projects — we build growth engines for your brand.
               </h2>
@@ -627,9 +548,7 @@ export default function Home() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8 md:mb-12 lg:mb-16">
-              <div className="mb-4">
-                <SectionPill label="Featured Work" dotClassName="bg-blue-400" shiny />
-              </div>
+              <SectionPill label="Featured Work" icon={Briefcase} className="mb-6" />
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
                 Recent projects that delivered
                 <br />
@@ -835,10 +754,7 @@ export default function Home() {
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
               <div className="text-center mb-8 md:mb-12 lg:mb-16">
-                <div className="inline-flex items-center px-4 py-2 rounded-full bg-gray-100 border border-gray-200 text-gray-600 text-sm font-medium mb-6 shadow-sm">
-                   <ArrowRight className="w-4 h-4 mr-2" />
-                   <ShinyText text="Transform & Grow" speed={2} />
-                 </div>
+                <SectionPill label="Transform & Grow" icon={TrendingUp} className="mb-6" />
                 <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
                   Helping You
                   <br />
@@ -932,10 +848,7 @@ export default function Home() {
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
               <div className="text-center mb-8 md:mb-12 lg:mb-16 relative">
-                <div className="inline-flex items-center px-4 py-2 rounded-full bg-card border border-border text-foreground/70 text-sm font-medium mb-6 shadow-sm">
-                   <div className="w-2 h-2 bg-pink-400 rounded-full mr-2"></div>
-                   <ShinyText text="Our Team" speed={2} />
-                 </div>
+                <SectionPill label="Our Team" icon={Users} className="mb-6" />
 
                 {/* Decorative Badge */}
                 <div className="hidden md:block absolute -top-4 right-1/4 transform translate-x-1/2">

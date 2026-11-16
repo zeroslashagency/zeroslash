@@ -1,5 +1,6 @@
 "use client"
 
+import { Layers } from "lucide-react"
 import { ScrollFloat } from "@/components/scroll-float"
 import SectionPill from "@/components/SectionPill"
 import ShineBorder from "@/components/magicui/shine-border"
@@ -10,9 +11,7 @@ export default function ServicesSection() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 md:mb-16">
-            <div className="mb-4">
-              <SectionPill label="What we do" dotClassName="bg-pink-400" shiny />
-            </div>
+            <SectionPill label="What we do" icon={Layers} className="mb-6" />
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight tracking-tight">
               Premium services that grow your brand
             </h2>

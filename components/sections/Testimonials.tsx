@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import SectionPill from "@/components/SectionPill"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
-import { Star, ArrowRight } from "lucide-react"
+import { Star, ArrowRight, MessageSquareQuote } from "lucide-react"
 import { RATING, REVIEW_COUNT } from "@/lib/site"
 
 export default function TestimonialsSection() {
@@ -15,9 +15,7 @@ export default function TestimonialsSection() {
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8 md:mb-12 lg:mb-16">
-              <div className="mb-4">
-                <SectionPill label="Reviews" dotClassName="bg-rose-400" shiny />
-              </div>
+              <SectionPill label="Reviews" icon={MessageSquareQuote} className="mb-6" />
               <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-4 sm:mb-6 leading-tight tracking-tight">
                 SEE WHY OUR CLIENTS LOVE US
               </h2>

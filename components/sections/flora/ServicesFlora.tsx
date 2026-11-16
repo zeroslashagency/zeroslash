@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useId, useRef, useState, type KeyboardEvent } from "react"
 import { ChevronRight, Globe, Layers, Palette, TrendingUp } from "lucide-react"
+import SectionPill from "@/components/SectionPill"
 import PixelStageCanvas from "./PixelStageCanvas"
 
 const SERVICES = [
@@ -88,12 +89,7 @@ export default function ServicesFlora() {
         {/* Top split header matching the reference editorial composition */}
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-2 lg:gap-16">
           <div>
-            <p
-              className="mb-4 text-[11px] uppercase tracking-[0.2em] text-[#d9481b] dark:text-[#EA5828]"
-              style={{ fontFamily: "var(--font-geist-mono)" }}
-            >
-              What we do
-            </p>
+            <SectionPill label="What we do" icon={Layers} className="mb-5" />
             <h2
               id={`${id}-heading`}
               className="max-w-[13ch] text-[34px] font-medium leading-[1.08] tracking-[-0.025em] text-foreground dark:text-[#f5f5f5] sm:text-[42px] lg:text-[46px]"
