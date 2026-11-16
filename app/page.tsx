@@ -152,7 +152,7 @@ export default function Home() {
                 &ldquo;We craft quiet, unmistakable digital experiences where depth and simplicity speak for themselves.&rdquo;
               </blockquote>
 
-              <div className="mt-7 md:mt-8 flex justify-center">
+              <div className="mt-7 md:mt-8 flex flex-col items-center gap-4">
                 <button
                   type="button"
                   onClick={() => setWizardOpen(true)}
@@ -161,32 +161,32 @@ export default function Home() {
                   <span>Start a project</span>
                   <ArrowRight className="w-4 h-4 shrink-0" aria-hidden="true" />
                 </button>
+
+                <div className="flex items-center gap-3">
+                  <a
+                    href={SOCIAL.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center min-h-[40px] px-1 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground/55 hover:text-foreground transition-colors"
+                  >
+                    LinkedIn
+                  </a>
+                  <span className="text-xs text-foreground/30" aria-hidden="true">/</span>
+                  <a
+                    href={SOCIAL.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center min-h-[40px] px-1 text-[11px] font-semibold tracking-[0.14em] uppercase text-foreground/55 hover:text-foreground transition-colors"
+                  >
+                    Instagram
+                  </a>
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Discreet perimeter links & scroll continuation */}
-        <div className="absolute left-5 md:left-8 lg:left-12 bottom-5 md:bottom-6 z-20 flex items-center gap-3">
-          <a
-            href={SOCIAL.linkedin}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center min-h-[44px] text-xs md:text-[13px] font-semibold tracking-[0.08em] uppercase text-foreground/75 hover:text-foreground transition-colors"
-          >
-            LinkedIn
-          </a>
-          <span className="text-xs text-foreground/40" aria-hidden="true">/</span>
-          <a
-            href={SOCIAL.instagram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center min-h-[44px] text-xs md:text-[13px] font-semibold tracking-[0.08em] uppercase text-foreground/75 hover:text-foreground transition-colors"
-          >
-            Instagram
-          </a>
-        </div>
-
+        {/* Scroll continuation button */}
         <div className="absolute right-5 md:right-8 lg:right-12 bottom-5 md:bottom-6 z-20">
           <button
             type="button"

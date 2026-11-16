@@ -357,7 +357,7 @@
    for, and it shows through the canvas's transparent clear colour. The inner
    layers must NOT repaint it, or they would cover the scene — the bouquet rule
    in particular used to paint cream across the whole right-hand column. */
-#hero { background-color: rgb(251, 250, 248); }
+#hero { background-color: var(--background); }
 
 /* The canvas is decorative and inert; it must never take pointer input away
    from the hero's controls. */
