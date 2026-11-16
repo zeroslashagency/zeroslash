@@ -175,12 +175,12 @@ const BACK_CLOUD_PUFFS: [number, number, number][] = [
 
 const MID_CLOUD_PUFFS: [number, number, number][] = [
   [-10, 412, 92],
-  [95, 398, 72],
-  [190, 405, 96],
-  [318, 392, 104],
-  [432, 412, 82],
-  [535, 396, 108],
-  [668, 408, 92],
+  [108, 424, 62],
+  [216, 418, 70],
+  [328, 428, 72],
+  [445, 408, 86],
+  [555, 396, 108],
+  [678, 408, 92],
   [798, 412, 94],
   [922, 416, 84],
   [1045, 392, 108],
@@ -447,241 +447,242 @@ function drawCottageRow(
   dark: boolean,
   grainPattern: CanvasPattern | null
 ) {
-  const ink = dark ? "rgba(218, 222, 242, 0.86)" : "#2f2a38"
-  const roofShade = dark ? "rgba(16, 17, 26, 0.55)" : "rgba(47, 42, 56, 0.32)"
+  const ink = dark ? "rgba(218, 222, 242, 0.88)" : "#2e2838"
+  const roofLightA = "#e0a290"
+  const roofLightB = "#cc8a7a"
+  const roofDarkA = "#6d484e"
+  const roofDarkB = "#4d3137"
 
-  ctx.save()
-
-  // Main side-pitched terracotta roof of Cottage 1 (perspective trapezoid)
-  const traceSideRoof = () => {
-    ctx.beginPath()
-    ctx.moveTo(42, 290)
-    ctx.lineTo(54, 244)
-    ctx.lineTo(138, 236)
-    ctx.lineTo(118, 284)
-    ctx.closePath()
-  }
-
-  traceSideRoof()
-  const roofGrad = ctx.createLinearGradient(50, 240, 120, 290)
-  roofGrad.addColorStop(0, dark ? "#6b474d" : "#e0a692")
-  roofGrad.addColorStop(1, dark ? "#4f3238" : "#ce8e7c")
-  ctx.fillStyle = roofGrad
-  ctx.fill()
-  if (grainPattern) {
-    ctx.fillStyle = grainPattern
-    ctx.fill()
-  }
-
-  // Hand-drawn horizontal terracotta tile rows + subtle vertical tile joints
-  ctx.save()
-  traceSideRoof()
-  ctx.clip()
-  for (let row = 1; row <= 5; row++) {
-    const t = row / 6
-    const xL = 54 + (42 - 54) * t
-    const yL = 244 + (290 - 244) * t
-    const xR = 138 + (118 - 138) * t
-    const yR = 236 + (284 - 236) * t
-    strokeHandLine(
-      ctx,
-      xL,
-      yL,
-      xR,
-      yR,
-      dark ? "rgba(218, 222, 242, 0.32)" : "rgba(47, 42, 56, 0.46)",
-      1.05,
-      0.55
-    )
-    // Staggered tile notches
-    for (let col = 1; col <= 4; col++) {
-      const ct = (col + (row % 2) * 0.45) / 5.2
-      const nx = xL + (xR - xL) * ct
-      const ny = yL + (yR - yL) * ct
-      strokeHandLine(
-        ctx,
-        nx,
-        ny,
-        nx - 1.5,
-        ny + 6.5,
-        dark ? "rgba(218, 222, 242, 0.2)" : "rgba(47, 42, 56, 0.28)",
-        0.85,
-        0.25
-      )
-    }
-  }
-  ctx.restore()
-
-  // Side roof outline + thick underside eave shadow
-  strokeHandLine(ctx, 42, 290, 54, 244, ink, 2.0, 0.5)
-  strokeHandLine(ctx, 54, 244, 138, 236, ink, 2.1, 0.6)
-  strokeHandLine(ctx, 138, 236, 118, 284, ink, 2.0, 0.5)
-  strokeHandLine(ctx, 118, 284, 42, 290, ink, 2.1, 0.5)
-
-  // Left facade wall (soft watercolor modulation + subtle charcoal eave hatching)
-  ctx.beginPath()
-  ctx.moveTo(46, 290)
-  ctx.lineTo(118, 284)
-  ctx.lineTo(118, 376)
-  ctx.lineTo(46, 376)
-  ctx.closePath()
-  const wallLeftGrad = ctx.createLinearGradient(46, 284, 46, 372)
-  wallLeftGrad.addColorStop(0, dark ? "#3b3552" : "#cbbce2")
-  wallLeftGrad.addColorStop(1, dark ? "#2a263c" : "#bcaad6")
-  ctx.fillStyle = wallLeftGrad
-  ctx.fill()
-  if (grainPattern) {
-    ctx.fillStyle = grainPattern
-    ctx.fill()
-  }
-  // Eave overhang shadow band
-  ctx.beginPath()
-  ctx.moveTo(46, 290)
-  ctx.lineTo(118, 284)
-  ctx.lineTo(118, 292)
-  ctx.lineTo(46, 298)
-  ctx.closePath()
-  ctx.fillStyle = roofShade
-  ctx.fill()
-
-  strokeHandLine(ctx, 46, 290, 46, 376, ink, 2.0, 0.45)
-  strokeHandLine(ctx, 118, 284, 118, 376, ink, 2.0, 0.45)
-
-  // 4 connected gabled facades receding subtly rightward
-  const gables = [
-    {
-      x: 118,
-      w: 58,
-      wallTop: 284,
-      peakY: 236,
-      lightTop: "#cbbbe2",
-      lightBot: "#bdaad7",
-      darkTop: "#3d3757",
-      darkBot: "#2c2841",
-      roofL: "#da9f8d",
-      roofD: "#634147",
-    },
-    {
-      x: 175,
-      w: 46,
-      wallTop: 286,
-      peakY: 242,
-      lightTop: "#fae59d",
-      lightBot: "#edd282",
-      darkTop: "#4f4656",
-      darkBot: "#3a3342",
-      roofL: "#e0a592",
-      roofD: "#684649",
-    },
-    {
-      x: 220,
-      w: 47,
-      wallTop: 288,
-      peakY: 245,
-      lightTop: "#edb59f",
-      lightBot: "#de9f8a",
-      darkTop: "#523a46",
-      darkBot: "#3d2a34",
-      roofL: "#d79884",
-      roofD: "#5f3d41",
-    },
-    {
-      x: 266,
-      w: 50,
-      wallTop: 291,
-      peakY: 249,
-      lightTop: "#cbbbe0",
-      lightBot: "#bcabd4",
-      darkTop: "#3b3652",
-      darkBot: "#2a263e",
-      roofL: "#d99d8a",
-      roofD: "#5d3d42",
-    },
-  ]
-
-  for (const g of gables) {
-    const mid = g.x + g.w / 2
-
-    // Overhanging gable roof thickness
-    ctx.beginPath()
-    ctx.moveTo(g.x - 4, g.wallTop + 3)
-    ctx.lineTo(mid, g.peakY - 2)
-    ctx.lineTo(g.x + g.w + 4, g.wallTop + 3)
-    ctx.lineTo(g.x + g.w, g.wallTop + 9)
-    ctx.lineTo(mid, g.peakY + 5)
-    ctx.lineTo(g.x, g.wallTop + 9)
-    ctx.closePath()
-    ctx.fillStyle = dark ? g.roofD : g.roofL
-    ctx.fill()
-    if (grainPattern) {
-      ctx.fillStyle = grainPattern
-      ctx.fill()
-    }
-    ctx.lineWidth = 1.9
-    ctx.strokeStyle = ink
-    ctx.stroke()
-
-    // Facade wall with watercolor top-to-bottom tint
-    const wGrad = ctx.createLinearGradient(0, g.peakY, 0, 380)
-    wGrad.addColorStop(0, dark ? g.darkTop : g.lightTop)
-    wGrad.addColorStop(1, dark ? g.darkBot : g.lightBot)
-    ctx.beginPath()
-    ctx.moveTo(g.x, 380)
-    ctx.lineTo(g.x, g.wallTop + 4)
-    ctx.lineTo(mid, g.peakY + 4)
-    ctx.lineTo(g.x + g.w, g.wallTop + 4)
-    ctx.lineTo(g.x + g.w, 380)
-    ctx.closePath()
-    ctx.fillStyle = wGrad
-    ctx.fill()
-    if (grainPattern) {
-      ctx.fillStyle = grainPattern
-      ctx.fill()
-    }
-
-    // Crisp recessed shadow right under gable eaves
-    ctx.beginPath()
-    ctx.moveTo(g.x + 1, g.wallTop + 5)
-    ctx.lineTo(mid, g.peakY + 4)
-    ctx.lineTo(g.x + g.w - 1, g.wallTop + 5)
-    ctx.lineTo(g.x + g.w - 1, g.wallTop + 9)
-    ctx.lineTo(mid, g.peakY + 8)
-    ctx.lineTo(g.x + 1, g.wallTop + 9)
-    ctx.closePath()
-    ctx.fillStyle = roofShade
-    ctx.fill()
-
-    // Charcoal nib edges
-    strokeHandLine(ctx, g.x, 380, g.x, g.wallTop + 4, ink, 1.85, 0.4)
-    strokeHandLine(ctx, g.x, g.wallTop + 4, mid, g.peakY + 4, ink, 1.95, 0.45)
-    strokeHandLine(ctx, mid, g.peakY + 4, g.x + g.w, g.wallTop + 4, ink, 1.95, 0.45)
-    strokeHandLine(ctx, g.x + g.w, g.wallTop + 4, g.x + g.w, 380, ink, 1.85, 0.4)
-
-    // Subtle right-corner vertical charcoal shading strokes
-    ctx.strokeStyle = dark ? "rgba(15, 16, 25, 0.42)" : "rgba(47, 42, 56, 0.18)"
-    ctx.lineWidth = 0.9
-    for (let sx = g.x + g.w - 6; sx < g.x + g.w - 1; sx += 2.2) {
+  // Helper to paint textured terracotta pitched roof plane with broken horizontal shingle dashes
+  const paintTerracottaRoof = (
+    bl: [number, number],
+    tl: [number, number],
+    tr: [number, number],
+    br: [number, number],
+    rows: number,
+    dashSeed: number
+  ) => {
+    const traceRoof = () => {
       ctx.beginPath()
-      ctx.moveTo(sx, g.wallTop + 10)
-      ctx.lineTo(sx, 368)
-      ctx.stroke()
+      ctx.moveTo(bl[0], bl[1])
+      ctx.lineTo(tl[0], tl[1])
+      ctx.lineTo(tr[0], tr[1])
+      ctx.lineTo(br[0], br[1])
+      ctx.closePath()
     }
 
-    // Narrow storybook arched slit window
+    traceRoof()
+    const rGrad = ctx.createLinearGradient(tl[0], tl[1], bl[0], bl[1])
+    rGrad.addColorStop(0, dark ? roofDarkA : roofLightA)
+    rGrad.addColorStop(1, dark ? roofDarkB : roofLightB)
+    ctx.fillStyle = rGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+
+    // Hand-drawn broken horizontal shingle courses inside clipped roof quad
+    ctx.save()
+    traceRoof()
+    ctx.clip()
+    const shingleInk = dark ? "rgba(220, 224, 244, 0.34)" : "rgba(46, 40, 56, 0.56)"
+    ctx.strokeStyle = shingleInk
+    ctx.lineWidth = 1.15
+    ctx.lineCap = "round"
+
+    for (let r = 1; r <= rows; r++) {
+      const t = r / (rows + 1)
+      const lx = tl[0] + (bl[0] - tl[0]) * t
+      const ly = tl[1] + (bl[1] - tl[1]) * t
+      const rx = tr[0] + (br[0] - tr[0]) * t
+      const ry = tr[1] + (br[1] - tr[1]) * t
+      const segs = 3
+      for (let s = 0; s < segs; s++) {
+        const s0 = s / segs + (s === 0 ? 0.04 : 0.06)
+        const s1 = (s + 1) / segs - (s === segs - 1 ? 0.04 : 0.03 + ((r + s + dashSeed) % 2) * 0.04)
+        if (s1 <= s0) continue
+        ctx.beginPath()
+        ctx.moveTo(lx + (rx - lx) * s0, ly + (ry - ly) * s0)
+        ctx.lineTo(lx + (rx - lx) * s1, ly + (ry - ly) * s1)
+        ctx.stroke()
+      }
+    }
+    ctx.restore()
+
+    // Crisp nib roof perimeter
+    strokeHandLine(ctx, bl[0], bl[1], tl[0], tl[1], ink, 2.1, 0.45)
+    strokeHandLine(ctx, tl[0], tl[1], tr[0], tr[1], ink, 2.2, 0.45)
+    strokeHandLine(ctx, tr[0], tr[1], br[0], br[1], ink, 2.0, 0.4)
+    strokeHandLine(ctx, br[0], br[1], bl[0], bl[1], ink, 2.1, 0.45)
+  }
+
+  // Helper for tall arched-top attic/facade window with soft interior tint & sill
+  const drawArchedWindow = (wx: number, wy: number, w: number, h: number) => {
     ctx.save()
     if (dark) {
-      ctx.shadowColor = "rgba(255, 210, 110, 0.8)"
-      ctx.shadowBlur = 11
+      ctx.shadowColor = "rgba(255, 212, 112, 0.85)"
+      ctx.shadowBlur = 12
     }
     ctx.beginPath()
-    ctx.roundRect(mid - 3.2, g.wallTop + 14, 6.4, 12.5, [3.2, 3.2, 1, 1])
-    ctx.fillStyle = dark ? "#ffd47c" : "#998eb4"
+    ctx.roundRect(wx - w / 2, wy, w, h, [w / 2, w / 2, 1, 1])
+    ctx.fillStyle = dark ? "#ffd67e" : "#bfb4cf"
     ctx.fill()
-    ctx.lineWidth = 1.55
+    ctx.lineWidth = 1.65
     ctx.strokeStyle = ink
     ctx.stroke()
+
+    if (!dark) {
+      ctx.beginPath()
+      ctx.moveTo(wx - w * 0.12, wy + 2.5)
+      ctx.lineTo(wx - w * 0.12, wy + h - 2)
+      ctx.lineWidth = 0.85
+      ctx.strokeStyle = "rgba(46, 40, 56, 0.4)"
+      ctx.stroke()
+    }
     ctx.restore()
   }
+
+  ctx.save()
+
+  // Draw back-to-front so foreground roofs/gables overlap cleanly in 3/4 view!
+  // Using true parallel roof quads (bl extends down-left behind the adjacent house) keeps shingle lines parallel.
+  // ── HOUSE 4 (Far-right Lavender) ──
+  paintTerracottaRoof([251, 326], [268, 290], [303, 287], [279, 327], 3, 4)
+  {
+    const gGrad = ctx.createLinearGradient(0, 287, 0, 392)
+    gGrad.addColorStop(0, dark ? "#3e3958" : "#cebde2")
+    gGrad.addColorStop(1, dark ? "#2b2740" : "#bda9d4")
+    ctx.beginPath()
+    ctx.moveTo(279, 396)
+    ctx.lineTo(279, 327)
+    ctx.lineTo(303, 287)
+    ctx.lineTo(323, 330)
+    ctx.lineTo(323, 396)
+    ctx.closePath()
+    ctx.fillStyle = gGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+    strokeHandLine(ctx, 279, 396, 279, 327, ink, 1.9, 0.35)
+    strokeHandLine(ctx, 279, 327, 303, 287, ink, 2.1, 0.4)
+    strokeHandLine(ctx, 303, 287, 325, 332, ink, 2.15, 0.4)
+    strokeHandLine(ctx, 323, 330, 323, 396, ink, 1.95, 0.35)
+    drawArchedWindow(302, 329, 5.2, 11)
+  }
+
+  // ── HOUSE 3 (Coral / Peach) ──
+  paintTerracottaRoof([196, 328], [220, 284], [262, 279], [233, 326], 4, 3)
+  {
+    const gGrad = ctx.createLinearGradient(0, 279, 0, 392)
+    gGrad.addColorStop(0, dark ? "#573d49" : "#efb7a1")
+    gGrad.addColorStop(1, dark ? "#3f2a34" : "#dfa28d")
+    ctx.beginPath()
+    ctx.moveTo(233, 396)
+    ctx.lineTo(233, 326)
+    ctx.lineTo(262, 279)
+    ctx.lineTo(281, 329)
+    ctx.lineTo(281, 396)
+    ctx.closePath()
+    ctx.fillStyle = gGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+    strokeHandLine(ctx, 233, 396, 233, 326, ink, 1.95, 0.35)
+    strokeHandLine(ctx, 233, 326, 262, 279, ink, 2.15, 0.4)
+    strokeHandLine(ctx, 262, 279, 282, 330, ink, 2.2, 0.4)
+    strokeHandLine(ctx, 280, 328, 280, 396, ink, 1.95, 0.35)
+    drawArchedWindow(259, 326, 5.8, 12)
+  }
+
+  // ── HOUSE 2 (Butter Yellow) ──
+  paintTerracottaRoof([132, 326], [158, 277], [212, 271], [175, 322], 4, 2)
+  {
+    const gGrad = ctx.createLinearGradient(0, 271, 0, 392)
+    gGrad.addColorStop(0, dark ? "#544b5a" : "#fae49d")
+    gGrad.addColorStop(1, dark ? "#3c3543" : "#edd384")
+    ctx.beginPath()
+    ctx.moveTo(175, 396)
+    ctx.lineTo(175, 322)
+    ctx.lineTo(212, 271)
+    ctx.lineTo(235, 327)
+    ctx.lineTo(235, 396)
+    ctx.closePath()
+    ctx.fillStyle = gGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+    strokeHandLine(ctx, 175, 396, 175, 322, ink, 1.95, 0.35)
+    strokeHandLine(ctx, 175, 322, 212, 271, ink, 2.15, 0.4)
+    strokeHandLine(ctx, 212, 271, 236, 328, ink, 2.2, 0.4)
+    strokeHandLine(ctx, 234, 326, 234, 396, ink, 1.95, 0.35)
+    drawArchedWindow(208, 323, 6.2, 13.5)
+  }
+
+  // ── HOUSE 1 (Foreground Leftmost Lavender with Wide Side Wall & Tiled Roof) ──
+  // Side wall (left face)
+  {
+    const sideGrad = ctx.createLinearGradient(48, 320, 48, 405)
+    sideGrad.addColorStop(0, dark ? "#3d3756" : "#cebde2")
+    sideGrad.addColorStop(1, dark ? "#2a263e" : "#bda9d4")
+    ctx.beginPath()
+    ctx.moveTo(49, 328)
+    ctx.lineTo(110, 322)
+    ctx.lineTo(110, 402)
+    ctx.lineTo(49, 408)
+    ctx.closePath()
+    ctx.fillStyle = sideGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+    // Subtle eave overhang shadow along top of side wall
+    ctx.beginPath()
+    ctx.moveTo(49, 328)
+    ctx.lineTo(110, 322)
+    ctx.lineTo(110, 328)
+    ctx.lineTo(49, 334)
+    ctx.closePath()
+    ctx.fillStyle = dark ? "rgba(14, 15, 24, 0.5)" : "rgba(46, 40, 56, 0.16)"
+    ctx.fill()
+
+    strokeHandLine(ctx, 49, 328, 49, 408, ink, 2.05, 0.4)
+  }
+
+  // Front gable wall of House 1
+  {
+    const fGrad = ctx.createLinearGradient(0, 266, 0, 398)
+    fGrad.addColorStop(0, dark ? "#433d5d" : "#d3c3e6")
+    fGrad.addColorStop(1, dark ? "#2e2943" : "#bfaed7")
+    ctx.beginPath()
+    ctx.moveTo(110, 402)
+    ctx.lineTo(110, 322)
+    ctx.lineTo(148, 266)
+    ctx.lineTo(179, 326)
+    ctx.lineTo(179, 398)
+    ctx.closePath()
+    ctx.fillStyle = fGrad
+    ctx.fill()
+    if (grainPattern) {
+      ctx.fillStyle = grainPattern
+      ctx.fill()
+    }
+    strokeHandLine(ctx, 110, 402, 110, 322, ink, 2.0, 0.35)
+    strokeHandLine(ctx, 110, 322, 148, 266, ink, 2.15, 0.4)
+    strokeHandLine(ctx, 148, 266, 181, 328, ink, 2.25, 0.4)
+    strokeHandLine(ctx, 178, 325, 178, 398, ink, 1.95, 0.35)
+    drawArchedWindow(145, 323, 6.8, 14.5)
+  }
+
+  // Wide terracotta roof of House 1 overhanging slightly past left wall & front corner
+  paintTerracottaRoof([39, 329], [78, 272], [148, 266], [108, 323], 5, 1)
 
   ctx.restore()
 }
@@ -909,14 +910,23 @@ function drawLighthouse(
   ctx.strokeStyle = ink
   ctx.stroke()
 
-  // Concentric Fresnel lens rings ( ◎ )
+  // Circular cream lens disk with two subtle diagonal glass glint ticks
+  const lensR = Math.max(5.2, lanW * 0.62)
   ctx.beginPath()
-  ctx.arc(cx, topY - 12.5, Math.max(4.5, lanW * 0.6), 0, Math.PI * 2)
+  ctx.arc(cx, topY - 12.5, lensR, 0, Math.PI * 2)
+  ctx.fillStyle = dark ? "#fff0b8" : "#f8f2dc"
+  ctx.fill()
   ctx.strokeStyle = ink
   ctx.lineWidth = 1.45
   ctx.stroke()
+
   ctx.beginPath()
-  ctx.arc(cx, topY - 12.5, Math.max(2, lanW * 0.25), 0, Math.PI * 2)
+  ctx.moveTo(cx - lensR * 0.35, topY - 12.5 + lensR * 0.42)
+  ctx.lineTo(cx + lensR * 0.25, topY - 12.5 - lensR * 0.42)
+  ctx.moveTo(cx - lensR * 0.05, topY - 12.5 + lensR * 0.45)
+  ctx.lineTo(cx + lensR * 0.45, topY - 12.5 - lensR * 0.28)
+  ctx.lineWidth = 1.05
+  ctx.strokeStyle = dark ? "rgba(80, 62, 24, 0.65)" : "rgba(44, 39, 53, 0.52)"
   ctx.stroke()
 
   // Dome cap with shaded right crescent
