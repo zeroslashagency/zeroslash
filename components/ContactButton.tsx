@@ -262,7 +262,7 @@ export default function ContactButton() {
         data-gaze-y={String(gazeY)}
         className={[
           "fixed z-[55] bottom-0 right-0 select-none cursor-pointer",
-          "w-[106px] h-[106px] md:w-[132px] md:h-[132px]",
+          "w-[108px] h-[108px] md:w-[136px] md:h-[136px]",
           "rounded-tl-[9999px] shadow-lg",
           // Unified acid-lime color across light and dark themes
           "bg-[#D7FF9A]",
@@ -285,7 +285,7 @@ export default function ContactButton() {
         onBlur={() => setFocused(false)}
       >
         <div className="relative w-full h-full">
-          {/* Layer 1: Big Expressive Mascot Face ONLY (zero overlap with text layer) */}
+          {/* Layer 1: Big Minimalist Lime & Ink Mascot Face ONLY */}
           <div
             aria-hidden="true"
             className={[
@@ -305,138 +305,117 @@ export default function ContactButton() {
               }}
             >
               <svg
-                viewBox="0 0 60 40"
-                className="w-[62px] h-[44px] md:w-[78px] md:h-[54px] overflow-visible transition-transform duration-200 ease-out"
+                viewBox="0 0 68 48"
+                className="w-[70px] h-[50px] md:w-[90px] md:h-[64px] overflow-visible transition-transform duration-200 ease-out"
                 style={{
                   transform:
                     mood === "wink" && !reducedMotion
-                      ? "translateY(-1.5px) scale(1.05)"
+                      ? "translateY(-1.5px) scale(1.04)"
                       : "translateY(0) scale(1)",
                 }}
               >
-                {/* Soft lime cheek dimples on hover/focus wink */}
-                <g
-                  className="transition-opacity duration-200"
-                  style={{ opacity: mood === "wink" ? 1 : 0 }}
-                >
-                  <ellipse cx="10" cy="24.5" rx="3.6" ry="2" fill="#B5EA63" />
-                  <ellipse cx="50" cy="24.5" rx="3.6" ry="2" fill="#B5EA63" />
-                </g>
-
-                {/* Left Eye */}
+                {/* Left Eye — clean solid ink pill directly on lime */}
                 <g
                   style={{
-                    transformOrigin: "18px 15px",
-                    transform:
-                      blinking && mood !== "wink"
-                        ? "scaleY(0.11)"
-                        : mood === "wink"
-                          ? "scale(1.05)"
-                          : "scale(1)",
-                    transition: "transform 125ms cubic-bezier(0.16, 1, 0.3, 1)",
+                    transform: `translate(${mood === "wink" ? 0 : gazeX}px, ${mood === "wink" ? -0.5 : gazeY}px)`,
+                    transition: "transform 160ms ease-out",
                   }}
                 >
-                  <ellipse
-                    cx="18"
-                    cy="15"
-                    rx="6.2"
-                    ry="7.6"
-                    fill="#F7FFE8"
-                    stroke="#11120E"
-                    strokeWidth="2.35"
-                  />
                   <g
                     style={{
-                      transform: `translate(${mood === "wink" ? 0 : gazeX}px, ${mood === "wink" ? -0.6 : gazeY}px)`,
-                      transition: "transform 160ms ease-out",
+                      transformOrigin: "21px 17px",
+                      transform:
+                        blinking && mood !== "wink"
+                          ? "scaleY(0.14)"
+                          : mood === "wink"
+                            ? "scaleY(1.08)"
+                            : "scaleY(1)",
+                      transition: "transform 125ms cubic-bezier(0.16, 1, 0.3, 1)",
                     }}
                   >
-                    <circle cx="18" cy="15.2" r="3.4" fill="#11120E" />
-                    <circle cx="19.3" cy="13.6" r="1.15" fill="#F7FFE8" />
+                    <rect
+                      x="17.2"
+                      y="10.2"
+                      width="7.6"
+                      height="13.6"
+                      rx="3.8"
+                      fill="#11120E"
+                    />
                   </g>
                 </g>
 
-                {/* Right Eye (normal blinking eye vs. cheeky wink arc on hover/focus) */}
-                {mood === "wink" ? (
-                  <path
-                    d="M 35.5 16 Q 42 9.5 48.5 16"
-                    fill="none"
-                    stroke="#11120E"
-                    strokeWidth="2.7"
-                    strokeLinecap="round"
-                  />
-                ) : (
-                  <g
-                    style={{
-                      transformOrigin: "42px 15px",
-                      transform: blinking ? "scaleY(0.11)" : "scaleY(1)",
-                      transition:
-                        "transform 125ms cubic-bezier(0.16, 1, 0.3, 1)",
-                    }}
-                  >
-                    <ellipse
-                      cx="42"
-                      cy="15"
-                      rx="6.2"
-                      ry="7.6"
-                      fill="#F7FFE8"
+                {/* Right Eye — matching solid ink pill or sleek curved wink */}
+                <g
+                  style={{
+                    transform: `translate(${mood === "wink" ? 0 : gazeX}px, ${mood === "wink" ? 0 : gazeY}px)`,
+                    transition: "transform 160ms ease-out",
+                  }}
+                >
+                  {mood === "wink" ? (
+                    <path
+                      d="M 40.5 18.2 Q 47 11.2 53.5 18.2"
+                      fill="none"
                       stroke="#11120E"
-                      strokeWidth="2.35"
+                      strokeWidth="3.4"
+                      strokeLinecap="round"
                     />
+                  ) : (
                     <g
                       style={{
-                        transform: `translate(${gazeX}px, ${gazeY}px)`,
-                        transition: "transform 160ms ease-out",
+                        transformOrigin: "47px 17px",
+                        transform: blinking ? "scaleY(0.14)" : "scaleY(1)",
+                        transition:
+                          "transform 125ms cubic-bezier(0.16, 1, 0.3, 1)",
                       }}
                     >
-                      <circle cx="42" cy="15.2" r="3.4" fill="#11120E" />
-                      <circle cx="43.3" cy="13.6" r="1.15" fill="#F7FFE8" />
+                      <rect
+                        x="43.2"
+                        y="10.2"
+                        width="7.6"
+                        height="13.6"
+                        rx="3.8"
+                        fill="#11120E"
+                      />
                     </g>
-                  </g>
-                )}
+                  )}
+                </g>
 
-                {/* Expressive Mouth: Hover Grin / Organic Talking / Friendly Smile */}
+                {/* Minimal Monochrome Ink Mouth: Hover Smile / Organic Talk / Idle Arc */}
                 {mood === "wink" ? (
-                  <g>
-                    <path
-                      d="M 19 25.8 Q 30 27.2 41 25.8 Q 39.6 36.2 30 36.2 Q 20.4 36.2 19 25.8 Z"
-                      fill="#11120E"
-                    />
-                    <ellipse cx="30" cy="33.5" rx="5" ry="2.2" fill="#EA6A52" />
-                  </g>
+                  <path
+                    d="M 22 30.2 Q 34 31.4 46 30.2 Q 44.2 41.2 34 41.2 Q 23.8 41.2 22 30.2 Z"
+                    fill="#11120E"
+                  />
                 ) : mood === "talk" ? (
                   talkPhase === 1 ? (
                     <rect
-                      x="25.8"
-                      y="26"
-                      width="8.4"
-                      height="6.4"
-                      rx="3.2"
+                      x="29.5"
+                      y="30.5"
+                      width="9"
+                      height="7.4"
+                      rx="3.7"
                       fill="#11120E"
                     />
                   ) : talkPhase === 2 ? (
-                    <g>
-                      <path
-                        d="M 22 26.4 Q 30 27.2 38 26.4 Q 36.8 34.8 30 34.8 Q 23.2 34.8 22 26.4 Z"
-                        fill="#11120E"
-                      />
-                      <ellipse cx="30" cy="32.6" rx="3.7" ry="1.6" fill="#EA6A52" />
-                    </g>
+                    <path
+                      d="M 25.5 30.8 Q 34 31.6 42.5 30.8 Q 41.2 39.2 34 39.2 Q 26.8 39.2 25.5 30.8 Z"
+                      fill="#11120E"
+                    />
                   ) : (
                     <path
-                      d="M 23.5 28 Q 30 32.8 36.5 28"
+                      d="M 26.5 32.8 Q 34 37.8 41.5 32.8"
                       fill="none"
                       stroke="#11120E"
-                      strokeWidth="2.5"
+                      strokeWidth="3.2"
                       strokeLinecap="round"
                     />
                   )
                 ) : (
                   <path
-                    d="M 21 27.8 Q 30 34.2 39 27.8"
+                    d="M 23.5 32.2 Q 34 39.6 44.5 32.2"
                     fill="none"
                     stroke="#11120E"
-                    strokeWidth="2.45"
+                    strokeWidth="3.2"
                     strokeLinecap="round"
                   />
                 )}
