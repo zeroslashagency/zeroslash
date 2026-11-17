@@ -6,7 +6,6 @@ import Link from "next/link"
 import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/scroll-reveal"
-import { ScrollFloat } from "@/components/scroll-float"
 import { ArrowRight, Sparkles, Compass, Workflow, Briefcase, TrendingUp, Users, Search, Cog, Rocket, Star, ArrowDown, ChevronDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import { motion, useReducedMotion } from "motion/react"
@@ -24,60 +23,13 @@ import { useState, useEffect, useRef } from "react"
 import BrandRibbonsSection from "@/components/sections/brand-ribbons/BrandRibbonsSection"
 import TeamLanyardPasses from "@/components/sections/TeamLanyardPasses"
 import ApproachShowcase from "@/components/sections/ApproachShowcase"
+import TransformPillarsShowcase from "@/components/sections/TransformPillarsShowcase"
 
 const ServicesSection = nextDynamic(() => import("@/components/sections/flora/ServicesFlora"), { ssr: false, loading: () => null })
 const TestimonialsSection = nextDynamic(() => import("@/components/sections/Testimonials"), { ssr: false, loading: () => null })
 
 const CurvedLoop = nextDynamic(() => import("../src/blocks/TextAnimations/CurvedLoop/CurvedLoop"), { ssr: false, loading: () => null })
 
-/* Transform & Grow — three equal-height editorial capability pillars */
-const TRANSFORM_PILLARS = [
-  {
-    index: "01",
-    discipline: "Strategy & UX",
-    title: "Design",
-    accent: "#c9547b",
-    description:
-      "We design conversion-focused websites that don’t just look great—they build trust and turn visitors into customers.",
-    ctaLabel: "Start a Design project",
-    items: [
-      "Discovery & Strategy",
-      "Web Design & UI/UX",
-      "User-Centered Experience",
-      "Accessible, Inclusive Design",
-    ],
-  },
-  {
-    index: "02",
-    discipline: "Engineering",
-    title: "Build",
-    accent: "#2e7d5b",
-    description:
-      "We engineer fast, scalable, and reliable platforms that adapt to your growth and deliver seamless performance.",
-    ctaLabel: "Start a Build project",
-    items: [
-      "Website Development",
-      "Shopify & E-commerce",
-      "CMS Solutions (Custom & Headless)",
-      "Technical SEO Foundations",
-    ],
-  },
-  {
-    index: "03",
-    discipline: "Performance",
-    title: "Grow",
-    accent: "#2b5ec7",
-    description:
-      "We craft data-driven marketing campaigns that help you attract, engage, and retain customers.",
-    ctaLabel: "Start a Grow project",
-    items: [
-      "Paid Advertising (PPC)",
-      "Search Engine Optimisation",
-      "Content & Email Marketing",
-      "Social Media Growth",
-    ],
-  },
-] as const
 
 const APPROACH_STEPS = [
   {
@@ -148,7 +100,6 @@ const FEATURED_PROJECTS = [
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
   const [activeApproachStep, setActiveApproachStep] = useState(0)
-  const [activePillar, setActivePillar] = useState(0)
   const prefersReducedMotion = useReducedMotion()
   const gapSliderRef = useRef<HTMLElement>(null)
   const gapTextRef = useRef<HTMLDivElement>(null)
@@ -905,7 +856,7 @@ export default function Home() {
               {/* Section Header */}
               <div className="text-center mb-6 md:mb-12 lg:mb-16">
                 <SectionPill label="Transform & Grow" icon={TrendingUp} className="mb-4 md:mb-6" />
-                <h2 className="text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground md:text-black mb-3 md:mb-6 leading-tight tracking-tight">
+                <h2 className="text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 md:mb-6 leading-tight tracking-tight">
                   Helping You
                   <br />
                   Transform Your
@@ -915,166 +866,14 @@ export default function Home() {
                     <div className="absolute -bottom-1.5 md:-bottom-2 left-0 w-full h-1 bg-pink-400 rounded-full"></div>
                   </span>
                 </h2>
-                <p className="text-sm sm:text-base md:text-xl text-foreground/70 md:text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-sm sm:text-base md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
                   Bold ideas. Smarter strategies. Game-changing results. Let&rsquo;s elevate your brand and unlock its full
                   potential.
                 </p>
               </div>
 
-              {/* Mobile: Segmented pillar switcher + single focused card */}
-              <div className="md:hidden">
-                <div
-                  role="tablist"
-                  aria-label="Capabilities"
-                  className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-muted border border-border mb-4"
-                >
-                  {TRANSFORM_PILLARS.map((pillar, idx) => {
-                    const selected = activePillar === idx
-                    return (
-                      <button
-                        key={pillar.index}
-                        type="button"
-                        role="tab"
-                        aria-selected={selected}
-                        onClick={() => setActivePillar(idx)}
-                        className={`min-h-[42px] rounded-lg px-2 text-xs font-semibold transition-colors ${
-                          selected
-                            ? "bg-card text-foreground shadow-xs"
-                            : "text-foreground/60 hover:text-foreground"
-                        }`}
-                      >
-                        <span className="opacity-55 mr-1">{pillar.index}</span>
-                        {pillar.title}
-                      </button>
-                    )
-                  })}
-                </div>
-
-                {(() => {
-                  const pillar = TRANSFORM_PILLARS[activePillar] ?? TRANSFORM_PILLARS[0]
-                  return (
-                    <article className="rounded-2xl border border-border bg-card p-5">
-                      <div className="flex items-center justify-between gap-3 mb-3">
-                        <span
-                          className="text-[11px] uppercase tracking-[0.16em] text-foreground/55 tabular-nums"
-                          style={{ fontFamily: "var(--font-geist-mono)" }}
-                        >
-                          {pillar.index} / {pillar.discipline}
-                        </span>
-                        <span
-                          className="h-[2px] w-8 shrink-0 rounded-full"
-                          style={{ backgroundColor: pillar.accent }}
-                          aria-hidden
-                        />
-                      </div>
-
-                      <h3
-                        className="text-2xl font-bold tracking-[-0.02em] text-foreground leading-none mb-2.5"
-                        style={{ fontFamily: "var(--font-display-serif)" }}
-                      >
-                        {pillar.title}
-                      </h3>
-
-                      <p className="text-sm leading-relaxed text-foreground/70 mb-4">
-                        {pillar.description}
-                      </p>
-
-                      <ul className="border-t border-border/70 divide-y divide-border/70">
-                        {pillar.items.map((item, itemIdx) => (
-                          <li key={item} className="flex items-baseline gap-3 py-2.5 min-w-0">
-                            <span
-                              className="text-[11px] text-foreground/45 tabular-nums shrink-0"
-                              style={{ fontFamily: "var(--font-geist-mono)" }}
-                            >
-                              0{itemIdx + 1}
-                            </span>
-                            <span className="text-sm font-medium text-foreground leading-snug">
-                              {item}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className="mt-4 pt-3.5 border-t border-border">
-                        <button
-                          type="button"
-                          onClick={() => setWizardOpen(true)}
-                          className="w-full min-h-11 inline-flex items-center justify-between gap-3 text-sm font-semibold text-foreground"
-                        >
-                          <span className="whitespace-nowrap">{pillar.ctaLabel}</span>
-                          <ArrowRight className="w-4 h-4 shrink-0" aria-hidden />
-                        </button>
-                      </div>
-                    </article>
-                  )
-                })()}
-              </div>
-
-              {/* Desktop/Tablet: 3-column Services Cards Grid */}
-              <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
-                {TRANSFORM_PILLARS.map((pillar, idx) => (
-                  <ScrollFloat key={pillar.index} delay={0.08 * (idx + 1)} className="min-w-0 h-full">
-                    <article className="h-full flex flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 transition-[border-color,transform] duration-200 hover:-translate-y-1 hover:border-foreground/25">
-                      <div className="flex-1 flex flex-col">
-                        <div className="flex items-center justify-between gap-4 mb-6">
-                          <span
-                            className="text-[11px] uppercase tracking-[0.18em] text-foreground/55 tabular-nums"
-                            style={{ fontFamily: "var(--font-geist-mono)" }}
-                          >
-                            {pillar.index} / {pillar.discipline}
-                          </span>
-                          <span
-                            className="h-[2px] w-10 shrink-0 rounded-full"
-                            style={{ backgroundColor: pillar.accent }}
-                            aria-hidden
-                          />
-                        </div>
-
-                        <h3
-                          className="text-3xl sm:text-[34px] font-bold tracking-[-0.02em] text-foreground leading-none mb-4"
-                          style={{ fontFamily: "var(--font-display-serif)" }}
-                        >
-                          {pillar.title}
-                        </h3>
-
-                        <p className="text-[15px] leading-relaxed text-foreground/70 mb-7">
-                          {pillar.description}
-                        </p>
-
-                        <ul className="mt-auto border-t border-border/70 divide-y divide-border/70">
-                          {pillar.items.map((item, itemIdx) => (
-                            <li
-                              key={item}
-                              className="flex items-baseline gap-3.5 py-3.5 min-w-0"
-                            >
-                              <span
-                                className="text-[11px] text-foreground/45 tabular-nums shrink-0"
-                                style={{ fontFamily: "var(--font-geist-mono)" }}
-                              >
-                                0{itemIdx + 1}
-                              </span>
-                              <h4 className="text-sm sm:text-[15px] font-medium text-foreground leading-snug">
-                                {item}
-                              </h4>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-
-                      <div className="mt-7 pt-5 border-t border-border">
-                        <button
-                          type="button"
-                          onClick={() => setWizardOpen(true)}
-                          className="group/btn w-full min-h-11 inline-flex items-center justify-between gap-3 text-sm font-semibold text-foreground hover:text-foreground/75 transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-foreground rounded-sm"
-                        >
-                          <span className="whitespace-nowrap">{pillar.ctaLabel}</span>
-                          <ArrowRight className="w-4 h-4 shrink-0 transition-transform duration-200 group-hover/btn:translate-x-1" aria-hidden />
-                        </button>
-                      </div>
-                    </article>
-                  </ScrollFloat>
-                ))}
-              </div>
+              {/* Interactive Monochrome Collector Cards (Desktop 3-Col + Mobile Horizontal Swipe) */}
+              <TransformPillarsShowcase onStartProject={() => setWizardOpen(true)} />
             </div>
           </div>
         </section>
