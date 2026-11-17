@@ -7,7 +7,7 @@ import Image from "next/image"
 import { Card, CardContent } from "@/components/ui/card"
 import { ScrollReveal } from "@/components/scroll-reveal"
 import { ScrollFloat } from "@/components/scroll-float"
-import { ArrowRight, Sparkles, Compass, Workflow, Briefcase, TrendingUp, Users, Search, Cog, Rocket, Star, ArrowDown } from "lucide-react"
+import { ArrowRight, Sparkles, Compass, Workflow, Briefcase, TrendingUp, Users, Search, Cog, Rocket, Star, ArrowDown, ChevronDown } from "lucide-react"
 import nextDynamic from "next/dynamic"
 import { motion, useReducedMotion } from "motion/react"
 import CountUpOnView from "../components/CountUpOnView"
@@ -79,8 +79,76 @@ const TRANSFORM_PILLARS = [
   },
 ] as const
 
+const APPROACH_STEPS = [
+  {
+    num: "01",
+    title: "Define",
+    summary: "Goals, audience & strategy foundation",
+    description:
+      "We start by understanding your goals, audience, and market position, creating a rock-solid strategy that sets the foundation for success.",
+  },
+  {
+    num: "02",
+    title: "Design",
+    summary: "Bold, user-focused brand & UI",
+    description:
+      "Our team transforms insights into bold, user-focused designs that elevate your brand identity and captivate your audience.",
+  },
+  {
+    num: "03",
+    title: "Build",
+    summary: "Fast, scalable modern engineering",
+    description:
+      "We engineer fast, scalable, and reliable solutions using modern technology and best practices — built to perform and grow with you.",
+  },
+  {
+    num: "04",
+    title: "Launch",
+    summary: "Rollout, testing & ongoing care",
+    description:
+      "From testing to rollout, we ensure a flawless launch backed by continuous support, updates, and optimisation to keep your digital presence thriving.",
+  },
+] as const
+
+const FEATURED_PROJECTS = [
+  {
+    title: "Dec's Cafe",
+    tag: "Coffee Shop",
+    subtitle: "Premium coffee experience with seamless online ordering",
+    highlight: "500+ customers · 4.7★ rating",
+    image: "/images/decs-cafe.png",
+    alt: "Dec's Cafe - Premium Coffee Experience",
+  },
+  {
+    title: "The Perfect Fresh Bread",
+    tag: "Bakery Website",
+    subtitle: "Artisanal bakery with elegant e-commerce experience",
+    highlight: "300+ daily orders · 60% growth",
+    image: "/images/fresh-bread.png",
+    alt: "The Perfect Fresh Bread - Artisanal Bakery",
+  },
+  {
+    title: "Flow Yoga Studio",
+    tag: "Fitness & Wellness",
+    subtitle: "Class bookings, memberships, and a calming brand system",
+    highlight: "200+ weekly bookings · 2x retention",
+    image: "/images/yoga-studio.jpeg",
+    alt: "Flow Yoga Studio - Wellness & Classes",
+  },
+  {
+    title: "ZenFix Mobile Repair",
+    tag: "Repair Service",
+    subtitle: "Booking flows, status tracking, and trust-building UX",
+    highlight: "250+ monthly repairs · 4.9★ rating",
+    image: "/images/mobile.jpg",
+    alt: "ZenFix Mobile Repair - Same-day device repairs",
+  },
+] as const
+
 export default function Home() {
   const [wizardOpen, setWizardOpen] = useState(false)
+  const [activeApproachStep, setActiveApproachStep] = useState(0)
+  const [activePillar, setActivePillar] = useState(0)
   const prefersReducedMotion = useReducedMotion()
   const gapSliderRef = useRef<HTMLElement>(null)
   const gapTextRef = useRef<HTMLDivElement>(null)
@@ -408,15 +476,58 @@ export default function Home() {
       <section className="w-full py-8 md:py-12 lg:py-16 bg-background relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-6 relative z-10">
           <div className="max-w-5xl mx-auto">
-            <div className="text-center mb-8 md:mb-12 lg:mb-16">
-              <SectionPill label="How we work" icon={Workflow} className="mb-6" />
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
+            <div className="text-center mb-6 md:mb-12 lg:mb-16">
+              <SectionPill label="How we work" icon={Workflow} className="mb-4 md:mb-6" />
+              <h2 className="text-[24px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-2 md:mb-6 leading-tight tracking-tight">
                 At ZeroSlash Agency, we don’t just deliver projects — we build growth engines for your brand.
               </h2>
             </div>
 
-            {/* Process Flow Cards with Dynamic Connector Lines */}
-            <div id="flow-container" className="relative max-w-4xl mx-auto min-w-0">
+            {/* Mobile: clean compact interactive step list (replaces 4 stacked tilted cards) */}
+            <div className="md:hidden divide-y divide-border border-y border-border">
+              {APPROACH_STEPS.map((step, idx) => {
+                const isOpen = activeApproachStep === idx
+                return (
+                  <div key={step.num} className="py-1">
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setActiveApproachStep(isOpen ? -1 : idx)}
+                      className="w-full min-h-[52px] py-3 flex items-center justify-between gap-3 text-left"
+                    >
+                      <div className="flex items-baseline gap-3 min-w-0">
+                        <span
+                          className="text-xs text-foreground/45 tabular-nums shrink-0"
+                          style={{ fontFamily: "var(--font-geist-mono)" }}
+                        >
+                          {step.num}
+                        </span>
+                        <div className="min-w-0">
+                          <span className="text-base font-bold text-foreground">{step.title}</span>
+                          {!isOpen && (
+                            <p className="text-xs text-foreground/60 truncate mt-0.5">{step.summary}</p>
+                          )}
+                        </div>
+                      </div>
+                      <ChevronDown
+                        className={`w-4 h-4 shrink-0 text-foreground/50 transition-transform duration-200 ${
+                          isOpen ? "rotate-180" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                    {isOpen && (
+                      <p className="pl-7 pr-2 pb-3.5 text-sm text-foreground/75 leading-relaxed">
+                        {step.description}
+                      </p>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* Desktop/Tablet: Process Flow Cards with Dynamic Connector Lines */}
+            <div id="flow-container" className="hidden md:block relative max-w-4xl mx-auto min-w-0">
               {/* Dynamic overlay that connects pins 1→2→3→4 */}
               <div className="hidden lg:block"><FlowConnector containerId="flow-container" /></div>
               {/* Step 1 - Define (Top Right) */}
@@ -547,16 +658,55 @@ export default function Home() {
       <section className="w-full py-8 md:py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8 md:mb-12 lg:mb-16">
-              <SectionPill label="Featured Work" icon={Briefcase} className="mb-6" />
-              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
+            <div className="text-center mb-6 md:mb-12 lg:mb-16">
+              <SectionPill label="Featured Work" icon={Briefcase} className="mb-4 md:mb-6" />
+              <h2 className="text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground md:text-black mb-2 md:mb-6 leading-tight tracking-tight">
                 Recent projects that delivered
                 <br />
                 measurable results
               </h2>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
+            {/* Mobile: clean horizontal snap cards (concise copy, no stacked quote clutter) */}
+            <div className="md:hidden">
+              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory -mx-4 px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                {FEATURED_PROJECTS.map((project) => (
+                  <Card
+                    key={project.title}
+                    className="w-[80vw] max-w-[300px] shrink-0 snap-start min-w-0 bg-card border border-border shadow-sm rounded-2xl overflow-hidden"
+                  >
+                    <div className="aspect-[16/10] relative overflow-hidden">
+                      <Image
+                        src={project.image}
+                        alt={project.alt}
+                        fill
+                        sizes="300px"
+                        loading="lazy"
+                        className="object-cover"
+                      />
+                      <div className="absolute top-2.5 right-2.5 bg-black/90 text-white px-2.5 py-1 rounded-full text-[11px] font-medium">
+                        {project.tag}
+                      </div>
+                    </div>
+                    <CardContent className="p-4">
+                      <h3 className="text-lg font-bold text-foreground mb-1">{project.title}</h3>
+                      <p className="text-sm text-foreground/70 leading-snug line-clamp-2 mb-3">
+                        {project.subtitle}
+                      </p>
+                      <div className="text-xs font-medium text-foreground/55 pt-2.5 border-t border-border/70">
+                        {project.highlight}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+              <p className="text-center text-xs text-foreground/45 mt-2">
+                Swipe for more projects
+              </p>
+            </div>
+
+            {/* Desktop/Tablet: Full 2x2 Grid */}
+            <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 lg:gap-12">
               {/* Dec's Cafe Case Study */}
               <Card className="min-w-0 bg-card border border-border shadow-lg rounded-3xl overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="aspect-video relative overflow-hidden">
@@ -713,7 +863,7 @@ export default function Home() {
             </div>
 
             {/* Soft bottom fade + blur like reviews section */}
-            <div className="relative -mt-1 md:-mt-2" aria-hidden>
+            <div className="hidden md:block relative -mt-1 md:-mt-2" aria-hidden>
               <div className="pointer-events-none absolute inset-x-0 -top-3 h-10 md:h-12 bg-gradient-to-b from-transparent via-background/70 to-background backdrop-blur-sm"></div>
             </div>
 
@@ -753,26 +903,115 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
-              <div className="text-center mb-8 md:mb-12 lg:mb-16">
-                <SectionPill label="Transform & Grow" icon={TrendingUp} className="mb-6" />
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-black mb-5 md:mb-6 leading-tight tracking-tight">
+              <div className="text-center mb-6 md:mb-12 lg:mb-16">
+                <SectionPill label="Transform & Grow" icon={TrendingUp} className="mb-4 md:mb-6" />
+                <h2 className="text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground md:text-black mb-3 md:mb-6 leading-tight tracking-tight">
                   Helping You
                   <br />
                   Transform Your
                   <br />
                   <span className="relative">
                     Business
-                    <div className="absolute -bottom-2 left-0 w-full h-1 bg-pink-400 rounded-full"></div>
+                    <div className="absolute -bottom-1.5 md:-bottom-2 left-0 w-full h-1 bg-pink-400 rounded-full"></div>
                   </span>
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-sm sm:text-base md:text-xl text-foreground/70 md:text-gray-600 max-w-3xl mx-auto leading-relaxed">
                   Bold ideas. Smarter strategies. Game-changing results. Let&rsquo;s elevate your brand and unlock its full
                   potential.
                 </p>
               </div>
 
-              {/* Services Cards Grid */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
+              {/* Mobile: Segmented pillar switcher + single focused card */}
+              <div className="md:hidden">
+                <div
+                  role="tablist"
+                  aria-label="Capabilities"
+                  className="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-muted border border-border mb-4"
+                >
+                  {TRANSFORM_PILLARS.map((pillar, idx) => {
+                    const selected = activePillar === idx
+                    return (
+                      <button
+                        key={pillar.index}
+                        type="button"
+                        role="tab"
+                        aria-selected={selected}
+                        onClick={() => setActivePillar(idx)}
+                        className={`min-h-[42px] rounded-lg px-2 text-xs font-semibold transition-colors ${
+                          selected
+                            ? "bg-card text-foreground shadow-xs"
+                            : "text-foreground/60 hover:text-foreground"
+                        }`}
+                      >
+                        <span className="opacity-55 mr-1">{pillar.index}</span>
+                        {pillar.title}
+                      </button>
+                    )
+                  })}
+                </div>
+
+                {(() => {
+                  const pillar = TRANSFORM_PILLARS[activePillar] ?? TRANSFORM_PILLARS[0]
+                  return (
+                    <article className="rounded-2xl border border-border bg-card p-5">
+                      <div className="flex items-center justify-between gap-3 mb-3">
+                        <span
+                          className="text-[11px] uppercase tracking-[0.16em] text-foreground/55 tabular-nums"
+                          style={{ fontFamily: "var(--font-geist-mono)" }}
+                        >
+                          {pillar.index} / {pillar.discipline}
+                        </span>
+                        <span
+                          className="h-[2px] w-8 shrink-0 rounded-full"
+                          style={{ backgroundColor: pillar.accent }}
+                          aria-hidden
+                        />
+                      </div>
+
+                      <h3
+                        className="text-2xl font-bold tracking-[-0.02em] text-foreground leading-none mb-2.5"
+                        style={{ fontFamily: "var(--font-display-serif)" }}
+                      >
+                        {pillar.title}
+                      </h3>
+
+                      <p className="text-sm leading-relaxed text-foreground/70 mb-4">
+                        {pillar.description}
+                      </p>
+
+                      <ul className="border-t border-border/70 divide-y divide-border/70">
+                        {pillar.items.map((item, itemIdx) => (
+                          <li key={item} className="flex items-baseline gap-3 py-2.5 min-w-0">
+                            <span
+                              className="text-[11px] text-foreground/45 tabular-nums shrink-0"
+                              style={{ fontFamily: "var(--font-geist-mono)" }}
+                            >
+                              0{itemIdx + 1}
+                            </span>
+                            <span className="text-sm font-medium text-foreground leading-snug">
+                              {item}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-4 pt-3.5 border-t border-border">
+                        <button
+                          type="button"
+                          onClick={() => setWizardOpen(true)}
+                          className="w-full min-h-11 inline-flex items-center justify-between gap-3 text-sm font-semibold text-foreground"
+                        >
+                          <span className="whitespace-nowrap">{pillar.ctaLabel}</span>
+                          <ArrowRight className="w-4 h-4 shrink-0" aria-hidden />
+                        </button>
+                      </div>
+                    </article>
+                  )
+                })()}
+              </div>
+
+              {/* Desktop/Tablet: 3-column Services Cards Grid */}
+              <div className="hidden md:grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
                 {TRANSFORM_PILLARS.map((pillar, idx) => (
                   <ScrollFloat key={pillar.index} delay={0.08 * (idx + 1)} className="min-w-0 h-full">
                     <article className="h-full flex flex-col justify-between rounded-2xl border border-border bg-card p-7 sm:p-8 transition-[border-color,transform] duration-200 hover:-translate-y-1 hover:border-foreground/25">
@@ -847,8 +1086,8 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="max-w-7xl mx-auto">
               {/* Section Header */}
-              <div className="text-center mb-8 md:mb-12 lg:mb-16 relative">
-                <SectionPill label="Our Team" icon={Users} className="mb-6" />
+              <div className="text-center mb-4 md:mb-12 lg:mb-16 relative">
+                <SectionPill label="Our Team" icon={Users} className="mb-4 md:mb-6" />
 
                 {/* Decorative Badge */}
                 <div className="hidden md:block absolute -top-4 right-1/4 transform translate-x-1/2">
@@ -857,14 +1096,14 @@ export default function Home() {
                   </div>
                 </div>
 
-                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-5 md:mb-6 leading-tight tracking-tight">
+                <h2 className="text-[26px] sm:text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-3 md:mb-6 leading-tight tracking-tight">
                   A Dedicated Team of
                   <br />
                   <span className="text-foreground">
                     Professionals
                   </span>
                 </h2>
-                <p className="text-lg md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
+                <p className="text-sm sm:text-base md:text-xl text-foreground/70 max-w-3xl mx-auto leading-relaxed">
                   Passionate, driven, and always prepared to go the extra mile, we bring expertise and creativity to
                   every project, guaranteeing your success.
                 </p>

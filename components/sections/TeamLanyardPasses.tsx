@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
 import Image from "next/image"
 import { motion, useReducedMotion } from "motion/react"
 
@@ -113,21 +113,29 @@ const PASSES: readonly PassItem[] = [
   },
 ] as const
 
-function LanyardHardware() {
+function LanyardHardware({ compact = false }: { compact?: boolean }) {
+  const uid = useId()
+  const bodyGradId = `claspBodyGrad-${uid}`
+  const tabGradId = `claspTabGrad-${uid}`
+
   return (
     <svg
       viewBox="0 0 120 186"
-      className="w-[78px] sm:w-[86px] h-auto -mb-[26px] relative z-20 pointer-events-none select-none overflow-visible"
+      className={
+        compact
+          ? "w-[58px] h-auto -mb-[18px] relative z-20 pointer-events-none select-none overflow-visible"
+          : "w-[78px] sm:w-[86px] h-auto -mb-[26px] relative z-20 pointer-events-none select-none overflow-visible"
+      }
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id="claspBodyGrad" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={bodyGradId} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#6c6e75" />
           <stop offset="35%" stopColor="#94979e" />
           <stop offset="70%" stopColor="#7c7f86" />
           <stop offset="100%" stopColor="#5d6067" />
         </linearGradient>
-        <linearGradient id="claspTabGrad" x1="0" y1="0" x2="1" y2="0">
+        <linearGradient id={tabGradId} x1="0" y1="0" x2="1" y2="0">
           <stop offset="0%" stopColor="#767980" />
           <stop offset="50%" stopColor="#a2a5ad" />
           <stop offset="100%" stopColor="#666870" />
@@ -155,12 +163,12 @@ function LanyardHardware() {
       <rect x="54.5" y="125" width="4" height="8" rx="1" fill="#70737b" opacity="0.55" />
 
       {/* Molded matte-grey clasp body */}
-      <rect x="49.5" y="133" width="20" height="27" rx="3" fill="url(#claspBodyGrad)" />
+      <rect x="49.5" y="133" width="20" height="27" rx="3" fill={`url(#${bodyGradId})`} />
       <rect x="48.5" y="141" width="22" height="5" rx="1.5" fill="#63656c" />
       <rect x="52" y="135.5" width="15" height="3" rx="1" fill="#a8abb3" opacity="0.65" />
 
       {/* Lower rectangular strap clasp snapping into the card slot */}
-      <rect x="53.5" y="159" width="12" height="16" rx="2" fill="url(#claspTabGrad)" />
+      <rect x="53.5" y="159" width="12" height="16" rx="2" fill={`url(#${tabGradId})`} />
       <rect x="51" y="171.5" width="17" height="6" rx="2" fill="#5e6067" />
     </svg>
   )
@@ -171,7 +179,7 @@ export default function TeamLanyardPasses() {
   const reducedMotion = useReducedMotion()
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-7 gap-y-14 lg:gap-x-8 xl:gap-x-10 items-start">
+    <div>
       {/* SVG die-cut contoured sticker rim filters (zero-size hidden in layout without display:none) */}
       <svg className="absolute w-0 h-0 overflow-hidden pointer-events-none" aria-hidden="true">
         <defs>
@@ -207,6 +215,110 @@ export default function TeamLanyardPasses() {
           ))}
         </defs>
       </svg>
+
+      {/* Mobile: Clean horizontal swipeable pass cards */}
+      <div className="md:hidden">
+        <div className="flex gap-5 overflow-x-auto snap-x snap-mandatory -mx-4 px-5 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          {PASSES.map((pass) => {
+            const isSelected = selectedId === pass.id
+            return (
+              <article key={pass.id} className="w-[68vw] max-w-[238px] shrink-0 snap-center flex flex-col items-center">
+                <button
+                  type="button"
+                  aria-pressed={isSelected}
+                  aria-label={`${pass.heading} pass`}
+                  onClick={() => setSelectedId((prev) => (prev === pass.id ? null : pass.id))}
+                  className="relative flex flex-col items-center w-full max-w-[214px] cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-6 focus-visible:outline-foreground rounded-2xl"
+                >
+                  <LanyardHardware compact />
+
+                  <div
+                    className={`relative w-full aspect-[1/1.02] rounded-[13px] mb-6 text-left overflow-visible transition-shadow duration-200 ${pass.borderClass} ${
+                      isSelected ? "ring-2 ring-foreground/60 ring-offset-4 ring-offset-background" : ""
+                    }`}
+                    style={{ backgroundColor: pass.bg }}
+                  >
+                    <div
+                      className="absolute top-[5.8%] left-1/2 -translate-x-1/2 w-7 h-[5px] rounded-full bg-background/95 shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)] z-10"
+                      aria-hidden="true"
+                    />
+
+                    <div className="absolute top-[13%] inset-x-[8%] flex items-start justify-between gap-2 z-10 pointer-events-none">
+                      <div className="leading-[1.12] tracking-[-0.02em]" style={{ color: pass.textColor }}>
+                        <div className="text-[10px] font-bold">
+                          ZeroSlash{" "}
+                          <span className="font-normal text-[8px] italic" style={{ color: pass.mutedColor }}>
+                            2025
+                          </span>
+                        </div>
+                        <div className="text-[9px] font-medium" style={{ color: pass.mutedColor }}>
+                          Digital Studio
+                        </div>
+                      </div>
+                      <span className="inline-flex items-center justify-center rounded-full bg-[#FF2442] text-white text-[7px] font-bold tracking-[0.02em] px-1.5 py-[2px] leading-none shadow-xs">
+                        ZEROSLASH
+                      </span>
+                    </div>
+
+                    <svg
+                      viewBox="0 0 240 245"
+                      className="absolute inset-0 w-full h-full pointer-events-none select-none z-10"
+                      aria-hidden="true"
+                    >
+                      {pass.letters.map((l, idx) => (
+                        <text
+                          key={`${pass.id}-mob-${idx}`}
+                          x={l.x}
+                          y={l.y}
+                          transform={`rotate(${l.rot} ${l.x} ${l.y})`}
+                          fill="#121212"
+                          fontSize={l.size}
+                          fontWeight="500"
+                          style={{
+                            fontFamily: "var(--font-sans)",
+                            letterSpacing: "-0.02em",
+                          }}
+                        >
+                          {l.ch}
+                        </text>
+                      ))}
+                    </svg>
+
+                    <div
+                      className={`absolute z-20 pointer-events-none select-none ${pass.propBoxClass}`}
+                      style={{ filter: `url(#diecut-${pass.id})` }}
+                    >
+                      <Image
+                        src={pass.propSrc}
+                        alt={pass.propAlt}
+                        fill
+                        sizes="200px"
+                        referrerPolicy="no-referrer"
+                        className="object-contain"
+                      />
+                    </div>
+                  </div>
+                </button>
+
+                <div className="w-full text-center px-1">
+                  <h3 className="text-sm font-bold text-foreground mb-1 tracking-tight uppercase">
+                    {pass.heading}
+                  </h3>
+                  <p className="text-foreground/70 leading-relaxed text-xs line-clamp-3">
+                    {pass.description}
+                  </p>
+                </div>
+              </article>
+            )
+          })}
+        </div>
+        <p className="text-center text-xs text-foreground/45 mt-1">
+          Swipe to explore passes
+        </p>
+      </div>
+
+      {/* Desktop/Tablet: Full 2/4 column grid untouched */}
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-x-7 gap-y-14 lg:gap-x-8 xl:gap-x-10 items-start">
 
       {PASSES.map((pass) => {
         const isSelected = selectedId === pass.id
@@ -317,6 +429,7 @@ export default function TeamLanyardPasses() {
           </article>
         )
       })}
+      </div>
     </div>
   )
 }
